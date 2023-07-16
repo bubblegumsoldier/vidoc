@@ -244,7 +244,7 @@ export class VSCController implements EditorController {
               // Create and return the hover content
               const pathFormatted = hoveredHighlightings[0].vidoc.relativeFilePath.replace('\\', '/');
               console.log(pathFormatted);
-              const markdown = new vscode.MarkdownString(`[${pathFormatted}](${pathFormatted})`);
+              const markdown = new vscode.MarkdownString(`[Click here](${pathFormatted})`);
               markdown.baseUri = vscode.Uri.file(this.fileController.getAbsolutePath('./'));
 
               return new vscode.Hover(

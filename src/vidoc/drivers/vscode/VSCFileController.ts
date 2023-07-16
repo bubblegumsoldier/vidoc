@@ -22,7 +22,7 @@ export class VSCFileController implements FileController {
 
   public async writeFileContent(absoluteFilePath: string, content: string): Promise<void> {
     const intArray = new TextEncoder().encode(content);
-    await vscode.workspace.fs.writeFile(this.getFileUri(absoluteFilePath), intArray);
+    await vscode.workspace.fs.writeFile(this.getFileUri(absoluteFilePath, false), intArray);
   }
 
   public async createDirIfNotExists(absoluteFolderPath: string)  {
