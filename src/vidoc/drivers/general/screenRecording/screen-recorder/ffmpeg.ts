@@ -13,7 +13,7 @@ export class FFmpegUtil {
     },
     audio: {
       'b:a': '384k',
-      'c:a': 'aac',
+      'c:a': 'libmp3lame',
       ac: 1,
       //      vbr: 3
     },
@@ -47,7 +47,7 @@ export class FFmpegUtil {
 
   static async getWin32Args(opts: RecordingOptions) {
     const getAll = this.getAll.bind(this, opts.ffmpeg!.flags || {});
-    
+
     let devs: any = {};
     if(!opts.audioDevice)  {
       devs = await OSUtil.getWinDevices(opts.ffmpeg!.binary!, opts.audio);
@@ -61,12 +61,6 @@ export class FFmpegUtil {
       out.unshift('-t', `${opts.duration}`);
     }
 
-    out.push(
-      ...this.getCommon(opts),
-      ...getAll({
-        video_size: `${win.bounds.width}x${win.bounds.height}`
-      })
-    );
 
     if (opts.audio) {
       out.push(
@@ -76,6 +70,13 @@ export class FFmpegUtil {
         })
       );
     }
+
+    out.push(
+      ...this.getCommon(opts),
+      ...getAll({
+        video_size: `${win.bounds.width}x${win.bounds.height}`
+      })
+    );
 
     out.push(
       ...getAll({
