@@ -1,9 +1,12 @@
 import { inject, singleton } from "tsyringe";
 import { ScreenRecorder } from "../../../interfaces/ScreenRecorder";
 import { FileController } from "../../../interfaces/FileController";
-import { Recorder } from "@arcsine/screen-recorder";
+import { Recorder } from "./screen-recorder";
 import * as path from "path";
 import { Vidoc } from "../../../model/Vidoc";
+import { Prompter } from "../../../interfaces/Prompter";
+import { OSUtil } from "./screen-recorder/os";
+import { FFmpegUtil } from "./screen-recorder/ffmpeg";
 
 @singleton()
 export class RSScreenRecorder implements ScreenRecorder {
@@ -12,19 +15,33 @@ export class RSScreenRecorder implements ScreenRecorder {
   private stopMethod: any;
 
   constructor(
-    @inject("FileController") private fileController: FileController
+    @inject("FileController") private fileController: FileController,
+    @inject("Prompter") private prompter: Prompter
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
     const outputFile = vidoc.absoluteFilePath;
     this.fileController.createDirIfNotExists(path.resolve(outputFile, ".."));
-    const { finish, stop } = await Recorder.recordActiveWindow({
-      file: outputFile,
-      fps: 10,
-    });
-    this.finishMethod = finish;
-    this.stopMethod = stop;
-    this.currentRecordingVidoc = vidoc;
+    try {
+      
+      const opts = await FFmpegUtil.findFFmpegBinIfMissing({});
+      const audioDevice = await this.prompter.getAnswer('Select audio device', await OSUtil.getWinAudioDevices(opts.ffmpeg.binary));
+      if(!audioDevice) {
+        throw Error('Audio device needs to be selected first!');
+      }
+      const { finish, stop } = await Recorder.recordActiveWindow({
+        file: outputFile,
+        fps: 10,
+        audio: true,
+        audioDevice: audioDevice
+      });
+      this.finishMethod = finish;
+      this.stopMethod = stop;
+      this.currentRecordingVidoc = vidoc;
+    } catch(e) {
+      console.error(e);
+      throw e;
+    }
   }
 
   public async stopRecording(): Promise<Vidoc> {

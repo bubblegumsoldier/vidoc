@@ -14,6 +14,9 @@ import { EditorInteractor } from "../../interfaces/EditorInteractor";
 import { PositionedVidocInstance } from "../../model/Vidoc";
 import { checkSelectionOverlap } from "../../utils/range";
 import { FileController } from "../../interfaces/FileController";
+import { OSUtil } from "../general/screenRecording/screen-recorder/os";
+import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
+
 
 @singleton()
 export class VSCController implements EditorController {
@@ -194,7 +197,9 @@ export class VSCController implements EditorController {
     let winInfoCmd = vscode.commands.registerCommand(
       "vidoc.wininfo",
       async () => {
-        this.notify(JSON.stringify(await winInfo.getActive()));
+        const opts = await FFmpegUtil.findFFmpegBinIfMissing({});
+        const devices = await OSUtil.getWinDevices(opts.ffmpeg.binary, true);
+        this.notify(JSON.stringify(devices))
       }
     );
     let decorateSelection = vscode.commands.registerCommand(

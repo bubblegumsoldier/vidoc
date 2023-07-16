@@ -7,15 +7,7 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@arcsine/screen-recorder@^0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@arcsine/screen-recorder/-/screen-recorder-0.2.9.tgz#7e34570a9bcf4d0291fc2fdab2707326ee432acc"
-  integrity sha512-Qj0NMwA7E1ACbFTEhiVfU/Pl/mn8oNorLGVPcbMPMFsP0eeUqUDf9WSsOjUcD7Ef8iS6O5HrVzomBTuYVx3HzA==
-  dependencies:
-    "@arcsine/win-info" "^0.2.12"
-    yauzl "^2.10.0"
-
-"@arcsine/win-info@^0.2.12", "@arcsine/win-info@^0.2.13":
+"@arcsine/win-info@^0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@arcsine/win-info/-/win-info-0.2.13.tgz#ea97d2eee6c7239aa09f8b441f3ecc1c4b2b8494"
   integrity sha512-iwqzRU6+PuWn33wDcJQln0tg8mRNIQu9ZvJ2ylsPCji+AeVs5ivQhtxZVoGeBieMcie2qeqZJJpxiSe4Vpt+rg==

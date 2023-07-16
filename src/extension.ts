@@ -21,6 +21,8 @@ import { VidocFactory } from "./vidoc/interfaces/VidocFactory";
 import { DefaultVidocFactory } from "./vidoc/drivers/general/DefaultVidocFactory";
 import { VidocIdGenerator } from "./vidoc/interfaces/VidocIdGenerator";
 import { DefaultVidocIdGenerator } from "./vidoc/drivers/general/config/DeafultVidocIdGenerator";
+import { Prompter } from "./vidoc/interfaces/Prompter";
+import { VSCPrompter } from "./vidoc/drivers/vscode/VSCPrompter";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -47,6 +49,9 @@ container.register<VidocFactory>("VidocFactory", {
 });
 container.register<VidocIdGenerator>("VidocIdGenerator", {
   useClass: DefaultVidocIdGenerator,
+});
+container.register<Prompter>("Prompter", {
+  useClass: VSCPrompter,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

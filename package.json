@@ -63,7 +63,6 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
-    "@arcsine/screen-recorder": "^0.2.9",
     "@arcsine/win-info": "^0.2.13",
     "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.2",
@@ -71,6 +70,7 @@
     "record-screen": "^3.19.0",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.8.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "yauzl": "^2.10.0"
   }
 }
