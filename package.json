@@ -28,6 +28,10 @@
       {
         "command": "vidoc.stopRecording",
         "title": "[Vidoc] Stop Recording"
+      },
+      {
+        "command": "vidoc.wininfo",
+        "title": "[Vidoc] wininfo"
       }
     ]
   },
@@ -62,9 +66,11 @@
     "@arcsine/screen-recorder": "^0.2.9",
     "@arcsine/win-info": "^0.2.13",
     "@types/lodash": "^4.14.195",
+    "@types/uuid": "^9.0.2",
     "lodash": "^4.17.21",
     "record-screen": "^3.19.0",
     "reflect-metadata": "^0.1.13",
-    "tsyringe": "^4.8.0"
+    "tsyringe": "^4.8.0",
+    "uuid": "^9.0.0"
   }
 }

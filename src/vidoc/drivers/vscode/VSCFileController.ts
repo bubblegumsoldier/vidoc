@@ -16,7 +16,19 @@ export class VSCFileController implements FileController {
   }
 
   public getAbsolutePath(p: string) {
-    return path.resolve(this.getWorkspaceRoot(), p);
+    const returnPath = path.resolve(this.getWorkspaceRoot(), p);
+    return returnPath;
+  }
+
+  public async writeFileContent(absoluteFilePath: string, content: string): Promise<void> {
+    const intArray = new TextEncoder().encode(content);
+    await vscode.workspace.fs.writeFile(this.getFileUri(absoluteFilePath), intArray);
+  }
+
+  public async createDirIfNotExists(absoluteFolderPath: string)  {
+    await vscode.workspace.fs.createDirectory(
+      this.getFileUri(absoluteFolderPath)
+    );
   }
 
   private getFileUri(p: string): vscode.Uri {

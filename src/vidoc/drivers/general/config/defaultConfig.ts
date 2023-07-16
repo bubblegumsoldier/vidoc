@@ -5,5 +5,8 @@ export const DEFAULT_CONFIG: Config = {
         type: 'local',
         location: 'central',
         folder: '.vidoc'
+    },
+    recordingOptions: {
+        fileFormat: 'mp4'
     }
 };

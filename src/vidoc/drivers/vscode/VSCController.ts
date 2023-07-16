@@ -3,7 +3,14 @@ import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 import { inject, singleton } from "tsyringe";
 import { EditorController } from "../../interfaces/EditorController";
 import { ScreenRecorder } from "../../interfaces/ScreenRecorder";
-import { OutputFilePathGenerator } from "../../interfaces/OutputFilePathGenerator";
+import * as winInfo from "@arcsine/win-info";
+import {
+  EditorSelection,
+  FocusInformation,
+} from "../../model/FocusInformation";
+import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
+import { VidocFactory } from "../../interfaces/VidocFactory";
+import { EditorInteractor } from "../../interfaces/EditorInteractor";
 
 @singleton()
 export class VSCController implements EditorController {
@@ -11,9 +18,51 @@ export class VSCController implements EditorController {
   constructor(
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
     @inject("ScreenRecorder") private screenRecorder: ScreenRecorder,
-    @inject("OutputFilePathGenerator")
-    private outputFilePathGenerator: OutputFilePathGenerator
+    @inject("CodeParserAndWriter")
+    private codeParserAndWriter: CodeParserAndWriter,
+    @inject("VidocFactory") private vidocFactory: VidocFactory,
+    @inject("EditorInteractor") private editorInteractor: EditorInteractor,
   ) {}
+
+  async getCurrentFocusInformation(): Promise<FocusInformation> {
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (!activeTextEditor) {
+      return undefined;
+    }
+    const uri = activeTextEditor.document.uri;
+    if (uri?.scheme !== "file") {
+      return undefined;
+    }
+    const filePathRelative = uri.path;
+    const selection: EditorSelection = {
+      text: activeTextEditor.document.getText(activeTextEditor.selection),
+      from: {
+        lineIndex: activeTextEditor.selection.start.line,
+        charIndex: activeTextEditor.selection.start.character,
+        lineContent: activeTextEditor.document.lineAt(
+          activeTextEditor.selection.start.line
+        ).text,
+      },
+      to: {
+        lineIndex: activeTextEditor.selection.end.line,
+        charIndex: activeTextEditor.selection.end.character,
+        lineContent: activeTextEditor.document.lineAt(
+          activeTextEditor.selection.end.line
+        ).text,
+      },
+    };
+    return {
+      currentSelection: selection,
+      currentlyOpenedFileRelativeFilePath: filePathRelative,
+      cursorPosition: {
+        lineIndex: activeTextEditor.selection.active.line,
+        charIndex: activeTextEditor.selection.active.character,
+        lineContent: activeTextEditor.document.lineAt(
+          activeTextEditor.selection.active.line
+        ).text,
+      },
+    };
+  }
 
   notify(s: string): void {
     vscode.window.showInformationMessage(s);
@@ -64,13 +113,29 @@ export class VSCController implements EditorController {
     let startRecording = vscode.commands.registerCommand(
       "vidoc.startRecording",
       async () => {
+        const focusInformation = await this.getCurrentFocusInformation();
+        if (!focusInformation) {
+          throw Error(
+            "Recording only works if file is open in which we can input the resulting link"
+          );
+        }
+        const vidocObject = await this.vidocFactory.createVidocObject(
+          focusInformation
+        );
+        const textToAppend = await this.codeParserAndWriter.getStringToAppend(
+          vidocObject
+        );
+        this.editorInteractor.insertStringAtEndOfLine(
+          textToAppend,
+          focusInformation.cursorPosition
+        );
         await this.screenRecorder.startRecording(
-          await this.outputFilePathGenerator.getNextOutputFilePath()
+          vidocObject
         );
         this.startIndicationOfRecording();
       }
     );
-    let stopRecording = vscode.commands.registerCommand(
+    let stopRecording = vscode.commands.registerTextEditorCommand(
       "vidoc.stopRecording",
       async () => {
         this.notify("Stopping recording");
@@ -79,17 +144,23 @@ export class VSCController implements EditorController {
         this.stopIndicationOfRecording();
       }
     );
-
+    let winInfoCmd = vscode.commands.registerCommand(
+      "vidoc.wininfo",
+      async () => {
+        this.notify(JSON.stringify(await winInfo.getActive()));
+      }
+    );
     context.subscriptions.push(disposable);
     context.subscriptions.push(readConfig);
     context.subscriptions.push(startRecording);
     context.subscriptions.push(stopRecording);
+    context.subscriptions.push(winInfoCmd);
 
     this.initStatusBarItem();
   }
 
   deactivate() {
-    if(this.screenRecorder.isRecording()) {
+    if (this.screenRecorder.isRecording()) {
       this.screenRecorder.stopRecording();
     }
   }
