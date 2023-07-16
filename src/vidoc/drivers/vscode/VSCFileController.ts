@@ -16,7 +16,7 @@ export class VSCFileController implements FileController {
   }
 
   public getAbsolutePath(p: string) {
-    const returnPath = path.resolve(this.getWorkspaceRoot(), p);
+    const returnPath = path.join(this.getWorkspaceRoot(), p);
     return returnPath;
   }
 
@@ -31,8 +31,9 @@ export class VSCFileController implements FileController {
     );
   }
 
-  private getFileUri(p: string): vscode.Uri {
-    return vscode.Uri.file(this.getAbsolutePath(p));
+  private getFileUri(p: string, relative = true): vscode.Uri {
+    const pathFull = relative ? this.getAbsolutePath(p) : p;
+    return vscode.Uri.file(pathFull);
   }
 
   async existsSync(file: string): Promise<boolean> {
@@ -42,9 +43,9 @@ export class VSCFileController implements FileController {
       return false;
     }
   }
-  async readFileContent(file: string): Promise<string> {
+  async readFileContent(file: string, relative: boolean): Promise<string> {
     return new TextDecoder().decode(
-      await vscode.workspace.fs.readFile(this.getFileUri(file))
+      await vscode.workspace.fs.readFile(this.getFileUri(file, relative))
     );
   }
 }

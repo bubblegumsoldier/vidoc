@@ -1,8 +1,8 @@
 import { FocusInformation } from "../model/FocusInformation";
-import { Vidoc } from "../model/Vidoc";
+import { PositionedVidocInstance, Vidoc } from "../model/Vidoc";
 
 export interface CodeParserAndWriter {
     getStringForRecordedVidoc(vidocId: string): string;
-    parseLineForVidoc(lineContent: string): Promise<Vidoc[]>;
+    parseLineForVidoc(lineContent: string, lineNumber: number): Promise<PositionedVidocInstance[]>;
     getStringToAppend(vidocId: Vidoc): string;
 }

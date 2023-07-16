@@ -11,17 +11,23 @@ import {
 import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { EditorInteractor } from "../../interfaces/EditorInteractor";
+import { PositionedVidocInstance } from "../../model/Vidoc";
+import { checkSelectionOverlap } from "../../utils/range";
+import { FileController } from "../../interfaces/FileController";
 
 @singleton()
 export class VSCController implements EditorController {
   statusBarItem?: vscode.StatusBarItem;
+  currentHighlightings: PositionedVidocInstance[] = [];
+
   constructor(
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
     @inject("ScreenRecorder") private screenRecorder: ScreenRecorder,
+    @inject("FileController") private fileController: FileController,
     @inject("CodeParserAndWriter")
     private codeParserAndWriter: CodeParserAndWriter,
     @inject("VidocFactory") private vidocFactory: VidocFactory,
-    @inject("EditorInteractor") private editorInteractor: EditorInteractor,
+    @inject("EditorInteractor") private editorInteractor: EditorInteractor
   ) {}
 
   async getCurrentFocusInformation(): Promise<FocusInformation> {
@@ -89,6 +95,49 @@ export class VSCController implements EditorController {
     this.statusBarItem.show();
   }
 
+  updateDecorationsByPositionedVidocs(editor: any) {
+    // Clear existing decorations (if any)
+    const decorationType = vscode.window.createTextEditorDecorationType({
+      backgroundColor: "yellow",
+      outlineColor: "white",
+      outlineStyle: "dashed",
+      outlineWidth: "1px",
+      isWholeLine: false,
+    });
+    const ranges: vscode.Range[] = [];
+
+    for (const vidoc of this.currentHighlightings) {
+      const line = vidoc.range.from.lineIndex; // Specify the line number where you want to add the decoration
+      const startCharacter = vidoc.range.from.charIndex; // Specify the starting character of the selection
+      const endCharacter = vidoc.range.to.charIndex; // Specify the ending character of the selection
+
+      ranges.push(new vscode.Range(line, startCharacter, line, endCharacter));
+
+      // Apply new decorations
+    }
+    editor.setDecorations(decorationType, ranges);
+  }
+
+  async updateDecorations() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+    const lines = editor.document.getText().split("\n");
+    let vidocs: PositionedVidocInstance[] = [];
+    for (let i = 0; i < lines.length; ++i) {
+      const matches = await this.codeParserAndWriter.parseLineForVidoc(
+        lines[i],
+        i
+      );
+      vidocs = [...vidocs, ...matches];
+    }
+    console.log(vidocs);
+    console.log(lines);
+    this.currentHighlightings = vidocs;
+    this.updateDecorationsByPositionedVidocs(editor);
+  }
+
   public activate(context: vscode.ExtensionContext): void {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
@@ -129,9 +178,7 @@ export class VSCController implements EditorController {
           textToAppend,
           focusInformation.cursorPosition
         );
-        await this.screenRecorder.startRecording(
-          vidocObject
-        );
+        await this.screenRecorder.startRecording(vidocObject);
         this.startIndicationOfRecording();
       }
     );
@@ -150,6 +197,76 @@ export class VSCController implements EditorController {
         this.notify(JSON.stringify(await winInfo.getActive()));
       }
     );
+    let decorateSelection = vscode.commands.registerCommand(
+      "vidoc.decorateSelection",
+      () => {
+        this.updateDecorations();
+      }
+    );
+
+    // Register the command
+    context.subscriptions.push(decorateSelection);
+
+    // Listen for changes in the active text editor
+    vscode.window.onDidChangeActiveTextEditor((editor) => {
+      if (editor) {
+        console.log("Updating decorations");
+        this.updateDecorations();
+      }
+    });
+
+    context.subscriptions.push(
+      vscode.languages.registerHoverProvider("*", {
+        provideHover: (document, position, token) => {
+          // Check if the hovered position is within the decorated range
+          if (this.currentHighlightings) {
+            const hoveredRange = document.getWordRangeAtPosition(position);
+            if (!hoveredRange) {
+              return;
+            }
+            const hoveredHighlightings = this.currentHighlightings.filter(
+              (decoration) =>
+                checkSelectionOverlap(decoration.range, {
+                  from: {
+                    lineIndex: hoveredRange.start.line,
+                    charIndex: hoveredRange.start.character,
+                    lineContent: "",
+                  },
+                  to: {
+                    lineIndex: hoveredRange.end.line,
+                    charIndex: hoveredRange.end.character,
+                    lineContent: "",
+                  },
+                  text: "",
+                })
+            );
+            if (hoveredHighlightings.length > 0) {
+              // Create and return the hover content
+              const pathFormatted = hoveredHighlightings[0].vidoc.relativeFilePath.replace('\\', '/');
+              console.log(pathFormatted);
+              const markdown = new vscode.MarkdownString(`[${pathFormatted}](${pathFormatted})`);
+              markdown.baseUri = vscode.Uri.file(this.fileController.getAbsolutePath('./'));
+
+              return new vscode.Hover(
+                markdown,
+                new vscode.Range(
+                  new vscode.Position(
+                    hoveredHighlightings[0].range.from.lineIndex,
+                    hoveredHighlightings[0].range.from.charIndex
+                  ),
+                  new vscode.Position(
+                    hoveredHighlightings[0].range.to.lineIndex,
+                    hoveredHighlightings[0].range.to.charIndex
+                  )
+                )
+              );
+            }
+          }
+          return undefined;
+        },
+      })
+    );
+
     context.subscriptions.push(disposable);
     context.subscriptions.push(readConfig);
     context.subscriptions.push(startRecording);
@@ -157,6 +274,7 @@ export class VSCController implements EditorController {
     context.subscriptions.push(winInfoCmd);
 
     this.initStatusBarItem();
+    this.updateDecorations();
   }
 
   deactivate() {

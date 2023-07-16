@@ -39,7 +39,7 @@ export class GitConfigRetriever implements ConfigRetriever {
   }
 
   private async parseVidocConfigAtFilepath(filepath: string): Promise<any> {
-    const fileContent = await this.fileController.readFileContent(filepath);
+    const fileContent = await this.fileController.readFileContent(filepath, true);
     if (filepath.endsWith("json")) {
       return JSON.parse(fileContent);
     }

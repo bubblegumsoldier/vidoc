@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
-import { Vidoc } from "../../model/Vidoc";
+import { PositionedVidocInstance, Vidoc } from "../../model/Vidoc";
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { FocusInformation } from "../../model/FocusInformation";
 
@@ -37,6 +37,7 @@ const FILE_SUFFIX_ENDING_MAPPING: FileEndingToStringCallback[] = [
 
 @injectable()
 export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
+
   constructor(@inject("VidocFactory") private vidocFactory: VidocFactory) {}
 
   getStringForRecordedVidoc(vidocId: string): string {
@@ -49,37 +50,62 @@ export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
    * @param vidocId
    * @returns
    */
-  getStringToAppend(
-    vidoc: Vidoc
-  ): string {
+  getStringToAppend(vidoc: Vidoc): string {
     let text = this.getStringForRecordedVidoc(vidoc.id);
     for (const fileType of FILE_SUFFIX_ENDING_MAPPING) {
-      const hasMapping = fileType.allowedFileEndings.filter((suffix) =>
-        vidoc.metadata.focusInformation?.currentlyOpenedFileRelativeFilePath.endsWith(
-          `.${suffix}`
-        )
-      ).length > 0;
-      if(!hasMapping) {
+      const hasMapping =
+        fileType.allowedFileEndings.filter((suffix) =>
+          vidoc.metadata.focusInformation?.currentlyOpenedFileRelativeFilePath.endsWith(
+            `.${suffix}`
+          )
+        ).length > 0;
+      if (!hasMapping) {
         continue;
       }
-      text = fileType.callback(text, vidoc.metadata.focusInformation?.cursorPosition.lineContent || '');
+      text = fileType.callback(
+        text,
+        vidoc.metadata.focusInformation?.cursorPosition.lineContent || ""
+      );
       break;
     }
     return text;
   }
 
-  async parseLineForVidoc(lineContent: string): Promise<Vidoc[]> {
+  async parseLineForVidoc(
+    lineContent: string,
+    lineNumber: number
+  ): Promise<PositionedVidocInstance[]> {
     if (lineContent.indexOf(":vidoc") < 0) {
       return [];
     }
-    let foundIds: string[] = [];
+    let foundIds: { id: string; start: number; end: number }[] = []; // Array to store the matched IDs with their indices
     let match;
-    while ((match = REGEX.exec(lineContent)) !== null) {
+    const regex = /:vidoc\s([a-zA-Z0-9-]+\.[a-zA-Z0-9]+)/g; // Replace "your_regex" with your desired regular expression pattern
+
+    while ((match = regex.exec(lineContent)) !== null) {
       const matchingGroup = match[1]; // Group 1 captures the value inside the parentheses
-      foundIds.push(matchingGroup);
+      const start = match.index;
+      const end = start + match[0].length;
+      foundIds.push({ id: matchingGroup, start, end });
     }
-    const promises = foundIds.map(async (id) => {
-      return await this.vidocFactory.initVidocObject(id);
+
+    const promises = foundIds.map(async ({ id, start, end }) => {
+      return {
+        vidoc: await this.vidocFactory.initVidocObject(id),
+        range: {
+          from: {
+            lineIndex: lineNumber,
+            charIndex: start,
+            lineContent,
+          },
+          to: {
+            lineIndex: lineNumber,
+            charIndex: end,
+            lineContent,
+          },
+          text: lineContent,
+        },
+      };
     });
 
     return await Promise.all(promises);

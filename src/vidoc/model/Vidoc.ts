@@ -1,5 +1,5 @@
-import { AuthorInformation } from "../interfaces/AuthorInformation";
-import { FocusInformation } from "./FocusInformation";
+import { AuthorInformation } from "./AuthorInformation";
+import { EditorSelection, FocusInformation } from "./FocusInformation";
 
 export interface VidocMetadata {
     createdAt: string;
@@ -14,4 +14,9 @@ export interface Vidoc {
     absoluteFilePath: string;
     absoluteFilePathMetadata: string;
     metadata: VidocMetadata;
+}
+
+export interface PositionedVidocInstance {
+    range: EditorSelection;
+    vidoc: Vidoc;
 }

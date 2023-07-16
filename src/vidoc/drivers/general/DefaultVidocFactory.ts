@@ -79,10 +79,12 @@ export class DefaultVidocFactory implements VidocFactory {
   ): Promise<VidocMetadata> {
     try {
       const content = await this.fileController.readFileContent(
-        absoluteFilePathMetadata
+        absoluteFilePathMetadata,
+        false
       );
       return JSON.parse(content);
-    } catch {
+    } catch (e) {
+      console.error(e);
       throw Error(`Couldnt find metadata at ${absoluteFilePathMetadata}`);
     }
   }
