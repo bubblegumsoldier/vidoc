@@ -25,10 +25,14 @@ export class VSCAuthorInformationRetriever
     // Assuming the first repository is the active one
     const repository = repositories[0];
     const config = repository.config;
-    const username = await config.getValue("user.name");
+    const username = await config?.getValue("user.name");
+
+    if(!username) {
+        return undefined;
+    }
 
     return {
-        username
+        username: username
     };
   }
 }

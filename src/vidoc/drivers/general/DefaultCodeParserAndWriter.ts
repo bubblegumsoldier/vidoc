@@ -54,11 +54,11 @@ export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
   ): string {
     let text = this.getStringForRecordedVidoc(vidoc.id);
     for (const fileType of FILE_SUFFIX_ENDING_MAPPING) {
-      const hasMapping = !!fileType.allowedFileEndings.filter((suffix) =>
+      const hasMapping = fileType.allowedFileEndings.filter((suffix) =>
         vidoc.metadata.focusInformation?.currentlyOpenedFileRelativeFilePath.endsWith(
           `.${suffix}`
         )
-      );
+      ).length > 0;
       if(!hasMapping) {
         continue;
       }
