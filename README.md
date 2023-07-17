@@ -1,6 +1,6 @@
 # ViDoc: An Interactive Documentation Extension for Visual Studio Code
 
-![ViDoc](vidoc_logo.png "ViDoc")
+![ViDoc](vidoc.png "ViDoc")
 
 ## Vision Statement
 
