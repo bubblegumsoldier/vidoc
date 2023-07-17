@@ -16,7 +16,7 @@ import { checkSelectionOverlap } from "../../utils/range";
 import { FileController } from "../../interfaces/FileController";
 import { OSUtil } from "../general/screenRecording/screen-recorder/os";
 import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
-
+import { VSCHoverProvider } from "./VSCHoverProvider";
 
 @singleton()
 export class VSCController implements EditorController {
@@ -30,7 +30,8 @@ export class VSCController implements EditorController {
     @inject("CodeParserAndWriter")
     private codeParserAndWriter: CodeParserAndWriter,
     @inject("VidocFactory") private vidocFactory: VidocFactory,
-    @inject("EditorInteractor") private editorInteractor: EditorInteractor
+    @inject("EditorInteractor") private editorInteractor: EditorInteractor,
+    @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider
   ) {}
 
   async getCurrentFocusInformation(): Promise<FocusInformation> {
@@ -126,34 +127,17 @@ export class VSCController implements EditorController {
     if (!editor) {
       return;
     }
-    const lines = editor.document.getText().split("\n");
-    let vidocs: PositionedVidocInstance[] = [];
-    for (let i = 0; i < lines.length; ++i) {
-      const matches = await this.codeParserAndWriter.parseLineForVidoc(
-        lines[i],
-        i
+    this.currentHighlightings =
+      await this.codeParserAndWriter.parseFileForVidoc(
+        editor.document.getText()
       );
-      vidocs = [...vidocs, ...matches];
-    }
-    console.log(vidocs);
-    console.log(lines);
-    this.currentHighlightings = vidocs;
     this.updateDecorationsByPositionedVidocs(editor);
   }
 
   public activate(context: vscode.ExtensionContext): void {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "vidoc" is now active!');
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand("vidoc.helloWorld", () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage("Hello World from vidoc!");
-    });
+    /**
+     * READ CONFIG
+     */
     let readConfig = vscode.commands.registerCommand(
       "vidoc.readConfig",
       async () => {
@@ -162,6 +146,10 @@ export class VSCController implements EditorController {
         );
       }
     );
+
+    /**
+     * START RECORDING
+     */
     let startRecording = vscode.commands.registerCommand(
       "vidoc.startRecording",
       async () => {
@@ -185,6 +173,10 @@ export class VSCController implements EditorController {
         this.startIndicationOfRecording();
       }
     );
+
+    /**
+     * STOP RECORDING
+     */
     let stopRecording = vscode.commands.registerTextEditorCommand(
       "vidoc.stopRecording",
       async () => {
@@ -192,25 +184,31 @@ export class VSCController implements EditorController {
         const output = await this.screenRecorder.stopRecording();
         this.notify(`Recording saved under ${output}`);
         this.stopIndicationOfRecording();
+        this.updateDecorations();
       }
     );
+
+    /**
+     * WIN-INFO COMMAND
+     */
     let winInfoCmd = vscode.commands.registerCommand(
       "vidoc.wininfo",
       async () => {
         const opts = await FFmpegUtil.findFFmpegBinIfMissing({});
         const devices = await OSUtil.getWinDevices(opts.ffmpeg.binary, true);
-        this.notify(JSON.stringify(devices))
+        this.notify(JSON.stringify(devices));
       }
     );
-    let decorateSelection = vscode.commands.registerCommand(
-      "vidoc.decorateSelection",
+
+    /**
+     * DECORATE SELECTION
+     */
+    let updateDecorations = vscode.commands.registerCommand(
+      "vidoc.updateDecorations",
       () => {
         this.updateDecorations();
       }
     );
-
-    // Register the command
-    context.subscriptions.push(decorateSelection);
 
     // Listen for changes in the active text editor
     vscode.window.onDidChangeActiveTextEditor((editor) => {
@@ -220,66 +218,30 @@ export class VSCController implements EditorController {
       }
     });
 
-    context.subscriptions.push(
-      vscode.languages.registerHoverProvider("*", {
-        provideHover: (document, position, token) => {
-          // Check if the hovered position is within the decorated range
-          if (this.currentHighlightings) {
-            const hoveredRange = document.getWordRangeAtPosition(position);
-            if (!hoveredRange) {
-              return;
-            }
-            const hoveredHighlightings = this.currentHighlightings.filter(
-              (decoration) =>
-                checkSelectionOverlap(decoration.range, {
-                  from: {
-                    lineIndex: hoveredRange.start.line,
-                    charIndex: hoveredRange.start.character,
-                    lineContent: "",
-                  },
-                  to: {
-                    lineIndex: hoveredRange.end.line,
-                    charIndex: hoveredRange.end.character,
-                    lineContent: "",
-                  },
-                  text: "",
-                })
-            );
-            if (hoveredHighlightings.length > 0) {
-              // Create and return the hover content
-              const pathFormatted = hoveredHighlightings[0].vidoc.relativeFilePath.replace('\\', '/');
-              console.log(pathFormatted);
-              const markdown = new vscode.MarkdownString(`[Click here](${pathFormatted})`);
-              markdown.baseUri = vscode.Uri.file(this.fileController.getAbsolutePath('./'));
-
-              return new vscode.Hover(
-                markdown,
-                new vscode.Range(
-                  new vscode.Position(
-                    hoveredHighlightings[0].range.from.lineIndex,
-                    hoveredHighlightings[0].range.from.charIndex
-                  ),
-                  new vscode.Position(
-                    hoveredHighlightings[0].range.to.lineIndex,
-                    hoveredHighlightings[0].range.to.charIndex
-                  )
-                )
-              );
-            }
-          }
-          return undefined;
-        },
-      })
-    );
-
-    context.subscriptions.push(disposable);
     context.subscriptions.push(readConfig);
     context.subscriptions.push(startRecording);
     context.subscriptions.push(stopRecording);
     context.subscriptions.push(winInfoCmd);
+    context.subscriptions.push(updateDecorations);
+    this.registerRecalculationOfHighlightings(context);
 
     this.initStatusBarItem();
     this.updateDecorations();
+  }
+
+  registerRecalculationOfHighlightings(context: vscode.ExtensionContext) {
+    context.subscriptions.push(
+      vscode.languages.registerHoverProvider("*", {
+        provideHover: (document, position, token) => {
+          return this.hoverProvider.provideHover(
+            this.currentHighlightings,
+            document,
+            position,
+            token
+          );
+        },
+      })
+    );
   }
 
   deactivate() {

@@ -14,10 +14,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "vidoc.helloWorld",
-        "title": "[Vidoc] Hello World"
-      },
-      {
         "command": "vidoc.readConfig",
         "title": "[Vidoc] Read Config"
       },

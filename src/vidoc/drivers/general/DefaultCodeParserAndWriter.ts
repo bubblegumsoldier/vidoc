@@ -37,7 +37,6 @@ const FILE_SUFFIX_ENDING_MAPPING: FileEndingToStringCallback[] = [
 
 @injectable()
 export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
-
   constructor(@inject("VidocFactory") private vidocFactory: VidocFactory) {}
 
   getStringForRecordedVidoc(vidocId: string): string {
@@ -109,5 +108,18 @@ export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
     });
 
     return await Promise.all(promises);
+  }
+
+  async parseFileForVidoc(fullContent: string): Promise<PositionedVidocInstance[]> {
+    const lines = fullContent.split("\n");
+    let vidocs: PositionedVidocInstance[] = [];
+    for (let i = 0; i < lines.length; ++i) {
+      const matches = await this.parseLineForVidoc(
+        lines[i],
+        i
+      );
+      vidocs = [...vidocs, ...matches];
+    }
+    return vidocs;
   }
 }

@@ -21,7 +21,7 @@ export class RSScreenRecorder implements ScreenRecorder {
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
     const outputFile = vidoc.absoluteFilePath;
-    this.fileController.createDirIfNotExists(path.resolve(outputFile, ".."));
+    await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
       
       const opts = await FFmpegUtil.findFFmpegBinIfMissing({});

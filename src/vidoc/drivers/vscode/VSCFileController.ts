@@ -27,7 +27,7 @@ export class VSCFileController implements FileController {
 
   public async createDirIfNotExists(absoluteFolderPath: string)  {
     await vscode.workspace.fs.createDirectory(
-      this.getFileUri(absoluteFolderPath)
+      this.getFileUri(absoluteFolderPath, false)
     );
   }
 
