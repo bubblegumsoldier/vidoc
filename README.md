@@ -4,7 +4,7 @@
 
 `:vidoc 34cda96f-d77c-46a5-ac61-832bf4bca70c.mp4`
 
-https://github.com/bubblegumsoldier/vidoc/assets/3788628/84d95d1f-3b24-4a45-b96f-93c62ad646f0
+https://vidoc.s3.eu-central-1.amazonaws.com/cb05bfd5-b739-474f-aae1-afa8427b0310.mp4
 
 
 ## Vision Statement
