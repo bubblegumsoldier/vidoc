@@ -4,6 +4,9 @@
 
 `:vidoc 34cda96f-d77c-46a5-ac61-832bf4bca70c.mp4`
 
+https://github.com/bubblegumsoldier/vidoc/assets/3788628/84d95d1f-3b24-4a45-b96f-93c62ad646f0
+
+
 ## Vision Statement
 
 In modern software development, clear and comprehensive documentation is key. ViDoc is a VS Code extension that aims to revolutionize how documentation is done by incorporating audio-visual elements directly into your code. The extension enables users to record their screen, providing real-time context and commentary on their actions. The result? Documentation that feels like a pair-programming session.
