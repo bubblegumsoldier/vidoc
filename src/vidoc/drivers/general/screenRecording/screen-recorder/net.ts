@@ -26,7 +26,7 @@ export class HttpRequest {
 
     try {
       return await this.rawRequest(client, opts, payload, responseHandler, binary);
-    } catch (e) {
+    } catch (e: any) {
       if (typeof e === 'string') {
         try {
           e = JSON.parse(e);

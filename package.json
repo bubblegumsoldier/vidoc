@@ -3,11 +3,19 @@
   "displayName": "vidoc",
   "description": "vidoc",
   "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/bubblegumsoldier/vidoc"
+  },
+  "icon": "vidoc.png",
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
+  ],
+  "files": [
+    "dist/**",
+    "bin/**"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
@@ -35,7 +43,7 @@
     "vscode:prepublish": "yarn run package",
     "compile": "webpack",
     "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "package": "webpack --mode production --devtool hidden-source-map & cp -r ./node_modules/@arcsine/win-info/bin ./dist",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
@@ -62,6 +70,7 @@
     "@arcsine/win-info": "^0.2.13",
     "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.2",
+    "@types/yauzl": "^2.10.0",
     "lodash": "^4.17.21",
     "record-screen": "^3.19.0",
     "reflect-metadata": "^0.1.13",
