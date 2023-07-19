@@ -3,7 +3,9 @@
 ![ViDoc](https://github.com/bubblegumsoldier/vidoc/raw/main/vidoc.png "ViDoc")
 
 :vidoc a90a4f29-23c2-4df7-bf2b-0b519793a887.mp4
-https://github.com/bubblegumsoldier/vidoc/blob/main/.vidoc/a90a4f29-23c2-4df7-bf2b-0b519793a887.mp4
+
+https://github.com/bubblegumsoldier/vidoc/assets/3788628/1fb5ca78-c55e-4aaa-884d-55bce81c6621
+
 
 ## Vision Statement
 
