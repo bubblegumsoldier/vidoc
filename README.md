@@ -2,6 +2,10 @@
 
 ![ViDoc](https://github.com/bubblegumsoldier/vidoc/raw/main/vidoc.png "ViDoc")
 
+
+:vidoc cb05bfd5-b739-474f-aae1-afa8427b0310.mp4
+https://github.com/bubblegumsoldier/vidoc/.vidoc/cb05bfd5-b739-474f-aae1-afa8427b0310.mp4
+
 ## Vision Statement
 
 In modern software development, clear and comprehensive documentation is key. ViDoc is a VS Code extension that aims to revolutionize how documentation is done by incorporating audio-visual elements directly into your code. The extension enables users to record their screen, providing real-time context and commentary on their actions. The result? Documentation that feels like a pair-programming session.
@@ -16,11 +20,23 @@ ViDoc aims to promote collaboration, enhance code comprehension, and simplify th
 
 Using ViDoc is as easy as 1-2-3:
 
-1. **Install the extension** - Find ViDoc in the VS Code extension marketplace and install it.
-2. **Start Recording** - Once installed, you'll find a "Start Recording" button at the bottom right of your VS Code interface. Click on this button, select your preferred microphone, and the recording will begin immediately.
-3. **Document your code** - Your cursor position will mark the start of the recording, and a comment will be inserted that contains a link to the generated mp4 file. This file is saved centrally and referenced in the comment for quick viewing.
+1. **Install the ffmpeg globally** - Please [install FFMPEG](https://ffmpeg.org/download.html) and make sure its on your path.
+2. **Install the extension** - Find ViDoc in the VS Code extension marketplace and install it.
+3. **Start Recording** - Once installed, you'll find a "Start Recording" button at the bottom right of your VS Code interface. Click on this button, select your preferred microphone, and the recording will begin immediately.
+
+| :exclamation:  At the moment you are supposed to commit the generated files and comments!   |
+|-----------------------------------------|
+
 
 Each recording comment comes with a hover tooltip, enabling anyone with the ViDoc extension to instantly preview your video documentation.
+
+## Next milestones
+
+1. We want to fully support Mac
+2. Release the vscode extension on the Extension Marketplace
+3. Create an automated release pipeline for new versions
+4. Refactor `vidoc/drivers/generate/screenRecording`
+5. Introduce different file storage mechanisms like AWS.
 
 ## Contribution Guidelines
 
