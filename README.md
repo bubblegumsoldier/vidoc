@@ -2,10 +2,7 @@
 
 ![ViDoc](https://github.com/bubblegumsoldier/vidoc/raw/main/vidoc.png "ViDoc")
 
-:vidoc a90a4f29-23c2-4df7-bf2b-0b519793a887.mp4
-
-https://github.com/bubblegumsoldier/vidoc/assets/3788628/1fb5ca78-c55e-4aaa-884d-55bce81c6621
-
+`:vidoc 34cda96f-d77c-46a5-ac61-832bf4bca70c.mp4`
 
 ## Vision Statement
 
