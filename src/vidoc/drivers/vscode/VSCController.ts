@@ -182,7 +182,7 @@ export class VSCController implements EditorController {
       async () => {
         this.notify("Stopping recording");
         const output = await this.screenRecorder.stopRecording();
-        this.notify(`Recording saved under ${output}`);
+        this.notify(`Recording saved under ${output.relativeFilePath}`);
         this.stopIndicationOfRecording();
         this.updateDecorations();
       }

@@ -12,16 +12,16 @@ export class FFmpegUtil {
       threads: 4,
     },
     audio: {
-      'b:a': '384k',
-      'c:a': 'libmp3lame',
+      'b:a': '127k',
+      'c:a': 'aac',
       ac: 1,
       //      vbr: 3
     },
     video: {
       preset: 'ultrafast',
-      crf: 10,
-      pix_fmt: 'yuvj444p',
-      'c:v': 'libx264',
+      crf: 23,
+      // pix_fmt: 'yuvj444p',
+      'c:v': 'h264',
       y: '',
     }
   };
