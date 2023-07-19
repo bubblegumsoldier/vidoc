@@ -43,6 +43,9 @@ Each recording comment comes with a hover tooltip, enabling anyone with the ViDo
 
 `:vidoc 55032cb8-c95a-4048-b1b9-8db61c4a9fb5.mp4`
 
+https://github.com/bubblegumsoldier/vidoc/assets/3788628/3233b0f5-a669-4b6f-87f7-c12a47572132
+
+
 We welcome contributions from the open-source community. To contribute:
 
 1. Fork this repository
