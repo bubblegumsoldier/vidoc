@@ -10,12 +10,7 @@ ViDoc aims to promote collaboration, enhance code comprehension, and simplify th
 
 ## Limitations
 
-* At the moment this extension is w
-  ```
-
-  ```
-
-  indows-only, Mac is not (yet) supported
+* At the moment this extension is windows-only, Mac is not (yet) supported
 
 ## How to Use ViDoc
 
