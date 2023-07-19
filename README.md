@@ -38,6 +38,8 @@ Each recording comment comes with a hover tooltip, enabling anyone with the ViDo
 
 ## Contribution Guidelines
 
+`:vidoc 55032cb8-c95a-4048-b1b9-8db61c4a9fb5.mp4`
+
 We welcome contributions from the open-source community. To contribute:
 
 1. Fork this repository
