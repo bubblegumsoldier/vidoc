@@ -22,31 +22,42 @@ export class RSScreenRecorder implements ScreenRecorder {
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
-    const outputFile = this.fileController.getAbsolutePath(vidoc.tmpVideoFilePath);
+    const outputFile = this.fileController.getAbsolutePath(
+      vidoc.tmpVideoFilePath
+    );
     await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
-      const pathToFFmpegBinary = await this.fileController.getBinPath(process.platform === 'win32' ? 'ffmpeg-win32.exe' : 'ffmpeg-darwin');
-      console.log({pathToFFmpegBinary})
+      let pathToFFmpegBinary: string | undefined =
+        await this.fileController.getBinPath(
+          process.platform === "win32" ? "ffmpeg-win32.exe" : "ffmpeg-darwin"
+        );
+      if (!this.fileController.existsSync(pathToFFmpegBinary)) {
+        pathToFFmpegBinary = undefined; // it will be looked for on the PATH (this will be necessary for linux)
+      }
+      console.log({ pathToFFmpegBinary });
       const opts = await FFmpegUtil.findFFmpegBinIfMissing({
         ffmpeg: {
           binary: pathToFFmpegBinary,
-        }
+        },
       });
-      const audioDevice = await this.prompter.getAnswer('Select audio device', await OSUtil.getWinAudioDevices(opts.ffmpeg.binary));
-      if(!audioDevice) {
-        throw Error('Audio device needs to be selected first!');
+      const audioDevice = await this.prompter.getAnswer(
+        "Select audio device",
+        await OSUtil.getWinAudioDevices(opts.ffmpeg.binary)
+      );
+      if (!audioDevice) {
+        throw Error("Audio device needs to be selected first!");
       }
-      console.log({audioDevice});
+      console.log({ audioDevice });
       const { finish, stop } = await Recorder.recordActiveWindow({
         file: outputFile,
         fps: 10,
         audio: true,
-        audioDevice: audioDevice
+        audioDevice: audioDevice,
       });
       this.finishMethod = finish;
       this.stopMethod = stop;
       this.currentRecordingVidoc = vidoc;
-    } catch(e) {
+    } catch (e) {
       console.error(e);
       throw e;
     }
