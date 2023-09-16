@@ -78,7 +78,7 @@ const FILE_SUFFIX_ENDING_MAPPING: FileEndingToStringCallback[] = [
   },
   {
     allowedFileEndings: ["json"],
-    callback: (text: string, vidoc: Vidoc, lineContent: string) => `,{".vidoc_comment": "${text}"}`,
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `".vidoc_comment": "${text}"`,
   }
 ];
 
