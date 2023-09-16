@@ -18,6 +18,8 @@ import { VSCHoverProvider } from "./VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
 import { Notificator } from "../../interfaces/Notificator";
 import { VideoOpener } from "../../interfaces/VideoOpener";
+import { setExtensionPath, getExtensionPath } from './global';
+import path = require("path");
 
 @singleton()
 export class VSCController implements EditorController {
@@ -147,6 +149,9 @@ export class VSCController implements EditorController {
   }
 
   public activate(context: vscode.ExtensionContext): void {
+    const extensionPath = path.join(context.extensionPath);
+    setExtensionPath(extensionPath);  // Store the path for use elsewhere
+
     /**
      * READ CONFIG
      */

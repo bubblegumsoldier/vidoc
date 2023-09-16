@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 import { relative } from "node:path/win32";
+import { getExtensionPath } from "./global";
 
 @injectable()
 export class VSCFileController implements FileController {
@@ -80,5 +81,9 @@ export class VSCFileController implements FileController {
       this.getFileUri(sourceFilePath, relative),
       this.getFileUri(targetFilePath, relative)
     );
+  }
+
+  async getBinPath(binName: string): Promise<string> {
+    return path.join(getExtensionPath(), 'dist', 'bin', binName);
   }
 }

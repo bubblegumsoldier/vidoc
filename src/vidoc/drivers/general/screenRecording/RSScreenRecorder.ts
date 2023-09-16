@@ -25,8 +25,13 @@ export class RSScreenRecorder implements ScreenRecorder {
     const outputFile = this.fileController.getAbsolutePath(vidoc.tmpVideoFilePath);
     await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
-      
-      const opts = await FFmpegUtil.findFFmpegBinIfMissing({});
+      const pathToFFmpegBinary = await this.fileController.getBinPath(process.platform === 'win32' ? 'ffmpeg-win32.exe' : 'ffmpeg-darwin');
+      console.log({pathToFFmpegBinary})
+      const opts = await FFmpegUtil.findFFmpegBinIfMissing({
+        ffmpeg: {
+          binary: pathToFFmpegBinary,
+        }
+      });
       const audioDevice = await this.prompter.getAnswer('Select audio device', await OSUtil.getWinAudioDevices(opts.ffmpeg.binary));
       if(!audioDevice) {
         throw Error('Audio device needs to be selected first!');

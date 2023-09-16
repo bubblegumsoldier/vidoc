@@ -21,6 +21,7 @@ export class OSUtil {
         return p;
       }
     }
+    
     throw new Error(`Cannot find ${name} on path`);
   }
 

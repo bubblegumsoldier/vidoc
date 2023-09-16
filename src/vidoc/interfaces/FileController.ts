@@ -9,4 +9,5 @@ export interface FileController {
     moveFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void>;
     deleteFile(filePath: string, relative: boolean): Promise<void>;
     generateTmpFilePath(id: string): Promise<string>;
+    getBinPath(binName: string): Promise<string>;
 }

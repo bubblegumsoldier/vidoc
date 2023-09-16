@@ -16,7 +16,7 @@
 	  {
 		"label": "copyBinaries",
 		"type": "shell",
-		"command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist",
+		"command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./bin/* ./dist/bin",
 		"options": {
 		  "shell": {
 			"executable": "C:\\Program Files\\Git\\bin\\bash.exe",
