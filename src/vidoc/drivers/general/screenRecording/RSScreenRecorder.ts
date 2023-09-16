@@ -7,6 +7,7 @@ import { Vidoc } from "../../../model/Vidoc";
 import { Prompter } from "../../../interfaces/Prompter";
 import { OSUtil } from "./screen-recorder/os";
 import { FFmpegUtil } from "./screen-recorder/ffmpeg";
+import { Notificator } from "../../../interfaces/Notificator";
 
 const STOP_DELAY = 1000; // ms
 
@@ -18,7 +19,8 @@ export class RSScreenRecorder implements ScreenRecorder {
 
   constructor(
     @inject("FileController") private fileController: FileController,
-    @inject("Prompter") private prompter: Prompter
+    @inject("Prompter") private prompter: Prompter,
+    @inject("Notificator") private notificator: Notificator,
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
@@ -32,6 +34,7 @@ export class RSScreenRecorder implements ScreenRecorder {
           process.platform === "win32" ? "ffmpeg-win32.exe" : "ffmpeg-darwin"
         );
       if (!this.fileController.existsSync(pathToFFmpegBinary)) {
+        this.notificator.warn("We didn't find an ffmpeg for your system. We will look on the PATH for it.");
         pathToFFmpegBinary = undefined; // it will be looked for on the PATH (this will be necessary for linux)
       }
       console.log({ pathToFFmpegBinary });
