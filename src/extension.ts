@@ -28,6 +28,8 @@ import { DefaultVidocPostprocessor } from "./vidoc/drivers/general/DefaultVidocP
 import { FileUploadPostprocessor } from "./vidoc/drivers/general/file-upload/FileUploadPostprocessor";
 import { TmpToFilePostprocessor } from "./vidoc/drivers/general/file-upload/TmpToFilePostprocessor";
 import { AWSRemoteVideoUploader } from "./vidoc/drivers/general/file-upload/AWSRemoteVideoUploader";
+import { Notificator } from "./vidoc/interfaces/Notificator";
+import { VSCNotificator } from "./vidoc/drivers/vscode/VSCNotificator";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -57,6 +59,9 @@ container.register<VidocIdGenerator>("VidocIdGenerator", {
 });
 container.register<Prompter>("Prompter", {
   useClass: VSCPrompter,
+});
+container.register<Notificator>("Notificator", {
+  useClass: VSCNotificator,
 });
 container.register<VSCHoverProvider>("VSCHoverProvider", {
   useClass: VSCHoverProvider,

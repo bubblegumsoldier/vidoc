@@ -10,7 +10,7 @@ import { FileController } from "../../../interfaces/FileController";
 export class AWSRemoteVideoUploader implements RemoteVideoUploader {
   constructor(
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
-    @inject("FileController") private fileController: FileController,
+    @inject("FileController") private fileController: FileController
   ) {}
 
   async uploadVideo(vidoc: Vidoc, uploadInformation: any): Promise<string> {
@@ -20,22 +20,31 @@ export class AWSRemoteVideoUploader implements RemoteVideoUploader {
       credentials: {
         accessKeyId: uploadInformationAWSS3.accessKeyId,
         secretAccessKey: uploadInformationAWSS3.secretAccessKey,
-      }
+      },
     });
     const suffix = (await this.configRetriever.getConfig()).recordingOptions
       .fileFormat;
-    const fileContent = Buffer.from(await this.fileController.readFileContentBinary(vidoc.tmpVideoFilePath, true));
+    const fileContent = Buffer.from(
+      await this.fileController.readFileContentBinary(
+        vidoc.tmpVideoFilePath,
+        true
+      )
+    );
 
-    await client
-      .putObject({
-        Bucket: uploadInformationAWSS3.bucketName,
-        Key: vidoc.id,
-        ContentType: suffix,
-        Body: fileContent,
-      })
-      .promise();
+    try {
+      await client
+        .putObject({
+          Bucket: uploadInformationAWSS3.bucketName,
+          Key: vidoc.id,
+          ContentType: suffix,
+          Body: fileContent,
+        })
+        .promise();
 
       const url = `https://${uploadInformationAWSS3.bucketName}.s3.${uploadInformationAWSS3.region}.amazonaws.com/${vidoc.id}`;
       return url;
+    } finally {
+      await this.fileController.deleteFile(vidoc.tmpVideoFilePath, true);
+    }
   }
 }

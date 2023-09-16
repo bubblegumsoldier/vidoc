@@ -16,6 +16,7 @@ import { OSUtil } from "../general/screenRecording/screen-recorder/os";
 import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
 import { VSCHoverProvider } from "./VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
+import { Notificator } from "../../interfaces/Notificator";
 
 @singleton()
 export class VSCController implements EditorController {
@@ -31,6 +32,7 @@ export class VSCController implements EditorController {
     @inject("VidocFactory") private vidocFactory: VidocFactory,
     @inject("EditorInteractor") private editorInteractor: EditorInteractor,
     @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider,
+    @inject("Notificator") private notificator: Notificator,
     @inject("DefaultVidocPostprocessor")
     private vidocPostprocessor: DefaultVidocPostprocessor
   ) {}
@@ -75,15 +77,11 @@ export class VSCController implements EditorController {
     };
   }
 
-  notify(s: string): void {
-    vscode.window.showInformationMessage(s);
-  }
-
   startIndicationOfRecording(): void {
     if (!this.statusBarItem) {
       return;
     }
-    this.notify("Starting recording...");
+    this.notificator.info("Starting recording...");
     this.statusBarItem.text = "Recording in progres... Click to Stop";
     this.statusBarItem.command = "vidoc.stopRecording";
     this.statusBarItem.color = "red";
@@ -94,7 +92,7 @@ export class VSCController implements EditorController {
     if (!this.statusBarItem) {
       return;
     }
-    this.notify("Saving recording...");
+    this.notificator.info("Saving recording...");
     this.statusBarItem.text = "Saving / Uploading Recording...";
     this.statusBarItem.command = undefined;
     this.statusBarItem.color = "yellow";
@@ -192,7 +190,7 @@ export class VSCController implements EditorController {
     let stopRecording = vscode.commands.registerTextEditorCommand(
       "vidoc.stopRecording",
       async () => {
-        this.notify("Stopping recording");
+        this.notificator.info("Stopping recording");
         this.indicateRecordingSavingOrUploading();
         try {
           const output = await this.screenRecorder.stopRecording();
@@ -200,7 +198,7 @@ export class VSCController implements EditorController {
           await this.vidocPostprocessor.postprocessVidoc(output);
           console.log("Postprocessed recording");
           const anyOutput = <any>output;
-          this.notify(
+          this.notificator.info(
             `Recording saved at ${
               anyOutput.relativeFilePath || anyOutput.remoteVideoUrl
             }`
@@ -220,7 +218,7 @@ export class VSCController implements EditorController {
       async () => {
         const opts = await FFmpegUtil.findFFmpegBinIfMissing({});
         const devices = await OSUtil.getWinDevices(opts.ffmpeg.binary, true);
-        this.notify(JSON.stringify(devices));
+        this.notificator.info(JSON.stringify(devices));
       }
     );
 
