@@ -88,35 +88,39 @@ export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
     }
 
     const promises = foundIds.map(async ({ id, start, end }) => {
-      return {
-        vidoc: await this.vidocFactory.initVidocObject(id),
-        range: {
-          from: {
-            lineIndex: lineNumber,
-            charIndex: start,
-            lineContent,
+      try {
+        return {
+          vidoc: await this.vidocFactory.initVidocObject(id),
+          range: {
+            from: {
+              lineIndex: lineNumber,
+              charIndex: start,
+              lineContent,
+            },
+            to: {
+              lineIndex: lineNumber,
+              charIndex: end,
+              lineContent,
+            },
+            text: lineContent,
           },
-          to: {
-            lineIndex: lineNumber,
-            charIndex: end,
-            lineContent,
-          },
-          text: lineContent,
-        },
-      };
+        };
+      } catch (e) {
+        return undefined;
+      }
     });
 
-    return await Promise.all(promises);
+    const allResults = await Promise.all(promises);
+    return <PositionedVidocInstance[]>allResults.filter((p) => p !== undefined);
   }
 
-  async parseFileForVidoc(fullContent: string): Promise<PositionedVidocInstance[]> {
+  async parseFileForVidoc(
+    fullContent: string
+  ): Promise<PositionedVidocInstance[]> {
     const lines = fullContent.split("\n");
     let vidocs: PositionedVidocInstance[] = [];
     for (let i = 0; i < lines.length; ++i) {
-      const matches = await this.parseLineForVidoc(
-        lines[i],
-        i
-      );
+      const matches = await this.parseLineForVidoc(lines[i], i);
       vidocs = [...vidocs, ...matches];
     }
     return vidocs;

@@ -20,7 +20,7 @@ export class RSScreenRecorder implements ScreenRecorder {
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
-    const outputFile = vidoc.tmpVideoFilePath;
+    const outputFile = this.fileController.getAbsolutePath(vidoc.tmpVideoFilePath);
     await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
       

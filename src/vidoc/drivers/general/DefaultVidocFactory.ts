@@ -68,11 +68,11 @@ export class DefaultVidocFactory implements VidocFactory {
     return vidoc;
   }
 
-  private getRelativeFilePathMetadata(config: Config, id: string) {
+  private getRelativeFilePathMetadata(config: Config, id: string): string {
     return `${config.savingStrategy.folder}/${id.split(".")[0]}.json`;
   }
 
-  private getRelativeFilePathVideo(config: Config, id: string) {
+  private getRelativeFilePathVideo(config: Config, id: string): string {
     return `${config.savingStrategy.folder}/${id}`;
   }
 
@@ -81,10 +81,14 @@ export class DefaultVidocFactory implements VidocFactory {
     const config = await this.configRetriever.getConfig();
 
     // Then we will create the vidoc object with values of the file
-    const vidoc: Vidoc = JSON.parse(
-      await this.fileController.readFileContent(id, true)
-    );
-    return vidoc;
+    try {
+      const vidoc: Vidoc = JSON.parse(
+        await this.fileController.readFileContent(this.getRelativeFilePathMetadata(config, id), true)
+      );
+      return vidoc;
+    } catch(e) {
+      throw Error(`Could not parse vidoc file ${id}`);
+    }
   }
 
   async updateVidocMetadataFile(vidoc: Vidoc): Promise<void> {

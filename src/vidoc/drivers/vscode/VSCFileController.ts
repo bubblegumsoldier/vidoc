@@ -3,6 +3,7 @@ import { FileController } from "../../interfaces/FileController";
 import * as vscode from "vscode";
 import * as path from "path";
 import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
+import { relative } from "node:path/win32";
 
 @injectable()
 export class VSCFileController implements FileController {
@@ -69,9 +70,9 @@ export class VSCFileController implements FileController {
 
   async generateTmpFilePath(id: string): Promise<string> {
     const absoluteTmpFolder = path.join(this.getWorkspaceRoot(), ".vidoc", "tmp");
-    const relativeTmpFolder = path.join(".vidoc", "tmp");
+    const relativeTmpFolder = ".vidoc/tmp";
     await this.createDirIfNotExists(absoluteTmpFolder);
-    return path.join(relativeTmpFolder, id);
+    return `${relativeTmpFolder}/${id}`;
   }
 
   async moveFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void> {
