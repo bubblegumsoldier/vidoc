@@ -29,16 +29,56 @@ const FILE_SUFFIX_ENDING_MAPPING: FileEndingToStringCallback[] = [
   {
     allowedFileEndings: ["js", "ts"],
     callback: (text: string, vidoc: Vidoc, lineContent: string) => {
-      return `// ${text}`;
+      return `/* ${text} */`;
     },
   },
   {
     allowedFileEndings: ["md"],
     callback: (text: string, vidoc: Vidoc, lineContent: string) => {
       const anyVidoc = vidoc as any;
-      const urlOrPath = anyVidoc.relativeFilePathToVideo || anyVidoc.remoteVideoUrl;
+      const urlOrPath =
+        anyVidoc.relativeFilePathToVideo || anyVidoc.remoteVideoUrl;
       return `![${text}](${urlOrPath})`;
     },
+  },
+  {
+    allowedFileEndings: ["c", "cpp", "h"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) =>
+      `/* ${text} */`,
+  },
+  {
+    allowedFileEndings: ["java"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) =>
+      `/* ${text} */`,
+  },
+  {
+    allowedFileEndings: ["css"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) =>
+      `/* ${text} */`,
+  },
+  {
+    allowedFileEndings: ["sh", "bash"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `# ${text}`,
+  },
+  {
+    allowedFileEndings: ["rb"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `# ${text}`,
+  },
+  {
+    allowedFileEndings: ["go"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `// ${text}`,
+  },
+  {
+    allowedFileEndings: ["rs"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `// ${text}`,
+  },
+  {
+    allowedFileEndings: ["yml", "yaml"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `# ${text}`,
+  },
+  {
+    allowedFileEndings: ["json"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => `,{".vidoc_comment": "${text}"}`,
   }
 ];
 
