@@ -13,7 +13,7 @@ export class FFmpegUtil {
     },
     audio: {
       'b:a': '127k',
-      'c:a': 'aac',
+      'c:a': 'libmp3lame',
       ac: 1,
       //      vbr: 3
     },

@@ -81,12 +81,11 @@ export class VSCHoverProvider {
         const url = castedVidoc.remoteVideoUrl;
         const commandArgs = encodeURIComponent(JSON.stringify([castedVidoc.id]));
         const markdown = new vscode.MarkdownString(
-          `
-          [Click here for VsCode Preview](command:extension.openVideo?${commandArgs})
-          
-          [Click here for direct link](${url})
+          `[Click here for VsCode Preview](command:vidoc.openVideo?${commandArgs})\n\n[Click here for direct link](${url})
           `
         );
+        markdown.isTrusted = true;
+        markdown.supportHtml = true;
         return new vscode.Hover(
           markdown,
           new vscode.Range(
