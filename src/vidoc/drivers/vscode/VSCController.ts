@@ -17,6 +17,7 @@ import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
 import { VSCHoverProvider } from "./VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
 import { Notificator } from "../../interfaces/Notificator";
+import { VideoOpener } from "../../interfaces/VideoOpener";
 
 @singleton()
 export class VSCController implements EditorController {
@@ -33,6 +34,7 @@ export class VSCController implements EditorController {
     @inject("EditorInteractor") private editorInteractor: EditorInteractor,
     @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider,
     @inject("Notificator") private notificator: Notificator,
+    @inject("VideoOpener") private videoOpener: VideoOpener,
     @inject("DefaultVidocPostprocessor")
     private vidocPostprocessor: DefaultVidocPostprocessor
   ) {}
@@ -210,6 +212,14 @@ export class VSCController implements EditorController {
       }
     );
 
+    let openVideo = vscode.commands.registerCommand(
+      'vidoc.openVideo',
+      async (vidocId: string) => {
+        this.videoOpener.openVideoById(vidocId);
+      }
+    );
+  
+
     /**
      * WIN-INFO COMMAND
      */
@@ -245,6 +255,7 @@ export class VSCController implements EditorController {
     context.subscriptions.push(stopRecording);
     context.subscriptions.push(winInfoCmd);
     context.subscriptions.push(updateDecorations);
+    context.subscriptions.push(openVideo);
     this.registerRecalculationOfHighlightings(context);
 
     this.initStatusBarItem();

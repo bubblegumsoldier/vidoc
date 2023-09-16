@@ -7,13 +7,13 @@ const REGEX = /:vidoc\s([a-zA-Z0-9-]+\.[a-zA-Z0-9]+)/g;
 
 interface FileEndingToStringCallback {
   allowedFileEndings: string[];
-  callback: (text: string, lineContent: string) => string;
+  callback: (text: string, vidoc: Vidoc, lineContent: string) => string;
 }
 
 const FILE_SUFFIX_ENDING_MAPPING: FileEndingToStringCallback[] = [
   {
     allowedFileEndings: ["py", "pyx"],
-    callback: (text: string, lineContent: string) => {
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => {
       if (text.indexOf("#") >= 0) {
         return text;
       }
@@ -22,16 +22,24 @@ const FILE_SUFFIX_ENDING_MAPPING: FileEndingToStringCallback[] = [
   },
   {
     allowedFileEndings: ["html", "xml"],
-    callback: (text: string, lineContent: string) => {
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => {
       return `<!-- ${text} -->`;
     },
   },
   {
     allowedFileEndings: ["js", "ts"],
-    callback: (text: string, lineContent: string) => {
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => {
       return `// ${text}`;
     },
   },
+  {
+    allowedFileEndings: ["md"],
+    callback: (text: string, vidoc: Vidoc, lineContent: string) => {
+      const anyVidoc = vidoc as any;
+      const urlOrPath = anyVidoc.relativeFilePathToVideo || anyVidoc.remoteVideoUrl;
+      return `![${text}](${urlOrPath})`;
+    },
+  }
 ];
 
 @injectable()
@@ -62,6 +70,7 @@ export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
       }
       text = fileType.callback(
         text,
+        vidoc,
         vidoc.metadata.focusInformation?.cursorPosition.lineContent || ""
       );
       break;

@@ -12,6 +12,7 @@ import { FocusInformation } from "../../model/FocusInformation";
 import { AuthorInformationRetriever } from "../../interfaces/AuthorInformationRetriever";
 import { VidocIdGenerator } from "../../interfaces/VidocIdGenerator";
 import { Config } from "../../model/Config";
+import { FileUploadPathGuesser } from "../../interfaces/FileUploadPathGuesser";
 
 @injectable()
 export class DefaultVidocFactory implements VidocFactory {
@@ -19,6 +20,8 @@ export class DefaultVidocFactory implements VidocFactory {
     @inject("FileController") private fileController: FileController,
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
     @inject("VidocIdGenerator") private vidocIdGenerator: VidocIdGenerator,
+    @inject("FileUploadPathGuesser")
+    private fileUploadPathGuesser: FileUploadPathGuesser,
     @inject("AuthorInformationRetriever")
     private authorInformationRetriever: AuthorInformationRetriever
   ) {}
@@ -58,7 +61,9 @@ export class DefaultVidocFactory implements VidocFactory {
     } else if (config.savingStrategy.type === "remote") {
       const remoteVidoc: LocalMetaDataRemoteVideoVidoc = {
         ...vidoc,
-        remoteVideoUrl: "", // will be generated in postprocessor
+        remoteVideoUrl: await this.fileUploadPathGuesser.guessPathForFileUpload(
+          vidoc
+        ), // will be generated in postprocessor
       };
       vidoc = remoteVidoc;
     }
@@ -83,10 +88,13 @@ export class DefaultVidocFactory implements VidocFactory {
     // Then we will create the vidoc object with values of the file
     try {
       const vidoc: Vidoc = JSON.parse(
-        await this.fileController.readFileContent(this.getRelativeFilePathMetadata(config, id), true)
+        await this.fileController.readFileContent(
+          this.getRelativeFilePathMetadata(config, id),
+          true
+        )
       );
       return vidoc;
-    } catch(e) {
+    } catch (e) {
       throw Error(`Could not parse vidoc file ${id}`);
     }
   }

@@ -8,6 +8,8 @@ import { Prompter } from "../../../interfaces/Prompter";
 import { OSUtil } from "./screen-recorder/os";
 import { FFmpegUtil } from "./screen-recorder/ffmpeg";
 
+const STOP_DELAY = 1000; // ms
+
 @singleton()
 export class RSScreenRecorder implements ScreenRecorder {
   private currentRecordingVidoc?: Vidoc;
@@ -49,6 +51,9 @@ export class RSScreenRecorder implements ScreenRecorder {
     if (!this.finishMethod) {
       throw Error("no finish method");
     }
+
+    // Wait a bit more because ffmpeg tends to cut of the last few frames.
+    await new Promise((resolve) => setTimeout(resolve, STOP_DELAY));
 
     this.stopMethod();
     await this.finishMethod;

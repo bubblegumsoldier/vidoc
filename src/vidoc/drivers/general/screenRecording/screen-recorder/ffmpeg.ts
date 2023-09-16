@@ -20,7 +20,7 @@ export class FFmpegUtil {
     video: {
       preset: 'ultrafast',
       crf: 23,
-      // pix_fmt: 'yuvj444p',
+      pix_fmt: 'yuv420p',
       'c:v': 'h264',
       y: '',
     }

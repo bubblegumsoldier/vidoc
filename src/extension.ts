@@ -30,6 +30,10 @@ import { TmpToFilePostprocessor } from "./vidoc/drivers/general/file-upload/TmpT
 import { AWSRemoteVideoUploader } from "./vidoc/drivers/general/file-upload/AWSRemoteVideoUploader";
 import { Notificator } from "./vidoc/interfaces/Notificator";
 import { VSCNotificator } from "./vidoc/drivers/vscode/VSCNotificator";
+import { FileUploadPathGuesser } from "./vidoc/interfaces/FileUploadPathGuesser";
+import { DefaultFileUploadPathGuesser } from "./vidoc/drivers/general/file-upload/DefaultFileUploadPathGuesser";
+import { VideoOpener } from "./vidoc/interfaces/VideoOpener";
+import { VSCVideoOpener } from "./vidoc/drivers/vscode/VSCVideoOpener";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -77,6 +81,12 @@ container.register<TmpToFilePostprocessor>("TmpToFilePostprocessor", {
 });
 container.register<AWSRemoteVideoUploader>("AWSRemoteVideoUploader", {
   useClass: AWSRemoteVideoUploader,
+});
+container.register<FileUploadPathGuesser>("FileUploadPathGuesser", {
+  useClass: DefaultFileUploadPathGuesser,
+});
+container.register<VideoOpener>("VideoOpener", {
+  useClass: VSCVideoOpener,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

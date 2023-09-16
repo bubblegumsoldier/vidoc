@@ -49,13 +49,15 @@ export class VSCHoverProvider {
       const vidoc: any = hoveredHighlightings[0].vidoc;
       if (vidoc.relativeFilePathToVideo) {
         const castedVidoc = <LocalMetadataLocalVideoVidoc>vidoc;
-        const pathFormatted = castedVidoc.relativeFilePathToVideo.replace(
-          "\\",
-          "/"
-        );
+        const pathFormatted = this.fileController.getAbsolutePath(castedVidoc.relativeFilePathToVideo).replace('\\', '/');
         console.log(pathFormatted);
+        const commandArgs = encodeURIComponent(JSON.stringify([castedVidoc.id]));
         const markdown = new vscode.MarkdownString(
-          `[Click here](${pathFormatted})`
+          `
+          [Click here for VsCode Preview](command:extension.openVideo?${commandArgs})
+          
+          [Click here for direct link](${pathFormatted})
+          `
         );
         markdown.baseUri = vscode.Uri.file(
           this.fileController.getAbsolutePath("./")
@@ -77,7 +79,14 @@ export class VSCHoverProvider {
       } else if (vidoc.remoteVideoUrl) {
         const castedVidoc = <LocalMetaDataRemoteVideoVidoc>vidoc;
         const url = castedVidoc.remoteVideoUrl;
-        const markdown = new vscode.MarkdownString(`[Click here](${url})`);
+        const commandArgs = encodeURIComponent(JSON.stringify([castedVidoc.id]));
+        const markdown = new vscode.MarkdownString(
+          `
+          [Click here for VsCode Preview](command:extension.openVideo?${commandArgs})
+          
+          [Click here for direct link](${url})
+          `
+        );
         return new vscode.Hover(
           markdown,
           new vscode.Range(
