@@ -19,8 +19,8 @@ export class DefaultFileUploadPathGuesser implements FileUploadPathGuesser {
     if(config.savingStrategy.type !== 'remote') {
         throw Error('This service is only for remote saving strategies!');
     }
-    if(config.savingStrategy.aws) {
-        const uploadInformationAWSS3 = <SavingInformationAWSS3>config.savingStrategy.aws;
+    if(config.savingStrategy.s3) {
+        const uploadInformationAWSS3 = <SavingInformationAWSS3>config.savingStrategy.s3;
         return `https://${uploadInformationAWSS3.bucketName}.s3.${uploadInformationAWSS3.region}.amazonaws.com/${vidoc.id}`;
     }
     return "";

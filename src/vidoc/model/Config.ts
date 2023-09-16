@@ -12,7 +12,7 @@ export class SavingStrategyLocal {
 
 export class SavingStrategyRemote {
   type = "remote" as const;
-  aws?: SavingInformationAWSS3;
+  s3?: SavingInformationAWSS3;
   folder: string = ".vidoc";
 }
 

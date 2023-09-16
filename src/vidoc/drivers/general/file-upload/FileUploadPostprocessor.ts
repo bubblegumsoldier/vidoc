@@ -23,9 +23,9 @@ export class FileUploadPostprocessor implements VideoPostprocessor {
     }
     let uploader: RemoteVideoUploader|undefined = undefined;
     let uploadInformation: any = undefined;
-    if(config.savingStrategy.aws) {
+    if(config.savingStrategy.s3) {
       uploader = this.awsUploader;
-      uploadInformation = config.savingStrategy.aws;
+      uploadInformation = config.savingStrategy.s3;
     }
     if(!uploader) {
       throw Error('No uploader found');
