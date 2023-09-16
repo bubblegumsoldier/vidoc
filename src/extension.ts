@@ -24,6 +24,9 @@ import { DefaultVidocIdGenerator } from "./vidoc/drivers/general/config/DeafultV
 import { Prompter } from "./vidoc/interfaces/Prompter";
 import { VSCPrompter } from "./vidoc/drivers/vscode/VSCPrompter";
 import { VSCHoverProvider } from "./vidoc/drivers/vscode/VSCHoverProvider";
+import { DefaultVidocPostprocessor } from "./vidoc/drivers/general/DefaultVidocPostprocessor";
+import { FileUploadPostprocessor } from "./vidoc/drivers/general/file-upload/FileUploadPostprocessor";
+import { TmpToFilePostprocessor } from "./vidoc/drivers/general/file-upload/TmpToFilePostprocessor";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -56,6 +59,15 @@ container.register<Prompter>("Prompter", {
 });
 container.register<VSCHoverProvider>("VSCHoverProvider", {
   useClass: VSCHoverProvider,
+});
+container.register<DefaultVidocPostprocessor>("DefaultVidocPostprocessor", {
+  useClass: DefaultVidocPostprocessor,
+});
+container.register<FileUploadPostprocessor>("FileUploadPostprocessor", {
+  useClass: FileUploadPostprocessor,
+});
+container.register<TmpToFilePostprocessor>("TmpToFilePostprocessor", {
+  useClass: TmpToFilePostprocessor,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

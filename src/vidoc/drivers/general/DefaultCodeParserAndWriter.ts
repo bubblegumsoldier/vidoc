@@ -2,7 +2,6 @@ import { inject, injectable } from "tsyringe";
 import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
 import { PositionedVidocInstance, Vidoc } from "../../model/Vidoc";
 import { VidocFactory } from "../../interfaces/VidocFactory";
-import { FocusInformation } from "../../model/FocusInformation";
 
 const REGEX = /:vidoc\s([a-zA-Z0-9-]+\.[a-zA-Z0-9]+)/g;
 

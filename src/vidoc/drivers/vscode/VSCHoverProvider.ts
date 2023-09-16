@@ -41,8 +41,10 @@ export class VSCHoverProvider {
     );
     if (hoveredHighlightings.length > 0) {
       // Create and return the hover content
+      const vidoc: any = hoveredHighlightings[0].vidoc;
+
       const pathFormatted =
-        hoveredHighlightings[0].vidoc.relativeFilePath.replace("\\", "/");
+        vidoc.relativeFilePath?.replace("\\", "/") || vidoc.remoteVideoUrl;
       console.log(pathFormatted);
       const markdown = new vscode.MarkdownString(
         `[Click here](${pathFormatted})`

@@ -1,6 +1,11 @@
 import { inject, injectable } from "tsyringe";
 import { VidocFactory } from "../../interfaces/VidocFactory";
-import { Vidoc, VidocMetadata } from "../../model/Vidoc";
+import {
+  LocalMetaDataRemoteVideoVidoc,
+  LocalMetadataLocalVideoVidoc,
+  Vidoc,
+  VidocMetadata,
+} from "../../model/Vidoc";
 import { FileController } from "../../interfaces/FileController";
 import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 import { FocusInformation } from "../../model/FocusInformation";
@@ -39,14 +44,10 @@ export class DefaultVidocFactory implements VidocFactory {
     return absoluteFilePathMetadata;
   }
 
-  async initVidocObject(id: string): Promise<Vidoc> {
+  private async getLocalVidoc(
+    id: string
+  ): Promise<LocalMetadataLocalVideoVidoc> {
     const config = await this.configRetriever.getConfig();
-    if (
-      config.savingStrategy.type !== "local" ||
-      config.savingStrategy.location !== "central"
-    ) {
-      throw Error("Only local - central saving strategy supported for now");
-    }
     const relativeFilePath = `${config.savingStrategy.folder}/${id}`;
     const absoluteFilePath =
       this.fileController.getAbsolutePath(relativeFilePath);
@@ -59,19 +60,53 @@ export class DefaultVidocFactory implements VidocFactory {
       /\.[^.]+$/,
       ".json"
     );
-    // {
-    //   focusInformation,
-    //   createdAt: (new Date().toISOString()),
-    //   createdBy: await this.authorInformationRetriever.getAuthorInformation()
-    // }
-    return {
+
+    return <LocalMetadataLocalVideoVidoc>{
       id,
       metadata: await this.parseMetadata(absoluteFilePathMetadata),
+      tmpVideoFilePath: await this.getTmpFilePath(id),
       relativeFilePath,
       relativeFilePathMetadata,
       absoluteFilePath,
       absoluteFilePathMetadata,
     };
+  }
+
+  private async getTmpFilePath(id: string): Promise<string> {
+    return this.fileController.generateTmpFilePath(id);
+  }
+
+  private async getRemoteVidoc(id: string): Promise<Vidoc> {
+    const config = await this.configRetriever.getConfig();
+    const relativeFilePath = `${config.savingStrategy.folder}/${id}`;
+    const absoluteFilePath =
+      this.fileController.getAbsolutePath(relativeFilePath);
+    const relativeFilePathMetadata = relativeFilePath.replace(
+      /\.[^.]+$/,
+      ".json"
+    );
+    const absoluteFilePathMetadata = absoluteFilePath.replace(
+      /\.[^.]+$/,
+      ".json"
+    );
+    return <LocalMetaDataRemoteVideoVidoc>{
+      id,
+      metadata: await this.parseMetadata(absoluteFilePathMetadata),
+      tmpVideoFilePath: await this.getTmpFilePath(id),
+      relativeFilePathMetadata,
+      absoluteFilePathMetadata,
+      remoteVideoUrl: "", // Not yet known, will be assigned in upload postprocessor
+    };
+  }
+
+  async initVidocObject(id: string): Promise<Vidoc> {
+    const config = await this.configRetriever.getConfig();
+    if (config.savingStrategy.type === "local") {
+      return this.getLocalVidoc(id);
+    } else if (config.savingStrategy.type === "remote") {
+      return this.getRemoteVidoc(id);
+    }
+    throw Error('Unknown type');
   }
 
   private async parseMetadata(

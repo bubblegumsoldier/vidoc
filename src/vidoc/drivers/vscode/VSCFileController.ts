@@ -48,4 +48,27 @@ export class VSCFileController implements FileController {
       await vscode.workspace.fs.readFile(this.getFileUri(file, relative))
     );
   }
+  async copyFile(sourceFilePath: string, targetFilePath: string): Promise<void> {
+      await vscode.workspace.fs.copy(
+        this.getFileUri(sourceFilePath, false),
+        this.getFileUri(targetFilePath, false)
+      );
+  }
+
+  async deleteFile(filePath: string): Promise<void> {
+    await vscode.workspace.fs.delete(this.getFileUri(filePath, false));
+  }
+
+  async generateTmpFilePath(id: string): Promise<string> {
+    const tmpFolder = path.join(this.getWorkspaceRoot(), ".vidoc", "tmp");
+    await this.createDirIfNotExists(tmpFolder);
+    return path.join(tmpFolder, `${id}.mp4`);
+  }
+
+  async moveFile(sourceFilePath: string, targetFilePath: string): Promise<void> {
+    await vscode.workspace.fs.rename(
+      this.getFileUri(sourceFilePath, false),
+      this.getFileUri(targetFilePath, false)
+    );
+  }
 }

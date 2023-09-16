@@ -9,11 +9,21 @@ export interface VidocMetadata {
 
 export interface Vidoc {
     id: string;
-    relativeFilePath: string;
-    relativeFilePathMetadata: string;
-    absoluteFilePath: string;
-    absoluteFilePathMetadata: string;
     metadata: VidocMetadata;
+    tmpVideoFilePath: string;
+}
+
+export interface LocalMetadataLocalVideoVidoc extends Vidoc {
+    relativeFilePath: string;
+    absoluteFilePath: string;
+    relativeFilePathMetadata: string;
+    absoluteFilePathMetadata: string;
+}
+
+export interface LocalMetaDataRemoteVideoVidoc extends Vidoc {
+    remoteVideoUrl: string;
+    relativeFilePathMetadata: string;
+    absoluteFilePathMetadata: string;
 }
 
 export interface PositionedVidocInstance {

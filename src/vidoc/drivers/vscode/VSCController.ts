@@ -3,7 +3,6 @@ import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 import { inject, singleton } from "tsyringe";
 import { EditorController } from "../../interfaces/EditorController";
 import { ScreenRecorder } from "../../interfaces/ScreenRecorder";
-import * as winInfo from "@arcsine/win-info";
 import {
   EditorSelection,
   FocusInformation,
@@ -12,11 +11,11 @@ import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { EditorInteractor } from "../../interfaces/EditorInteractor";
 import { PositionedVidocInstance } from "../../model/Vidoc";
-import { checkSelectionOverlap } from "../../utils/range";
 import { FileController } from "../../interfaces/FileController";
 import { OSUtil } from "../general/screenRecording/screen-recorder/os";
 import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
 import { VSCHoverProvider } from "./VSCHoverProvider";
+import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
 
 @singleton()
 export class VSCController implements EditorController {
@@ -31,7 +30,9 @@ export class VSCController implements EditorController {
     private codeParserAndWriter: CodeParserAndWriter,
     @inject("VidocFactory") private vidocFactory: VidocFactory,
     @inject("EditorInteractor") private editorInteractor: EditorInteractor,
-    @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider
+    @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider,
+    @inject("DefaultVidocPostprocessor")
+    private vidocPostprocessor: DefaultVidocPostprocessor
   ) {}
 
   async getCurrentFocusInformation(): Promise<FocusInformation> {
@@ -86,6 +87,17 @@ export class VSCController implements EditorController {
     this.statusBarItem.text = "Recording in progres... Click to Stop";
     this.statusBarItem.command = "vidoc.stopRecording";
     this.statusBarItem.color = "red";
+    this.statusBarItem.show();
+  }
+
+  indicateRecordingSavingOrUploading(): void {
+    if (!this.statusBarItem) {
+      return;
+    }
+    this.notify("Saving recording...");
+    this.statusBarItem.text = "Recording saved or uploaded...";
+    this.statusBarItem.command = undefined;
+    this.statusBarItem.color = "yellow";
     this.statusBarItem.show();
   }
 
@@ -181,8 +193,15 @@ export class VSCController implements EditorController {
       "vidoc.stopRecording",
       async () => {
         this.notify("Stopping recording");
+        this.indicateRecordingSavingOrUploading();
         const output = await this.screenRecorder.stopRecording();
-        this.notify(`Recording saved under ${output.relativeFilePath}`);
+        this.vidocPostprocessor.postprocessVidoc(output);
+        const anyOutput = <any>output;
+        this.notify(
+          `Recording saved at ${
+            anyOutput.relativeFilePath || anyOutput.remoteVideoUrl
+          }`
+        );
         this.stopIndicationOfRecording();
         this.updateDecorations();
       }
