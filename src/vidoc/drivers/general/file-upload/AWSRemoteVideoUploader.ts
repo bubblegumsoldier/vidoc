@@ -17,23 +17,25 @@ export class AWSRemoteVideoUploader implements RemoteVideoUploader {
     const uploadInformationAWSS3 = <SavingInformationAWSS3>uploadInformation;
     const client = new S3({
       region: uploadInformationAWSS3.region,
+      credentials: {
+        accessKeyId: uploadInformationAWSS3.accessKeyId,
+        secretAccessKey: uploadInformationAWSS3.secretAccessKey,
+      }
     });
     const suffix = (await this.configRetriever.getConfig()).recordingOptions
       .fileFormat;
-    const fileName = `${vidoc.id}.${suffix}`;
-    const fileContent = this.fileController.readFileContentBinary(vidoc.tmpVideoFilePath, true);
+    const fileContent = Buffer.from(await this.fileController.readFileContentBinary(vidoc.tmpVideoFilePath, true));
 
     await client
       .putObject({
         Bucket: uploadInformationAWSS3.bucketName,
-        Key: fileName,
+        Key: vidoc.id,
         ContentType: suffix,
         Body: fileContent,
-        ACL: 'public-read',
       })
       .promise();
 
-      const url = `https://${uploadInformationAWSS3.bucketName}.s3.${uploadInformationAWSS3.region}.amazonaws.com/${fileName}`;
+      const url = `https://${uploadInformationAWSS3.bucketName}.s3.${uploadInformationAWSS3.region}.amazonaws.com/${vidoc.id}`;
       return url;
   }
 }

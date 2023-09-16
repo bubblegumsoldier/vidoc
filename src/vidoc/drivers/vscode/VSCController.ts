@@ -194,18 +194,21 @@ export class VSCController implements EditorController {
       async () => {
         this.notify("Stopping recording");
         this.indicateRecordingSavingOrUploading();
-        const output = await this.screenRecorder.stopRecording();
-        console.log({ output });
-        await this.vidocPostprocessor.postprocessVidoc(output);
-        console.log("Postprocessed recording");
-        const anyOutput = <any>output;
-        this.notify(
-          `Recording saved at ${
-            anyOutput.relativeFilePath || anyOutput.remoteVideoUrl
-          }`
-        );
-        this.stopIndicationOfRecording();
-        this.updateDecorations();
+        try {
+          const output = await this.screenRecorder.stopRecording();
+          console.log({ output });
+          await this.vidocPostprocessor.postprocessVidoc(output);
+          console.log("Postprocessed recording");
+          const anyOutput = <any>output;
+          this.notify(
+            `Recording saved at ${
+              anyOutput.relativeFilePath || anyOutput.remoteVideoUrl
+            }`
+          );
+        } finally {
+          this.stopIndicationOfRecording();
+          this.updateDecorations();
+        }
       }
     );
 

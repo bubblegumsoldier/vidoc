@@ -74,10 +74,13 @@ export class GitConfigRetriever implements ConfigRetriever {
       if (line.trim() === "") {
         continue;
       }
-      if (line.indexOf("=") < 0) {
-        console.error(`Invalid line in secrets file: ${line}`);
+      if (line.trim().indexOf("=") < 0) {
+        continue;
       }
-      const [key, value] = line.split("=");
+      if(line.trim().indexOf("#") === 0) {
+        continue;
+      }
+      const [key, value] = line.trim().split("=");
       secrets[key] = value;
     }
     return secrets;
