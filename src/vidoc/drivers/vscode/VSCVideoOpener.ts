@@ -65,6 +65,7 @@ export class VSCVideoOpener implements VideoOpener {
   private async getSourcePath(vidoc: Vidoc): Promise<string> {
     if ((<any>vidoc).relativeFilePathToVideo) {
       const castedVidoc = <LocalMetadataLocalVideoVidoc>vidoc;
+      // Doesnt work currently for some reason
       return `file://${this.fileController.getAbsolutePath(
         castedVidoc.relativeFilePathToVideo
       )}`;

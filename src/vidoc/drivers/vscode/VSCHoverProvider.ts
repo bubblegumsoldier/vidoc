@@ -49,16 +49,15 @@ export class VSCHoverProvider {
       const vidoc: any = hoveredHighlightings[0].vidoc;
       if (vidoc.relativeFilePathToVideo) {
         const castedVidoc = <LocalMetadataLocalVideoVidoc>vidoc;
-        const pathFormatted = this.fileController.getAbsolutePath(castedVidoc.relativeFilePathToVideo).replace('\\', '/');
+        const pathFormatted = castedVidoc.relativeFilePathToVideo.replace('\\', '/');
         console.log(pathFormatted);
         const commandArgs = encodeURIComponent(JSON.stringify([castedVidoc.id]));
         const markdown = new vscode.MarkdownString(
-          `
-          [Click here for VsCode Preview](command:extension.openVideo?${commandArgs})
-          
-          [Click here for direct link](${pathFormatted})
+          `[Click here for video view](${pathFormatted})
           `
         );
+        markdown.isTrusted = true;
+
         markdown.baseUri = vscode.Uri.file(
           this.fileController.getAbsolutePath("./")
         );
