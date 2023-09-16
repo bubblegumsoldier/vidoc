@@ -5,6 +5,7 @@ import { S3 } from "aws-sdk";
 import { SavingInformationAWSS3 } from "../../../model/Config";
 import { ConfigRetriever } from "../../../interfaces/ConfigRetriever";
 import { FileController } from "../../../interfaces/FileController";
+import AWS = require("aws-sdk");
 
 @injectable()
 export class AWSRemoteVideoUploader implements RemoteVideoUploader {
@@ -15,13 +16,25 @@ export class AWSRemoteVideoUploader implements RemoteVideoUploader {
 
   async uploadVideo(vidoc: Vidoc, uploadInformation: any): Promise<string> {
     const uploadInformationAWSS3 = <SavingInformationAWSS3>uploadInformation;
-    const client = new S3({
+
+    const s3Options: S3.ClientConfiguration = {
       region: uploadInformationAWSS3.region,
       credentials: {
         accessKeyId: uploadInformationAWSS3.accessKeyId,
         secretAccessKey: uploadInformationAWSS3.secretAccessKey,
       },
-    });
+    };
+
+    if (uploadInformationAWSS3.endpoint) {
+      s3Options.endpoint = new AWS.Endpoint(uploadInformationAWSS3.endpoint);
+    }
+
+    if (uploadInformationAWSS3.s3ForcePathStyle !== undefined) {
+      s3Options.s3ForcePathStyle = uploadInformationAWSS3.s3ForcePathStyle;
+    }
+
+    const client = new S3(s3Options);
+
     const suffix = (await this.configRetriever.getConfig()).recordingOptions
       .fileFormat;
     const fileContent = Buffer.from(

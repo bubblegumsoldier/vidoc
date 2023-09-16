@@ -21,4 +21,6 @@ export interface SavingInformationAWSS3 {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
+  endpoint?: string;
+  s3ForcePathStyle?: boolean;
 }
