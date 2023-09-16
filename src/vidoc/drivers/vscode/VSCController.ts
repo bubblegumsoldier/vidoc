@@ -95,7 +95,7 @@ export class VSCController implements EditorController {
       return;
     }
     this.notify("Saving recording...");
-    this.statusBarItem.text = "Recording saved or uploaded...";
+    this.statusBarItem.text = "Saving / Uploading Recording...";
     this.statusBarItem.command = undefined;
     this.statusBarItem.color = "yellow";
     this.statusBarItem.show();
@@ -195,7 +195,9 @@ export class VSCController implements EditorController {
         this.notify("Stopping recording");
         this.indicateRecordingSavingOrUploading();
         const output = await this.screenRecorder.stopRecording();
-        this.vidocPostprocessor.postprocessVidoc(output);
+        console.log({ output });
+        await this.vidocPostprocessor.postprocessVidoc(output);
+        console.log("Postprocessed recording");
         const anyOutput = <any>output;
         this.notify(
           `Recording saved at ${

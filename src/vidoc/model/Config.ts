@@ -7,7 +7,6 @@ export interface Config {
 
 export class SavingStrategyLocal {
   type = "local" as const;
-  location: "relative" | "central" = "central";
   folder: string = ".vidoc";
 }
 

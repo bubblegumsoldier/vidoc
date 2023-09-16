@@ -12,12 +12,10 @@ export interface Vidoc {
     metadata: VidocMetadata;
     tmpVideoFilePath: string; //relative
     relativeFilePathMetadata: string;
-    absoluteFilePathMetadata: string;
 }
 
 export interface LocalMetadataLocalVideoVidoc extends Vidoc {
-    relativeFilePath: string;
-    absoluteFilePath: string;
+    relativeFilePathToVideo: string;
 }
 
 export interface LocalMetaDataRemoteVideoVidoc extends Vidoc {

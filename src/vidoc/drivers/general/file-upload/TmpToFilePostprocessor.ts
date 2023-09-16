@@ -12,11 +12,11 @@ export class TmpToFilePostprocessor implements VideoPostprocessor {
   async postprocessVidoc(vidoc: Vidoc): Promise<Vidoc> {
     const correctVidoc = <LocalMetadataLocalVideoVidoc>(vidoc);
 
-    if(!correctVidoc.absoluteFilePath) {
+    if(!correctVidoc.relativeFilePathToVideo) {
         throw Error('absoluteFilePath is not set');
     }
 
-    await this.fileController.moveFile(vidoc.tmpVideoFilePath, correctVidoc.absoluteFilePath, true);
+    await this.fileController.moveFile(vidoc.tmpVideoFilePath, correctVidoc.relativeFilePathToVideo, true);
 
     return vidoc;
   }

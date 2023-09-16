@@ -7,6 +7,7 @@ type UserOptions = Partial<RecordingOptions> & { file: string };
 export class Recorder {
   static async recordActiveWindow(opts: UserOptions) {
     const final = { ...opts, window: await OSUtil.getWindow() };
+    console.log({final})
     return FFmpegUtil.startRecording(final as RecordingOptions);
   }
 

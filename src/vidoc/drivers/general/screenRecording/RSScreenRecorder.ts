@@ -29,6 +29,7 @@ export class RSScreenRecorder implements ScreenRecorder {
       if(!audioDevice) {
         throw Error('Audio device needs to be selected first!');
       }
+      console.log({audioDevice});
       const { finish, stop } = await Recorder.recordActiveWindow({
         file: outputFile,
         fps: 10,

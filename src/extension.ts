@@ -27,6 +27,7 @@ import { VSCHoverProvider } from "./vidoc/drivers/vscode/VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "./vidoc/drivers/general/DefaultVidocPostprocessor";
 import { FileUploadPostprocessor } from "./vidoc/drivers/general/file-upload/FileUploadPostprocessor";
 import { TmpToFilePostprocessor } from "./vidoc/drivers/general/file-upload/TmpToFilePostprocessor";
+import { AWSRemoteVideoUploader } from "./vidoc/drivers/general/file-upload/AWSRemoteVideoUploader";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -68,6 +69,9 @@ container.register<FileUploadPostprocessor>("FileUploadPostprocessor", {
 });
 container.register<TmpToFilePostprocessor>("TmpToFilePostprocessor", {
   useClass: TmpToFilePostprocessor,
+});
+container.register<AWSRemoteVideoUploader>("AWSRemoteVideoUploader", {
+  useClass: AWSRemoteVideoUploader,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

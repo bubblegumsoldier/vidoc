@@ -6,7 +6,6 @@ import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 
 @injectable()
 export class VSCFileController implements FileController {
-  constructor(@inject("ConfigRetriever") private configRetriever: ConfigRetriever) {}
 
   private getWorkspaceRoot(): string {
     const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
@@ -23,9 +22,9 @@ export class VSCFileController implements FileController {
     return returnPath;
   }
 
-  public async writeFileContent(absoluteFilePath: string, content: string): Promise<void> {
+  public async writeFileContent(filePath: string, content: string, relative: boolean): Promise<void> {
     const intArray = new TextEncoder().encode(content);
-    await vscode.workspace.fs.writeFile(this.getFileUri(absoluteFilePath, false), intArray);
+    await vscode.workspace.fs.writeFile(this.getFileUri(filePath, relative), intArray);
   }
 
   public async createDirIfNotExists(absoluteFolderPath: string)  {
@@ -72,8 +71,7 @@ export class VSCFileController implements FileController {
     const absoluteTmpFolder = path.join(this.getWorkspaceRoot(), ".vidoc", "tmp");
     const relativeTmpFolder = path.join(".vidoc", "tmp");
     await this.createDirIfNotExists(absoluteTmpFolder);
-    const suffix = (await this.configRetriever.getConfig()).recordingOptions.fileFormat;
-    return path.join(relativeTmpFolder, `${id}.${suffix}`);
+    return path.join(relativeTmpFolder, id);
   }
 
   async moveFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void> {
