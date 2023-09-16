@@ -13,5 +13,13 @@ export class SavingStrategyLocal {
 
 export class SavingStrategyRemote {
   type = "remote" as const;
+  aws?: SavingInformationAWSS3;
+  folder: string = ".vidoc";
+}
 
+export interface SavingInformationAWSS3 {
+  bucketName: string;
+  region: string;
+  accessKeyId: string;
+  secretAccessKey: string;
 }

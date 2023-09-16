@@ -137,4 +137,14 @@ export class DefaultVidocFactory implements VidocFactory {
     await this.fileController.writeFileContent(absoluteFilePathMetadata, s);
     return metadata;
   }
+
+
+  public async updateVidocMetadataFile(vidoc: Vidoc): Promise<void> {
+    // For now all metadata files are local
+    const castedVidoc = vidoc as LocalMetadataLocalVideoVidoc|LocalMetaDataRemoteVideoVidoc;
+    const metadata = vidoc.metadata;
+    const absoluteFilePathMetadata = castedVidoc.absoluteFilePathMetadata;
+    const s = JSON.stringify(metadata, null, 4);
+    await this.fileController.writeFileContent(absoluteFilePathMetadata, s);
+  }
 }

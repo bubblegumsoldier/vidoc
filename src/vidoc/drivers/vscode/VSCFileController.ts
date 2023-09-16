@@ -1,10 +1,13 @@
-import { injectable } from "tsyringe";
+import { inject, injectable } from "tsyringe";
 import { FileController } from "../../interfaces/FileController";
 import * as vscode from "vscode";
 import * as path from "path";
+import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 
 @injectable()
 export class VSCFileController implements FileController {
+  constructor(@inject("ConfigRetriever") private configRetriever: ConfigRetriever) {}
+
   private getWorkspaceRoot(): string {
     const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     if (!workspaceRoot) {
@@ -43,32 +46,40 @@ export class VSCFileController implements FileController {
       return false;
     }
   }
+
   async readFileContent(file: string, relative: boolean): Promise<string> {
     return new TextDecoder().decode(
-      await vscode.workspace.fs.readFile(this.getFileUri(file, relative))
+      await this.readFileContentBinary(file, relative)
     );
   }
-  async copyFile(sourceFilePath: string, targetFilePath: string): Promise<void> {
+
+  async readFileContentBinary(file: string, relative: boolean): Promise<Uint8Array> {
+    return await vscode.workspace.fs.readFile(this.getFileUri(file, relative));
+  }
+
+  async copyFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void> {
       await vscode.workspace.fs.copy(
-        this.getFileUri(sourceFilePath, false),
-        this.getFileUri(targetFilePath, false)
+        this.getFileUri(sourceFilePath, relative),
+        this.getFileUri(targetFilePath, relative)
       );
   }
 
-  async deleteFile(filePath: string): Promise<void> {
-    await vscode.workspace.fs.delete(this.getFileUri(filePath, false));
+  async deleteFile(filePath: string, relative: boolean): Promise<void> {
+    await vscode.workspace.fs.delete(this.getFileUri(filePath, relative));
   }
 
   async generateTmpFilePath(id: string): Promise<string> {
-    const tmpFolder = path.join(this.getWorkspaceRoot(), ".vidoc", "tmp");
-    await this.createDirIfNotExists(tmpFolder);
-    return path.join(tmpFolder, `${id}.mp4`);
+    const absoluteTmpFolder = path.join(this.getWorkspaceRoot(), ".vidoc", "tmp");
+    const relativeTmpFolder = path.join(".vidoc", "tmp");
+    await this.createDirIfNotExists(absoluteTmpFolder);
+    const suffix = (await this.configRetriever.getConfig()).recordingOptions.fileFormat;
+    return path.join(relativeTmpFolder, `${id}.${suffix}`);
   }
 
-  async moveFile(sourceFilePath: string, targetFilePath: string): Promise<void> {
+  async moveFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void> {
     await vscode.workspace.fs.rename(
-      this.getFileUri(sourceFilePath, false),
-      this.getFileUri(targetFilePath, false)
+      this.getFileUri(sourceFilePath, relative),
+      this.getFileUri(targetFilePath, relative)
     );
   }
 }
