@@ -31,7 +31,11 @@ class VideoScreen {
   private static getWebviewContent(vidoc: Vidoc, sourcePath: string): string {
     const title = vidoc.id;
     const createdAt = vidoc.metadata.createdAt;
-
+    let transcript = ``;
+    if (vidoc.speechToText?.text) {
+      const text = vidoc.speechToText.text;
+      transcript = `<h2>Transcript</h2><p>${text}</p>`;
+    }
     return `
       <!DOCTYPE html>
       <html>
@@ -40,6 +44,7 @@ class VideoScreen {
         </head>
         <body>
           <h1>${title}</h1>
+          ${transcript}
           <p>Created at: ${createdAt}</p>
           <video controls>
             <source src="${sourcePath}" type="video/mp4">

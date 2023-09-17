@@ -79,9 +79,12 @@ export class VSCHoverProvider {
         const castedVidoc = <LocalMetaDataRemoteVideoVidoc>vidoc;
         const url = castedVidoc.remoteVideoUrl;
         const commandArgs = encodeURIComponent(JSON.stringify([castedVidoc.id]));
+        let markdownString = `[Click here for VsCode Preview](command:vidoc.openVideo?${commandArgs})\n\n[Click here for direct link](${url})`;
+        if(castedVidoc.speechToText?.text) {
+          markdownString += `\n\n#### Transcript\n\n${castedVidoc.speechToText.text}`; 
+        }
         const markdown = new vscode.MarkdownString(
-          `[Click here for VsCode Preview](command:vidoc.openVideo?${commandArgs})\n\n[Click here for direct link](${url})
-          `
+          markdownString
         );
         markdown.isTrusted = true;
         markdown.supportHtml = true;

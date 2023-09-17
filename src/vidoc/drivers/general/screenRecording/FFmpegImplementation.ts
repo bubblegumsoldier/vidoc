@@ -18,7 +18,7 @@ export class FFmpegImplementation implements FFmpegInterface {
     );
   }
 
-  private async getPathToFFmpegBinary(): Promise<string> {
+  async getPathToFFmpegBinary(): Promise<string> {
     let pathToFFmpegBinary: string | undefined =
       await this.fileController.getBinPath(
         process.platform === "win32" ? "ffmpeg-win32.exe" : "ffmpeg-darwin"

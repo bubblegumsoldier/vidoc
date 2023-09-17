@@ -43,6 +43,8 @@ import { VSCAudioDeviceSelector } from "./vidoc/drivers/vscode/VSCAudioDeviceSel
 import { AudioDeviceSelector } from "./vidoc/interfaces/AudioDeviceSelector";
 import { FFmpegImplementation } from "./vidoc/drivers/general/screenRecording/FFmpegImplementation";
 import { FFmpegInterface } from "./vidoc/interfaces/FFmpegInterface";
+import { SpeechToTextPostprocessor } from "./vidoc/drivers/general/speech-to-text/SpeechToTextPostprocessor";
+import { AWSTranscribeSpeechToText } from "./vidoc/drivers/general/speech-to-text/AWSTranscribeSpeechToText";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -111,6 +113,12 @@ container.register<AudioDeviceSelector>("AudioDeviceSelector", {
 });
 container.register<FFmpegInterface>("FFmpegInterface", {
   useClass: FFmpegImplementation,
+});
+container.register<SpeechToTextPostprocessor>("SpeechToTextPostprocessor", {
+  useClass: SpeechToTextPostprocessor,
+});
+container.register<AWSTranscribeSpeechToText>("AWSTranscribeSpeechToText", {
+  useClass: AWSTranscribeSpeechToText,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

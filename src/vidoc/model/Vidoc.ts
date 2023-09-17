@@ -12,6 +12,12 @@ export interface Vidoc {
     metadata: VidocMetadata;
     tmpVideoFilePath: string; //relative
     relativeFilePathMetadata: string;
+    speechToText?: SpeechToTextInformation;
+}
+
+export interface SpeechToTextInformation {
+    text: string;
+    payload: any;
 }
 
 export interface LocalMetadataLocalVideoVidoc extends Vidoc {

@@ -2,7 +2,29 @@ export declare type AllowedFileFormats = "mp4";
 
 export interface Config {
   savingStrategy: SavingStrategyLocal | SavingStrategyRemote;
-  recordingOptions: { fileFormat: AllowedFileFormats };
+  recordingOptions: RecordingOptions;
+}
+
+export class RecordingOptions {
+  fileFormat?: AllowedFileFormats;
+  postProcessingOptions?: PostprocessingOptions;
+}
+
+export class PostprocessingOptions {
+  speechToText?: SpeechToTextOptions;
+}
+
+export class SpeechToTextOptions {
+  enabled = false;
+  type = "aws-transcribe" as const;
+  awsTranscribe?: AWSTranscribeSpeechToTextOptions;
+}
+
+export interface AWSTranscribeSpeechToTextOptions {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
+  bucketName: string;
 }
 
 export class SavingStrategyLocal {

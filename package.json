@@ -17,7 +17,9 @@
     "dist/**",
     "bin/**"
   ],
-  "activationEvents": ["*"],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
@@ -107,10 +109,12 @@
     "@types/yauzl": "^2.10.0",
     "aws-sdk": "^2.1459.0",
     "lodash": "^4.17.21",
+    "node-fetch": "^3.3.2",
     "record-screen": "^3.19.0",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.8.0",
     "uuid": "^9.0.0",
+    "vosk": "^0.3.39",
     "yauzl": "^2.10.0"
   }
 }

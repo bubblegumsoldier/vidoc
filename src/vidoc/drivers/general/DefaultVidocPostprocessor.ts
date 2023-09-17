@@ -4,6 +4,7 @@ import { Vidoc } from "../../model/Vidoc";
 import { FileUploadPostprocessor } from "./file-upload/FileUploadPostprocessor";
 import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 import { TmpToFilePostprocessor } from "./file-upload/TmpToFilePostprocessor";
+import { SpeechToTextPostprocessor } from "./speech-to-text/SpeechToTextPostprocessor";
 
 @injectable()
 export class DefaultVidocPostprocessor implements VideoPostprocessor {
@@ -12,26 +13,29 @@ export class DefaultVidocPostprocessor implements VideoPostprocessor {
     @inject("TmpToFilePostprocessor")
     private tmpToFilePostprocessor: TmpToFilePostprocessor,
     @inject("FileUploadPostprocessor")
-    private fileUploadPostprocessor: FileUploadPostprocessor
+    private fileUploadPostprocessor: FileUploadPostprocessor,
+    @inject("SpeechToTextPostprocessor")
+    private speechToTextPostprocessor: SpeechToTextPostprocessor
   ) {}
 
   private async getRelevantPostprocessors(): Promise<VideoPostprocessor[]> {
-    if (
-      (await this.configRetriever.getConfig()).savingStrategy.type === "local"
-    ) {
-      return [this.tmpToFilePostprocessor];
-    } else if (
-      (await this.configRetriever.getConfig()).savingStrategy.type === "remote"
-    ) {
-      return [this.fileUploadPostprocessor];
+    const config = await this.configRetriever.getConfig();
+    let postprocessors: VideoPostprocessor[] = [];
+    if (config.savingStrategy.type === "local") {
+      postprocessors.push(this.tmpToFilePostprocessor);
+    } else if (config.savingStrategy.type === "remote") {
+      postprocessors.push(this.fileUploadPostprocessor);
     }
-    return [];
+    if (config.recordingOptions?.postProcessingOptions?.speechToText?.enabled) {
+      postprocessors.push(this.speechToTextPostprocessor);
+    }
+    return postprocessors;
   }
 
   async postprocessVidoc(vidoc: Vidoc): Promise<Vidoc> {
     const relevantPostprocessors = await this.getRelevantPostprocessors();
-    for(const pp of relevantPostprocessors) {
-        vidoc = await pp.postprocessVidoc(vidoc);
+    for (const pp of relevantPostprocessors) {
+      vidoc = await pp.postprocessVidoc(vidoc);
     }
     return vidoc;
   }
