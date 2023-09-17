@@ -2,6 +2,10 @@
   "name": "vidoc",
   "displayName": "vidoc",
   "description": "vidoc",
+  "author": {
+    "name": "Henry Müssemann",
+    "email": "hm@hm-dev-consulting.de"
+  },
   "version": "0.0.1",
   "repository": {
     "url": "https://github.com/bubblegumsoldier/vidoc"
