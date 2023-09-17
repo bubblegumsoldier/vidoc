@@ -7,5 +7,19 @@
             "accessKeyId": "${ACCESS_KEY_AWS}",
             "secretAccessKey": "${SECRET_KEY_AWS}"
         }
+    },
+    "recordingOptions": {
+        "postProcessingOptions": {
+            "speechToText": {
+                "enabled": true,
+                "type": "aws-transcribe",
+                "awsTranscribe": {
+                    "bucketName": "${AWS_BUCKET}",
+                    "region": "${AWS_REGION}",
+                    "accessKeyId": "${ACCESS_KEY_AWS}",
+                    "secretAccessKey": "${SECRET_KEY_AWS}"
+                }
+            }
+        }
     }
 }
