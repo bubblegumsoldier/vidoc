@@ -2,8 +2,11 @@
 
 ![ViDoc](https://github.com/bubblegumsoldier/vidoc/raw/main/vidoc.png "ViDoc")
 
-![:vidoc 0c8c60c6-bc0b-4841-aaa6-c0680be600d6.mp4](https://vidoc.s3.eu-central-1.amazonaws.com/0c8c60c6-bc0b-4841-aaa6-c0680be600d6.mp4)
-[:vidoc 0c8c60c6-bc0b-4841-aaa6-c0680be600d6.mp4](https://vidoc.s3.eu-central-1.amazonaws.com/0c8c60c6-bc0b-4841-aaa6-c0680be600d6.mp4)
+## Simple introduction video
+
+[Vidoc Example Usage in Loom](https://www.loom.com/share/ecb3abd8e7dc4b77b224b96b1e8e56e8?sid=ea4755ac-b948-4562-9876-0170f77c4427)
+
+[Vidoc Advanced Configuration in Loom](https://www.loom.com/share/ee831812754c487bbac3d072dd8c14fe?sid=73af1439-9825-4be0-bc0b-5349bc5972c5)
 
 ## Vision Statement
 
@@ -11,25 +14,92 @@ In modern software development, clear and comprehensive documentation is key. Vi
 
 ViDoc aims to promote collaboration, enhance code comprehension, and simplify the documentation process by providing an intuitive, engaging and interactive way to explain complex code snippets. Rather than just reading about how a piece of code works, ViDoc allows you to show, tell, and share in a more dynamic way.
 
-## How to Use ViDoc
+## Storing video recordings within the repository
 
-Using ViDoc is as easy as 1-2-3:
+The easiest way to try out the extension is to store the files locally inside the repository. No configuration file is needed in order to achieve that behaviour. However, this is not recommended for larger projects as it can substantially increase the repository size and pushing videos as well as pulling videos can be a pain.
 
-1. **Install the ffmpeg globally** - Please [install FFMPEG](https://ffmpeg.org/download.html) and make sure its on your path.
-2. **Install the extension** - Find ViDoc in the VS Code extension marketplace and install it.
-3. **Start Recording** - Once installed, you'll find a "Start Recording" button at the bottom right of your VS Code interface. Click on this button, select your preferred microphone, and the recording will begin immediately.
+## Enabling AWS Video Upload for Your VSCode Extension
 
-| :exclamation:  At the moment you are supposed to commit the generated files and comments!   |
-|-----------------------------------------|
+This guide walks you through setting up AWS S3 video upload for your VSCode extension. You can also configure it to work with other S3-compatible providers like DigitalOcean.
 
+### Prerequisites
 
-Each recording comment comes with a hover tooltip, enabling anyone with the ViDoc extension to instantly preview your video documentation.
+- AWS Account with access to S3 services.
+- VSCode extension installed.
+
+### Configuration Files
+
+You need to create two files in the root directory of your project:
+
+1. `.vidocconf.json`
+2. `.vidocsecrets`
+
+**Important**: Make sure to add `.vidocsecrets` to your `.gitignore` file as it will contain sensitive information that can be used to upload data to your AWS S3 buckets (if provided). You can share that file with other contributors via a different channel if necessary, so that every contributor can upload documentation videos, but it is not recommended to ever commit the file for security reasons.
+
+#### .vidocconf.json
+
+This file contains the configuration details for saving videos and performing post-processing operations.
+
+Example `.vidocconf.json`:
+
+```json
+{
+    "savingStrategy": {
+        "type": "remote",
+        "s3": {
+            "bucketName": "${AWS_BUCKET}",
+            "region": "${AWS_REGION}",
+            "accessKeyId": "${ACCESS_KEY_AWS}",
+            "secretAccessKey": "${SECRET_KEY_AWS}"
+        }
+    },
+    "recordingOptions": {
+        "postProcessingOptions": {
+            "speechToText": {
+                "enabled": true,
+                "type": "aws-transcribe",
+                "awsTranscribe": {
+                    "bucketName": "${AWS_BUCKET}",
+                    "region": "${AWS_REGION}",
+                    "accessKeyId": "${ACCESS_KEY_AWS}",
+                    "secretAccessKey": "${SECRET_KEY_AWS}"
+                }
+            }
+        }
+    }
+}
+
+```
+
+#### .vidocsecrets
+
+This file will store your AWS secret information. Replace the placeholders with your actual AWS information. The placeholders correspond to the variables you have referenced in your `vidocconf.json`.
+
+Example .vidocsecrets:
+
+```
+ACCESS_KEY_AWS=<Your access key>
+SECRET_KEY_AWS=<Your secret key>
+AWS_BUCKET=<Your bucket name>
+AWS_REGION=eu-central-1
+```
+
+#### Configuration Options
+
+Here's a brief overview of what each field in the configuration means:
+
+ * `savingStrategy`: Determines whether to save files locally or remotely.
+    * `type`: Either "local" or "remote".
+    * `folder`: Where to store the files. Default is .vidoc.
+ * `recordingOptions`: Various recording settings.
+   * `postProcessingOptions`: Allows enabling speech-to-text conversion.
+     * `speechToText`: Further settings for speech-to-text.
+       * `enabled`: Whether to enable the feature or not.
+       * `type`: Currently only supports "aws-transcribe".
+       * `awsTranscribe`: Can be used to configure aws transcribe in your projects
+
 
 ## Contribution Guidelines
-
-`:vidoc 55032cb8-c95a-4048-b1b9-8db61c4a9fb5.mp4`
-
-https://github.com/bubblegumsoldier/vidoc/assets/3788628/3233b0f5-a669-4b6f-87f7-c12a47572132
 
 
 We welcome contributions from the open-source community. To contribute:
