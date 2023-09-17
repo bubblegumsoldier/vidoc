@@ -2,10 +2,11 @@ name: Create VSIX package
 
 on:
   push:
-    branches:
-      - "*"
+    branches-ignore:
+      - 'dependabot/**'
   tags:
     - '*'
+
 
 jobs:
   build:
