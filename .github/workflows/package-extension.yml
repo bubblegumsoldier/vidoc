@@ -3,7 +3,7 @@ name: Create VSIX package
 on:
   push:
     branches:
-      - main
+      - "*"
   tags:
     - '*'
 
