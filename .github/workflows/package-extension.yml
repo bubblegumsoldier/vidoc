@@ -23,6 +23,9 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
+    - name: Install VSCE
+      run: npm install -g vsce
+
     - name: Run custom build script
       run: npm run copy-binaries
 
