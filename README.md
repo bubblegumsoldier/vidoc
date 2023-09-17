@@ -25,14 +25,6 @@ Using ViDoc is as easy as 1-2-3:
 
 Each recording comment comes with a hover tooltip, enabling anyone with the ViDoc extension to instantly preview your video documentation.
 
-## Next milestones
-
-1. We want to fully support Mac
-2. Release the vscode extension on the Extension Marketplace
-3. Create an automated release pipeline for new versions
-4. Refactor `vidoc/drivers/generate/screenRecording`
-5. Introduce different file storage mechanisms like AWS.
-
 ## Contribution Guidelines
 
 `:vidoc 55032cb8-c95a-4048-b1b9-8db61c4a9fb5.mp4`
