@@ -10,4 +10,5 @@ export interface FileController {
     deleteFile(filePath: string, relative: boolean): Promise<void>;
     generateTmpFilePath(id: string): Promise<string>;
     getBinPath(binName: string): Promise<string>;
+    getAllFilesInFolder(folderPath: string, relative: boolean): Promise<string[]>;
 }

@@ -34,6 +34,15 @@ import { FileUploadPathGuesser } from "./vidoc/interfaces/FileUploadPathGuesser"
 import { DefaultFileUploadPathGuesser } from "./vidoc/drivers/general/file-upload/DefaultFileUploadPathGuesser";
 import { VideoOpener } from "./vidoc/interfaces/VideoOpener";
 import { VSCVideoOpener } from "./vidoc/drivers/vscode/VSCVideoOpener";
+import { VSCVidocRepository } from "./vidoc/drivers/vscode/VSCVidocRepository";
+import { VidocRepository } from "./vidoc/interfaces/VidocRepository";
+import { VSCVidocTreeProvider } from "./vidoc/drivers/vscode/views/VSCVidocTreeProvider";
+import { PreferencesManager } from "./vidoc/interfaces/PreferencesManager";
+import { VSCPreferencesManager } from "./vidoc/drivers/vscode/VSCPreferencesManager";
+import { VSCAudioDeviceSelector } from "./vidoc/drivers/vscode/VSCAudioDeviceSelector";
+import { AudioDeviceSelector } from "./vidoc/interfaces/AudioDeviceSelector";
+import { FFmpegImplementation } from "./vidoc/drivers/general/screenRecording/FFmpegImplementation";
+import { FFmpegInterface } from "./vidoc/interfaces/FFmpegInterface";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -87,6 +96,21 @@ container.register<FileUploadPathGuesser>("FileUploadPathGuesser", {
 });
 container.register<VideoOpener>("VideoOpener", {
   useClass: VSCVideoOpener,
+});
+container.register<VidocRepository>("VidocRepository", {
+  useClass: VSCVidocRepository,
+});
+container.register<VSCVidocTreeProvider>("VSCVidocTreeProvider", {
+  useClass: VSCVidocTreeProvider,
+});
+container.register<PreferencesManager>("PreferencesManager", {
+  useClass: VSCPreferencesManager,
+});
+container.register<AudioDeviceSelector>("AudioDeviceSelector", {
+  useClass: VSCAudioDeviceSelector,
+});
+container.register<FFmpegInterface>("FFmpegInterface", {
+  useClass: FFmpegImplementation,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

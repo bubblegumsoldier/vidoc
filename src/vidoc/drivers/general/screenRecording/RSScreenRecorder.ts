@@ -8,6 +8,9 @@ import { Prompter } from "../../../interfaces/Prompter";
 import { OSUtil } from "./screen-recorder/os";
 import { FFmpegUtil } from "./screen-recorder/ffmpeg";
 import { Notificator } from "../../../interfaces/Notificator";
+import { PreferencesManager } from "../../../interfaces/PreferencesManager";
+import { FFmpegInterface } from "../../../interfaces/FFmpegInterface";
+import { AudioDeviceSelector } from "../../../interfaces/AudioDeviceSelector";
 
 const STOP_DELAY = 1000; // ms
 
@@ -19,8 +22,7 @@ export class RSScreenRecorder implements ScreenRecorder {
 
   constructor(
     @inject("FileController") private fileController: FileController,
-    @inject("Prompter") private prompter: Prompter,
-    @inject("Notificator") private notificator: Notificator,
+    @inject("AudioDeviceSelector") private audioDeviceSelector: AudioDeviceSelector,
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
@@ -29,24 +31,7 @@ export class RSScreenRecorder implements ScreenRecorder {
     );
     await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
-      let pathToFFmpegBinary: string | undefined =
-        await this.fileController.getBinPath(
-          process.platform === "win32" ? "ffmpeg-win32.exe" : "ffmpeg-darwin"
-        );
-      if (!this.fileController.existsSync(pathToFFmpegBinary)) {
-        this.notificator.warn("We didn't find an ffmpeg for your system. We will look on the PATH for it.");
-        pathToFFmpegBinary = undefined; // it will be looked for on the PATH (this will be necessary for linux)
-      }
-      console.log({ pathToFFmpegBinary });
-      const opts = await FFmpegUtil.findFFmpegBinIfMissing({
-        ffmpeg: {
-          binary: pathToFFmpegBinary,
-        },
-      });
-      const audioDevice = await this.prompter.getAnswer(
-        "Select audio device",
-        await OSUtil.getWinAudioDevices(opts.ffmpeg.binary)
-      );
+      const audioDevice = await this.audioDeviceSelector.getAudioDevice();
       if (!audioDevice) {
         throw Error("Audio device needs to be selected first!");
       }

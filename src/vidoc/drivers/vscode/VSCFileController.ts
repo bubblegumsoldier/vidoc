@@ -8,7 +8,6 @@ import { getExtensionPath } from "./global";
 
 @injectable()
 export class VSCFileController implements FileController {
-
   private getWorkspaceRoot(): string {
     const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     if (!workspaceRoot) {
@@ -24,12 +23,19 @@ export class VSCFileController implements FileController {
     return returnPath;
   }
 
-  public async writeFileContent(filePath: string, content: string, relative: boolean): Promise<void> {
+  public async writeFileContent(
+    filePath: string,
+    content: string,
+    relative: boolean
+  ): Promise<void> {
     const intArray = new TextEncoder().encode(content);
-    await vscode.workspace.fs.writeFile(this.getFileUri(filePath, relative), intArray);
+    await vscode.workspace.fs.writeFile(
+      this.getFileUri(filePath, relative),
+      intArray
+    );
   }
 
-  public async createDirIfNotExists(absoluteFolderPath: string)  {
+  public async createDirIfNotExists(absoluteFolderPath: string) {
     await vscode.workspace.fs.createDirectory(
       this.getFileUri(absoluteFolderPath, false)
     );
@@ -54,15 +60,22 @@ export class VSCFileController implements FileController {
     );
   }
 
-  async readFileContentBinary(file: string, relative: boolean): Promise<Uint8Array> {
+  async readFileContentBinary(
+    file: string,
+    relative: boolean
+  ): Promise<Uint8Array> {
     return await vscode.workspace.fs.readFile(this.getFileUri(file, relative));
   }
 
-  async copyFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void> {
-      await vscode.workspace.fs.copy(
-        this.getFileUri(sourceFilePath, relative),
-        this.getFileUri(targetFilePath, relative)
-      );
+  async copyFile(
+    sourceFilePath: string,
+    targetFilePath: string,
+    relative: boolean
+  ): Promise<void> {
+    await vscode.workspace.fs.copy(
+      this.getFileUri(sourceFilePath, relative),
+      this.getFileUri(targetFilePath, relative)
+    );
   }
 
   async deleteFile(filePath: string, relative: boolean): Promise<void> {
@@ -70,13 +83,21 @@ export class VSCFileController implements FileController {
   }
 
   async generateTmpFilePath(id: string): Promise<string> {
-    const absoluteTmpFolder = path.join(this.getWorkspaceRoot(), ".vidoc", "tmp");
+    const absoluteTmpFolder = path.join(
+      this.getWorkspaceRoot(),
+      ".vidoc",
+      "tmp"
+    );
     const relativeTmpFolder = ".vidoc/tmp";
     await this.createDirIfNotExists(absoluteTmpFolder);
     return `${relativeTmpFolder}/${id}`;
   }
 
-  async moveFile(sourceFilePath: string, targetFilePath: string, relative: boolean): Promise<void> {
+  async moveFile(
+    sourceFilePath: string,
+    targetFilePath: string,
+    relative: boolean
+  ): Promise<void> {
     await vscode.workspace.fs.rename(
       this.getFileUri(sourceFilePath, relative),
       this.getFileUri(targetFilePath, relative)
@@ -84,6 +105,16 @@ export class VSCFileController implements FileController {
   }
 
   async getBinPath(binName: string): Promise<string> {
-    return path.join(getExtensionPath(), 'dist', 'bin', binName);
+    return path.join(getExtensionPath(), "dist", "bin", binName);
+  }
+
+  async getAllFilesInFolder(
+    folderPath: string,
+    relative: boolean
+  ): Promise<string[]> {
+    const files = await vscode.workspace.fs.readDirectory(
+      this.getFileUri(folderPath, relative)
+    );
+    return files.map((f) => f[0]);
   }
 }

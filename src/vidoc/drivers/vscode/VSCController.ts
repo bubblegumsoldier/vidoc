@@ -10,7 +10,7 @@ import {
 import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { EditorInteractor } from "../../interfaces/EditorInteractor";
-import { PositionedVidocInstance } from "../../model/Vidoc";
+import { PositionedVidocInstance, VidocReference } from "../../model/Vidoc";
 import { FileController } from "../../interfaces/FileController";
 import { OSUtil } from "../general/screenRecording/screen-recorder/os";
 import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
@@ -18,13 +18,17 @@ import { VSCHoverProvider } from "./VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
 import { Notificator } from "../../interfaces/Notificator";
 import { VideoOpener } from "../../interfaces/VideoOpener";
-import { setExtensionPath, getExtensionPath } from './global';
+import { setExtensionPath, getExtensionPath } from "./global";
 import path = require("path");
+import { VidocRepository } from "../../interfaces/VidocRepository";
+import { VSCVidocTreeProvider } from "./views/VSCVidocTreeProvider";
+import { AudioDeviceSelector } from "../../interfaces/AudioDeviceSelector";
 
 @singleton()
 export class VSCController implements EditorController {
   statusBarItem?: vscode.StatusBarItem;
   currentHighlightings: PositionedVidocInstance[] = [];
+  private vidocTreeView: vscode.TreeView<vscode.TreeItem>;
 
   constructor(
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
@@ -37,9 +41,15 @@ export class VSCController implements EditorController {
     @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider,
     @inject("Notificator") private notificator: Notificator,
     @inject("VideoOpener") private videoOpener: VideoOpener,
+    @inject("VSCVidocTreeProvider") private vidocTreeProvider: VSCVidocTreeProvider,
+    @inject("AudioDeviceSelector") private audioDeviceSelector: AudioDeviceSelector,
     @inject("DefaultVidocPostprocessor")
     private vidocPostprocessor: DefaultVidocPostprocessor
-  ) {}
+  ) {
+    this.vidocTreeView = vscode.window.createTreeView("vidocView", {
+      treeDataProvider: this.vidocTreeProvider,
+    });
+  }
 
   async getCurrentFocusInformation(): Promise<FocusInformation> {
     const activeTextEditor = vscode.window.activeTextEditor;
@@ -150,7 +160,7 @@ export class VSCController implements EditorController {
 
   public activate(context: vscode.ExtensionContext): void {
     const extensionPath = path.join(context.extensionPath);
-    setExtensionPath(extensionPath);  // Store the path for use elsewhere
+    setExtensionPath(extensionPath); // Store the path for use elsewhere
 
     /**
      * READ CONFIG
@@ -218,12 +228,11 @@ export class VSCController implements EditorController {
     );
 
     let openVideo = vscode.commands.registerCommand(
-      'vidoc.openVideo',
+      "vidoc.openVideo",
       async (vidocId: string) => {
         this.videoOpener.openVideoById(vidocId);
       }
     );
-  
 
     /**
      * WIN-INFO COMMAND
@@ -238,12 +247,41 @@ export class VSCController implements EditorController {
     );
 
     /**
+     * SELECT AUDIO DEVICE COMMAND
+     */
+    let selectAudioDevice = vscode.commands.registerCommand(
+      "vidoc.selectAudioDevice",
+      async () => {
+        await this.audioDeviceSelector.forceReselectOfAudioDevice();
+      }
+    );
+
+    /**
      * DECORATE SELECTION
      */
     let updateDecorations = vscode.commands.registerCommand(
       "vidoc.updateDecorations",
       () => {
         this.updateDecorations();
+      }
+    );
+
+    /**
+     * Left view opening file at position
+     */
+    let openFileAtPosition = vscode.commands.registerCommand(
+      "extension.openFileAtPosition",
+      async (relativeFilePath, lineIndex, charIndex) => {
+        const absolutePath = vscode.Uri.file(
+          vscode.workspace.workspaceFolders![0].uri.fsPath +
+            "/" +
+            relativeFilePath
+        );
+        const document = await vscode.workspace.openTextDocument(absolutePath);
+        const editor = await vscode.window.showTextDocument(document);
+
+        const position = new vscode.Position(lineIndex, charIndex);
+        editor.selection = new vscode.Selection(position, position);
       }
     );
 
@@ -258,9 +296,12 @@ export class VSCController implements EditorController {
     context.subscriptions.push(readConfig);
     context.subscriptions.push(startRecording);
     context.subscriptions.push(stopRecording);
+    context.subscriptions.push(openFileAtPosition);
     context.subscriptions.push(winInfoCmd);
     context.subscriptions.push(updateDecorations);
     context.subscriptions.push(openVideo);
+    context.subscriptions.push(selectAudioDevice);
+    
     this.registerRecalculationOfHighlightings(context);
 
     this.initStatusBarItem();

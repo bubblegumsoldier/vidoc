@@ -17,9 +17,19 @@
     "dist/**",
     "bin/**"
   ],
-  "activationEvents": [],
+  "activationEvents": ["*"],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Vidoc Configuration",
+      "properties": {
+        "vidoc.preferredAudioInterface": {
+          "type": "string",
+          "description": "Preferred audio interface."
+        }
+      }
+    },
     "commands": [
       {
         "command": "vidoc.readConfig",
@@ -34,10 +44,32 @@
         "title": "[Vidoc] Stop Recording"
       },
       {
+        "command": "vidoc.selectAudioDevice",
+        "title": "[Vidoc] Select Default Audio Device"
+      },
+      {
         "command": "vidoc.wininfo",
         "title": "[Vidoc] wininfo"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vidocActivity",
+          "title": "Vidoc",
+          "icon": "menu-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "vidocActivity": [
+        {
+          "id": "vidocView",
+          "name": "Vidocs",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",

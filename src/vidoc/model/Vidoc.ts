@@ -1,5 +1,5 @@
 import { AuthorInformation } from "./AuthorInformation";
-import { EditorSelection, FocusInformation } from "./FocusInformation";
+import { EditorPosition, EditorSelection, FocusInformation } from "./FocusInformation";
 
 export interface VidocMetadata {
     createdAt: string;
@@ -25,4 +25,10 @@ export interface LocalMetaDataRemoteVideoVidoc extends Vidoc {
 export interface PositionedVidocInstance {
     range: EditorSelection;
     vidoc: Vidoc;
+}
+
+export interface VidocReference {
+    relativeFilePath: string;
+    vidoc: Vidoc;
+    editorPosition: EditorPosition;
 }
