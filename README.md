@@ -11,10 +11,6 @@ In modern software development, clear and comprehensive documentation is key. Vi
 
 ViDoc aims to promote collaboration, enhance code comprehension, and simplify the documentation process by providing an intuitive, engaging and interactive way to explain complex code snippets. Rather than just reading about how a piece of code works, ViDoc allows you to show, tell, and share in a more dynamic way.
 
-## Limitations
-
-* At the moment this extension is windows-only, Mac is not (yet) supported
-
 ## How to Use ViDoc
 
 Using ViDoc is as easy as 1-2-3:
