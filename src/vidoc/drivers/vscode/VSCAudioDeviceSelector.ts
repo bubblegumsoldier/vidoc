@@ -14,7 +14,7 @@ export class VSCAudioDeviceSelector implements AudioDeviceSelector {
   ) {}
 
   async forceReselectOfAudioDevice(): Promise<string | undefined> {
-    const audioInterfaces = await this.ffmpeg.getWinAudioDevices();
+    const audioInterfaces = await this.ffmpeg.getAudioDevices();
     if (audioInterfaces.length === 1) {
       await this.preferences.setPreferredAudioInterface(audioInterfaces[0]);
       return audioInterfaces[0];

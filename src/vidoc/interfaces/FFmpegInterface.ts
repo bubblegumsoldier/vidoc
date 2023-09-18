@@ -1,4 +1,4 @@
 export interface FFmpegInterface {
-    getWinAudioDevices(): Promise<string[]>;
+    getAudioDevices(): Promise<string[]>;
     getPathToFFmpegBinary(): Promise<string>;
 }

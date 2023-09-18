@@ -12,10 +12,22 @@ export class FFmpegImplementation implements FFmpegInterface {
     @inject("Notificator") private notificator: Notificator
   ) {}
 
+  async getAudioDevices(): Promise<string[]> {
+    if (process.platform === "win32") {
+      return await this.getWinAudioDevices();
+    } else if (process.platform === "darwin") {
+      return await this.getMacAudioDevices();
+    } else {
+      throw Error("Unsupported platform Linux");
+    }
+  }
+
+  async getMacAudioDevices(): Promise<string[]> {
+    return await OSUtil.getMacAudioDevices(await this.getPathToFFmpegBinary());
+  }
+
   async getWinAudioDevices(): Promise<string[]> {
-    return await OSUtil.getWinAudioDevices(
-      await this.getPathToFFmpegBinary()
-    );
+    return await OSUtil.getWinAudioDevices(await this.getPathToFFmpegBinary());
   }
 
   async getPathToFFmpegBinary(): Promise<string> {

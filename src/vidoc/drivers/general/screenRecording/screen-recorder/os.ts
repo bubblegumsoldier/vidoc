@@ -85,6 +85,35 @@ export class OSUtil {
     return { video: videoIndex, audio: audioIndex };
   }
 
+  static async getMacAudioDevices(ffmpegBinary: string) {
+    let text;
+    try {
+      // Use 'avfoundation' for macOS instead of 'dshow' for Windows
+      const { stderr } = await Util.processToStd(ffmpegBinary, ['-f', 'avfoundation', '-list_devices', 'true', '-i', '']);
+      text = stderr;
+    } catch (e) {
+      throw e;
+    }
+    console.log(text);
+  
+    // Adjust the regular expression to match the macOS output
+    const regex = /\[AVFoundation input device @ [\w]+\] \[(\d+)\]\s(.+)?\s\(audio\)/g;
+  
+    const textLines = text.split('\n');
+    const foundDevices: string[] = [];
+  
+    let match;
+    for (const line of textLines) {
+      while ((match = regex.exec(line)) !== null) {
+        const matchingGroup = match[2]; // Group 2 captures the actual device name
+        foundDevices.push(matchingGroup);
+      }
+    }
+  
+    return foundDevices;
+  }
+  
+
   static async getWinAudioDevices(ffmpegBinary: string) {
     let text;
     try {
