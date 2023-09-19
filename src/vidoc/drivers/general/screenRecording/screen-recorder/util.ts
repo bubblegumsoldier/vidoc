@@ -34,13 +34,13 @@ export class Util {
 
       proc.once('exit', (code) => {
         process.removeListener('exit', done);
-        if (code && !(proc as any).quitting) {
-          console.error(`Invalid exit status: ${code}`);
-          reject(new Error(`Invalid exit status: ${code}`));
-        } else {
+        // if (code && !(proc as any).quitting) {
+        //   console.error(`Invalid exit status: ${code}`);
+        //   reject(new Error(`Invalid exit status: ${code}`));
+        // } else {
           console.info('Successfully terminated');
           resolve();
-        }
+        // }
       });
     });
 
