@@ -89,17 +89,18 @@ export class OSUtil {
     let text;
     try {
       // Use 'avfoundation' for macOS instead of 'dshow' for Windows
-      const { stderr } = await Util.processToStd(ffmpegBinary, ['-f', 'avfoundation', '-list_devices', 'true', '-i', '']);
+      const { stderr } = await Util.processToStd(ffmpegBinary, ['-f', 'avfoundation', '-list_devices', 'true', '-i', '\"\"']);
       text = stderr;
     } catch (e) {
       throw e;
     }
     console.log(text);
+    const audioDevicesOnlyText = text.split('audio devices')[1];
   
     // Adjust the regular expression to match the macOS output
-    const regex = /\[AVFoundation input device @ [\w]+\] \[(\d+)\]\s(.+)?\s\(audio\)/g;
+    const regex = /\[AVFoundation [a-zA-Z\s]+ @ [\w]+\] \[(\d+)\]\s(.+)?\s\(audio\)/g;
   
-    const textLines = text.split('\n');
+    const textLines = audioDevicesOnlyText.split('\n');
     const foundDevices: string[] = [];
   
     let match;
