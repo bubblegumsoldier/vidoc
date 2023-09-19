@@ -23,6 +23,7 @@ export class RSScreenRecorder implements ScreenRecorder {
   constructor(
     @inject("FileController") private fileController: FileController,
     @inject("AudioDeviceSelector") private audioDeviceSelector: AudioDeviceSelector,
+    @inject("FFmpegInterface") private ffmpeg: FFmpegInterface,
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
@@ -41,6 +42,9 @@ export class RSScreenRecorder implements ScreenRecorder {
         fps: 10,
         audio: true,
         audioDevice: audioDevice,
+        ffmpeg: {
+          binary: await this.ffmpeg.getPathToFFmpegBinary()
+        },
       });
       this.finishMethod = finish;
       this.stopMethod = stop;
