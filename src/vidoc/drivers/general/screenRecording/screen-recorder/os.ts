@@ -98,7 +98,7 @@ export class OSUtil {
     const audioDevicesOnlyText = text.split('audio devices')[1];
   
     // Adjust the regular expression to match the macOS output
-    const regex = /\[AVFoundation [a-zA-Z\s]+ @ [\w]+\] \[(\d+)\]\s(.+)?\s\(audio\)/g;
+    const regex = /\[AVFoundation [a-zA-Z\s]+ @ [\w]+\]\s\[(\d+)\]\s(.+)?/g;
   
     const textLines = audioDevicesOnlyText.split('\n');
     const foundDevices: string[] = [];
