@@ -48,6 +48,7 @@ Example `.vidocconf.json`:
 
 ```json
 {
+    "$schema": "https://raw.githubusercontent.com/bubblegumsoldier/vidoc/main/config-schema.json",
     "savingStrategy": {
         "type": "remote",
         "s3": {
