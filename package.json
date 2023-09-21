@@ -2,6 +2,7 @@
   "name": "vidoc",
   "displayName": "vidoc",
   "description": "vidoc",
+  "publisher": "Henry Müssemann",
   "author": {
     "name": "Henry Müssemann",
     "email": "hm@hm-dev-consulting.de"
@@ -10,6 +11,7 @@
   "repository": {
     "url": "https://github.com/bubblegumsoldier/vidoc"
   },
+  "pricing": "Free",
   "icon": "vidoc.png",
   "engines": {
     "vscode": "^1.80.0"
@@ -111,6 +113,7 @@
     "@types/lodash": "^4.14.195",
     "@types/uuid": "^9.0.2",
     "@types/yauzl": "^2.10.0",
+    "@vscode/vsce": "^2.21.0",
     "aws-sdk": "^2.1459.0",
     "lodash": "^4.17.21",
     "node-fetch": "^3.3.2",

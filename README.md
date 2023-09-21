@@ -4,11 +4,7 @@
 
 ## Simple introduction video
 
-<img src="https://github.com/bubblegumsoldier/vidoc/assets/3788628/27280d02-a6ea-4180-99ec-f7b174d4ec6f" alt="CLICK HERE for Vidoc Example Usage in Loom" />
-
 [CLICK HERE for Vidoc Example Usage in Loom](https://www.loom.com/share/ecb3abd8e7dc4b77b224b96b1e8e56e8?sid=ea4755ac-b948-4562-9876-0170f77c4427)
-
-<img src="https://github.com/bubblegumsoldier/vidoc/assets/3788628/27280d02-a6ea-4180-99ec-f7b174d4ec6f" alt="CLICK HERE for Vidoc Example Usage in Loom" />
 
 [CLICK HERE for Vidoc Advanced Configuration in Loom](https://www.loom.com/share/ee831812754c487bbac3d072dd8c14fe?sid=73af1439-9825-4be0-bc0b-5349bc5972c5)
 
