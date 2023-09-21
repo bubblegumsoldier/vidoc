@@ -54,7 +54,8 @@ Example `.vidocconf.json`:
             "bucketName": "${AWS_BUCKET}",
             "region": "${AWS_REGION}",
             "accessKeyId": "${ACCESS_KEY_AWS}",
-            "secretAccessKey": "${SECRET_KEY_AWS}"
+            "secretAccessKey": "${SECRET_KEY_AWS}",
+            "alternativeRootPath": "https://some-other-provider-than-s3.com"
         }
     },
     "recordingOptions": {
