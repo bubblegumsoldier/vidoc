@@ -14,6 +14,23 @@ In modern software development, clear and comprehensive documentation is key. Vi
 
 ViDoc aims to promote collaboration, enhance code comprehension, and simplify the documentation process by providing an intuitive, engaging and interactive way to explain complex code snippets. Rather than just reading about how a piece of code works, ViDoc allows you to show, tell, and share in a more dynamic way.
 
+## When to use Vidoc
+
+Video's are a bit like voice-messages. People love to send them but don't like to receive them. It is a sender-friendly medium not a receiver-friendly medium. This gives some hints on when we think it should be used:
+
+**Do's:**
+
+- Do use Vidocs for very complex classes that have interdependencies with other classes
+- Do use Vidoc when you want to explain how different parts of the software relate to one another
+- Do use Vidoc if it is easier for you than writing long paragraphs and the alternative would be no documentation at all
+- Do use Vidoc as an additional alternative to text (some people prefer video tutorials, some text)
+
+*Don'ts:*
+
+- Don't use Vidocs for very frequently accessed documentation like public documentation for a library, people tend to skim rather than having to watch a video
+- Don't use Vidocs for simple documentation where a text suffices
+- Don't record Vidocs longer than 10 Minutes - you're not shooting a movie here
+
 ## Storing video recordings within the repository
 
 The easiest way to try out the extension is to store the files locally inside the repository. No configuration file is needed in order to achieve that behaviour. However, this is not recommended for larger projects as it can substantially increase the repository size and pushing videos as well as pulling videos can be a pain.
