@@ -45,4 +45,5 @@ export interface SavingInformationAWSS3 {
   secretAccessKey: string;
   endpoint?: string;
   s3ForcePathStyle?: boolean;
+  alternativeRootPath?: string;
 }

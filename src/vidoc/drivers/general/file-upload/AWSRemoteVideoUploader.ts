@@ -6,12 +6,15 @@ import { SavingInformationAWSS3 } from "../../../model/Config";
 import { ConfigRetriever } from "../../../interfaces/ConfigRetriever";
 import { FileController } from "../../../interfaces/FileController";
 import AWS = require("aws-sdk");
+import { FileUploadPathGuesser } from "../../../interfaces/FileUploadPathGuesser";
 
 @injectable()
 export class AWSRemoteVideoUploader implements RemoteVideoUploader {
   constructor(
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
-    @inject("FileController") private fileController: FileController
+    @inject("FileController") private fileController: FileController,
+    @inject("FileUploadPathGuesser")
+    private fileUploadPathGuesser: FileUploadPathGuesser
   ) {}
 
   async uploadVideo(vidoc: Vidoc, uploadInformation: any): Promise<string> {
@@ -54,8 +57,7 @@ export class AWSRemoteVideoUploader implements RemoteVideoUploader {
         })
         .promise();
 
-      const url = `https://${uploadInformationAWSS3.bucketName}.s3.${uploadInformationAWSS3.region}.amazonaws.com/${vidoc.id}`;
-      return url;
+      return this.fileUploadPathGuesser.guessPathForFileUpload(vidoc);
     } finally {
       await this.fileController.deleteFile(vidoc.tmpVideoFilePath, true);
     }
