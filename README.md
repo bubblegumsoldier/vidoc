@@ -120,6 +120,10 @@ Please ensure your Pull Request adheres to the following guidelines:
 
 Thank you for your interest in improving ViDoc!
 
+## Introduction Vidoc
+
+![:vidoc 014151df-545b-4ff5-a305-12de6c036c16.mp4](https://vidoc.s3.eu-central-1.amazonaws.com/014151df-545b-4ff5-a305-12de6c036c16.mp4)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
