@@ -24,6 +24,7 @@ import { VidocRepository } from "../../interfaces/VidocRepository";
 import { VSCVidocTreeProvider } from "./views/VSCVidocTreeProvider";
 import { AudioDeviceSelector } from "../../interfaces/AudioDeviceSelector";
 
+/* :vidoc 957baf1b-117e-4d5e-b706-4d4d8cf416aa.mp4 */
 @singleton()
 export class VSCController implements EditorController {
   statusBarItem?: vscode.StatusBarItem;
