@@ -1,6 +1,7 @@
 # ViDoc: An Interactive Documentation Extension for Visual Studio Code
 
-![vidoc-white-bg](https://github.com/bubblegumsoldier/vidoc/assets/3788628/820527c2-74d7-4412-8aed-e8641c098879)
+
+![vidoc-white-bg](https://github.com/bubblegumsoldier/vidoc/assets/3788628/e4ff7a33-db49-4631-b2d5-0b51f374c841)
 
 ## Simple introduction video
 
