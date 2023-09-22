@@ -106,7 +106,8 @@
     "scripts": [
       "dist/cli.js"
     ],
-    "outputPath": "dist/cli/bin"
+    "outputPath": "dist/cli/bin",
+    "assets": "dist/bin/**/*"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

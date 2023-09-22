@@ -6,21 +6,21 @@ import com.hmdevconsulting.vidoc.model.PositionedVidocInstance
 import com.hmdevconsulting.vidoc.model.Vidoc
 
 interface VidocAccessor {
-    suspend fun getConfig(projectBasePath: String): Config
+    fun getConfig(projectBasePath: String): Config
 
-    suspend fun parseFile(projectBasePath: String, filePath: String): List<PositionedVidocInstance>
+    fun parseFile(projectBasePath: String, filePath: String): List<PositionedVidocInstance>
 
-    suspend fun record(projectBasePath: String, audioDevice: String, focusInformation: FocusInformation): CLIAsyncCommandExecutor.ProcessWrapper
+    fun record(projectBasePath: String, audioDevice: String, focusInformation: FocusInformation): CLIAsyncCommandExecutor.ProcessWrapper
 
-    suspend fun getAudioDevices(projectBasePath: String): List<String>
+    fun getAudioDevices(projectBasePath: String): List<String>
 
-    suspend fun getVidocObject(projectBasePath: String, id: String): Vidoc
+    fun getVidocObject(projectBasePath: String, id: String): Vidoc
 
-    suspend fun postProcessVidoc(projectBasePath: String, id: String): Vidoc
+    fun postProcessVidoc(projectBasePath: String, id: String): Vidoc
 
-    suspend fun findUnusedFiles(projectBasePath: String): List<String>
+    fun findUnusedFiles(projectBasePath: String): List<String>
 
-    suspend fun removeUnusedFiles(projectBasePath: String): List<String>
+    fun removeUnusedFiles(projectBasePath: String): List<String>
 
-    suspend fun getVidocs(projectBasePath: String): List<Vidoc>
+    fun getVidocs(projectBasePath: String): List<Vidoc>
 }

@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as util from 'util';
-import * as win from '@arcsine/win-info';
+import * as win from './winInfo';
 
 import { Util } from './util';
 

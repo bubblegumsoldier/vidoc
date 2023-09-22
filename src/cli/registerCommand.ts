@@ -53,6 +53,7 @@ export function registerCommand(
       console.info = originalInfo;
       
       console.log(JSON.stringify(result, null, 2));
+      process.exit(0);
     } catch (error: any) {
       // Restore original console methods for error output
       console.log = originalLog;

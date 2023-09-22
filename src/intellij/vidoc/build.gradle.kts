@@ -3,6 +3,10 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.0"
     id("org.jetbrains.intellij") version "1.15.0"
 }
+dependencies {
+    implementation("org.apache.commons:commons-text:1.9") // Add this line for Apache Commons Text library
+    // Other dependencies can also be listed here
+}
 
 group = "com.hmdevconsulting"
 version = "1.0-SNAPSHOT"

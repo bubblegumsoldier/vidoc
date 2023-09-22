@@ -1,6 +1,7 @@
 package com.hmdevconsulting.vidoc.ui
 
 import com.hmdevconsulting.vidoc.controller.ControllerFactory
+import com.hmdevconsulting.vidoc.exceptions.NoCursorPositionSelected
 import com.hmdevconsulting.vidoc.exceptions.NoWorkspaceOpened
 import com.hmdevconsulting.vidoc.model.VidocPluginState
 import com.hmdevconsulting.vidoc.ui.icons.VidocIcons
@@ -15,8 +16,6 @@ import com.intellij.openapi.ui.popup.JBPopupFactory
 import javax.swing.ListSelectionModel.SINGLE_SELECTION
 
 class RecordButtonAction : AnAction() {
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Default + job)
 
     override fun update(e: AnActionEvent) {
         if (e.project?.basePath == null) {
@@ -25,60 +24,99 @@ class RecordButtonAction : AnAction() {
         val controller = ControllerFactory.getController()
         controller.projectBasePath = e.project?.basePath;
         val presentation: Presentation = e.presentation
-        val icon: Icon = if (controller.state == VidocPluginState.IDLE) {
-            VidocIcons.RecordIcon
-        } else if (controller.state == VidocPluginState.RECORDING) {
-            VidocIcons.StopIcon
-        } else {
-            AnimatedIcon.Default()
+        when (ControllerFactory.getController().state) {
+            VidocPluginState.IDLE -> {
+                presentation.text = "Record Vidoc"
+                presentation.icon = VidocIcons.RecordIcon
+            }
+
+            VidocPluginState.WAITING_FOR_AUDIO_DEVICE_SELECT -> {
+                presentation.text = "Select Audio Device"
+                presentation.icon = VidocIcons.RecordIcon
+            }
+
+            VidocPluginState.WAITING_FOR_RECORDING_START -> {
+                presentation.text = "Starting Recording..."
+                AnimatedIcon.Default()
+            }
+
+            VidocPluginState.RECORDING -> {
+                presentation.text = "Recording..."
+                presentation.icon = VidocIcons.StopIcon
+            }
+
+            VidocPluginState.POSTPROCESSING -> {
+                presentation.text = "Postprocessing..."
+                presentation.icon = AnimatedIcon.Default()
+            }
         }
-        presentation.icon = icon
-        presentation.text = if (controller.state == VidocPluginState.IDLE) {
-            "Record Vidoc"
-        } else if (controller.state == VidocPluginState.RECORDING) {
-            "Recording Vidoc..."
-        } else {
-            "Postprocessing Vidoc..."
+    }
+
+    private fun requestAudioSelection(e: AnActionEvent) {
+        val focusPosition = EditorInfoUtil.getFocusInformation(e)
+        if (focusPosition == null) {
+            VidocNotifier.error(
+                "No cursor position selected",
+                "Please open a file and put your cursor in some line so we can annotate the file with the created Vidoc",
+                e.project
+            )
+            throw NoCursorPositionSelected()
         }
+        ControllerFactory.getController().state = VidocPluginState.WAITING_FOR_AUDIO_DEVICE_SELECT
+        val controller = ControllerFactory.getController()
+        controller.projectBasePath = e.project?.basePath
+        val audioDevices = controller.getAudioDevices()
+        val popup = JBPopupFactory.getInstance().createPopupChooserBuilder(audioDevices)
+            .setVisibleRowCount(7)
+            .setSelectionMode(SINGLE_SELECTION)
+            .setItemChosenCallback {
+                controller.selectedAudioDevice = it
+                controller.state = VidocPluginState.WAITING_FOR_RECORDING_START
+                controller.startRecording(
+                    focusPosition
+                )
+            }
+            .setCancelCallback {
+                abortDeviceSelection()
+                true
+            }
+            .createPopup()
+        val button = e.inputEvent.component
+
+        // Show the popup relative to the button
+        popup.showUnderneathOf(button)
+    }
+
+    private fun abortDeviceSelection() {
+        ControllerFactory.getController().state = VidocPluginState.IDLE
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        ControllerFactory.getController().state = VidocPluginState.WAITING_FOR_AUDIO_DEVICE_SELECT
-        scope.launch {
-            val controller = ControllerFactory.getController()
-            controller.projectBasePath = e.project?.basePath
-            val audioDevices = controller.getAudioDevices()
-            withContext(Dispatchers.Main) {
-                val popup = JBPopupFactory.getInstance().createPopupChooserBuilder(audioDevices)
-                    .setVisibleRowCount(7)
-                    .setSelectionMode(SINGLE_SELECTION)
-                    .setItemChosenCallback {
-                        controller.selectedAudioDevice = it
-                        controller.state = VidocPluginState.WAITING_FOR_RECORDING_START
-                        controller.startRecording()
-                    }
-                    .setCancelCallback {
-                        controller.state = VidocPluginState.IDLE
-                        true
-                    }
-                    .createPopup()
-                val button = e.inputEvent.component
+        when (ControllerFactory.getController().state) {
+            VidocPluginState.IDLE -> {
+                requestAudioSelection(e)
+                return;
+            }
 
-                // Show the popup relative to the button
-                popup.showUnderneathOf(button)
+            VidocPluginState.WAITING_FOR_AUDIO_DEVICE_SELECT -> {
+                abortDeviceSelection()
+                return;
+            }
+
+            VidocPluginState.WAITING_FOR_RECORDING_START -> {
+                ControllerFactory.getController().stopRecording()
+                return;
+            }
+
+            VidocPluginState.RECORDING -> {
+                ControllerFactory.getController().stopRecording()
+                return;
+            }
+
+            VidocPluginState.POSTPROCESSING -> {
+                // Cannot cancel postprocessing for now
+                return
             }
         }
-        /*scope.launch {
-            val controller = ControllerFactory.getAccessor()
-            controller.projectBasePath = e.project?.basePath
-            val config = controller.getConfig()
-            withContext(Dispatchers.Main) {
-                Messages.showMessageDialog(e.project, config.toString(), "Config Information", Messages.getInformationIcon())
-            }
-        }*/
-    }
-
-    fun dispose() {
-        job.cancel() // call this when the class instance is no longer needed
     }
 }

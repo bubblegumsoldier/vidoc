@@ -10,6 +10,7 @@ class CliCommandExecutor {
     @Throws(Exception::class)
     inline fun <reified T> performCommand(projectBasePath: String, action: String, arguments: Map<String, String> = emptyMap()): T {
         val command = CommandStringBuilder.buildCommandString(BinaryPathReceiver.getBinaryPath(), action, arguments)
+        println(command)
 
         val processBuilder = ProcessBuilder()
         val process = processBuilder

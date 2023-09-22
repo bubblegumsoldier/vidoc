@@ -10,14 +10,14 @@ import com.hmdevconsulting.vidoc.model.Vidoc
 class VidocCLIAccessor : VidocAccessor {
     private val cliCommandExecutor = CliCommandExecutor()
 
-    override suspend fun getConfig(projectBasePath: String): Config =
+    override fun getConfig(projectBasePath: String): Config =
         cliCommandExecutor.performCommand(projectBasePath, "getConfig")
 
-    override suspend fun parseFile(projectBasePath: String, filePath: String): List<PositionedVidocInstance> {
+    override fun parseFile(projectBasePath: String, filePath: String): List<PositionedVidocInstance> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun record(
+    override fun record(
         projectBasePath: String,
         audioDevice: String,
         focusInformation: FocusInformation
@@ -32,26 +32,26 @@ class VidocCLIAccessor : VidocAccessor {
         return CLIAsyncCommandExecutor().startCommand(commandString, projectBasePath)
     }
 
-    override suspend fun getAudioDevices(projectBasePath: String): List<String> =
+    override fun getAudioDevices(projectBasePath: String): List<String> =
         cliCommandExecutor.performCommand(projectBasePath, "getAudioDevices")
 
-    override suspend fun getVidocObject(projectBasePath: String, id: String): Vidoc {
+    override fun getVidocObject(projectBasePath: String, id: String): Vidoc {
         TODO("Not yet implemented")
     }
 
-    override suspend fun postProcessVidoc(projectBasePath: String, id: String): Vidoc {
+    override fun postProcessVidoc(projectBasePath: String, id: String): Vidoc {
         TODO("Not yet implemented")
     }
 
-    override suspend fun findUnusedFiles(projectBasePath: String): List<String> {
+    override fun findUnusedFiles(projectBasePath: String): List<String> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeUnusedFiles(projectBasePath: String): List<String> {
+    override fun removeUnusedFiles(projectBasePath: String): List<String> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getVidocs(projectBasePath: String): List<Vidoc> {
+    override fun getVidocs(projectBasePath: String): List<Vidoc> {
         TODO("Not yet implemented")
     }
 

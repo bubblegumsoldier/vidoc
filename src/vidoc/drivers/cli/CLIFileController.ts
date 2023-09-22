@@ -120,7 +120,10 @@ export class CLIFileController implements FileController {
   async getBinPath(binName: string): Promise<string> {
     // Assumes this exe to be under /dist/cli/bin/vidoc-win.exe or vidoc-macos
     // Assumes the ffmpeg binaries to be under /dist/cli/bin/ffmpeg-win.exe or ffmpet-darwin.exe
-    const binPath = path.join(path.dirname(process.execPath), `${binName}`);
+    let binPath = path.join(path.dirname(process.execPath), `${binName}`);
+    if(!(<any>process).pkg) {
+      binPath = path.join(__dirname, "bin", `${binName}`);
+    }
     if (await this.exists(binPath)) {
       return binPath;
     } else {
