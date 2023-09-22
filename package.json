@@ -85,16 +85,26 @@
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile": "webpack --config webpack.config.vscode.js",
+    "watch": "webpack --config webpack.config.vscode.js --watch",
+    "package": "webpack --config webpack.config.vscode.js --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "copy-binaries": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./bin/* ./dist/bin",
-    "package-win": "npm run package --script-shell=bash"
+    "package-win": "npm run package --script-shell=bash",
+    "cli:compile": "webpack --config webpack.config.cli.js",
+    "cli:package": "pkg .",
+    "cli:br": "npm run cli:compile && node ./dist/cli.js",
+    "cli": "node ./dist/cli.js"
+  },
+  "pkg": {
+    "scripts": [
+      "dist/cli/cli.js"
+    ],
+    "outputPath": "dist/cli/bin"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -119,6 +129,7 @@
     "@types/yauzl": "^2.10.0",
     "@vscode/vsce": "^2.21.0",
     "aws-sdk": "^2.1459.0",
+    "commander": "^11.0.0",
     "lodash": "^4.17.21",
     "node-fetch": "^3.3.2",
     "record-screen": "^3.19.0",

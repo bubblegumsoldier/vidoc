@@ -26,7 +26,7 @@ export class DefaultVidocFactory implements VidocFactory {
     private authorInformationRetriever: AuthorInformationRetriever
   ) {}
 
-  async createVidocObject(focusInformation: FocusInformation): Promise<Vidoc> {
+  async createVidocObject(focusInformation?: FocusInformation): Promise<Vidoc> {
     // First we will get the config. We will need it later
     const config = await this.configRetriever.getConfig();
 

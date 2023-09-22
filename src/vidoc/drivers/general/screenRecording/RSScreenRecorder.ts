@@ -22,20 +22,28 @@ export class RSScreenRecorder implements ScreenRecorder {
 
   constructor(
     @inject("FileController") private fileController: FileController,
-    @inject("AudioDeviceSelector") private audioDeviceSelector: AudioDeviceSelector,
     @inject("FFmpegInterface") private ffmpeg: FFmpegInterface,
+    @inject("AudioDeviceSelector")
+    private audioDeviceSelector: AudioDeviceSelector
   ) {}
 
   public async startRecording(vidoc: Vidoc): Promise<void> {
+    const audioDevice = await this.audioDeviceSelector.getAudioDevice();
+    if (!audioDevice) {
+      throw Error("Audio device needs to be selected first!");
+    }
+    return await this.startRecordingWithAudioDevice(vidoc, audioDevice);
+  }
+
+  public async startRecordingWithAudioDevice(
+    vidoc: Vidoc,
+    audioDevice: string
+  ): Promise<void> {
     const outputFile = this.fileController.getAbsolutePath(
       vidoc.tmpVideoFilePath
     );
     await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
-      const audioDevice = await this.audioDeviceSelector.getAudioDevice();
-      if (!audioDevice) {
-        throw Error("Audio device needs to be selected first!");
-      }
       console.log({ audioDevice });
       const { finish, stop } = await Recorder.recordActiveWindow({
         file: outputFile,
@@ -43,7 +51,7 @@ export class RSScreenRecorder implements ScreenRecorder {
         audio: true,
         audioDevice: audioDevice,
         ffmpeg: {
-          binary: await this.ffmpeg.getPathToFFmpegBinary()
+          binary: await this.ffmpeg.getPathToFFmpegBinary(),
         },
       });
       this.finishMethod = finish;

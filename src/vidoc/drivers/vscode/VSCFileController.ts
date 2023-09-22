@@ -46,7 +46,7 @@ export class VSCFileController implements FileController {
     return vscode.Uri.file(pathFull);
   }
 
-  async existsSync(file: string): Promise<boolean> {
+  async exists(file: string): Promise<boolean> {
     try {
       return (await vscode.workspace.fs.stat(this.getFileUri(file))).size > 0;
     } catch {
