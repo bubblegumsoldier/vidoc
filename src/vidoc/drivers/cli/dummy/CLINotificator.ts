@@ -7,12 +7,15 @@ import { Notificator } from "../../../interfaces/Notificator";
 export class CLINotificator implements Notificator
 {
     warn(message: string): void {
-        // don't print, we don't want to ruin the JSON output
+        console.warn(message);
     }
     error(message: string): void {
+        console.error(message);
     }
     success(message: string): void {
+        console.info(message);
     }
     info(message: string): void {
+        console.info(message);
     }
 }
