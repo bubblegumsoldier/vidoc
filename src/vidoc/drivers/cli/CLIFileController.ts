@@ -79,6 +79,6 @@ export class CLIFileController implements FileController {
         const dirents = await fs.readdir(resolvedPath, { withFileTypes: true });
         return dirents
             .filter(dirent => dirent.isFile())
-            .map(dirent => path.join(resolvedPath, dirent.name));
+            .map(dirent => dirent.name);
     }
 }

@@ -34,7 +34,7 @@ import { FileUploadPathGuesser } from "../vidoc/interfaces/FileUploadPathGuesser
 import { DefaultFileUploadPathGuesser } from "../vidoc/drivers/general/file-upload/DefaultFileUploadPathGuesser";
 import { VideoOpener } from "../vidoc/interfaces/VideoOpener";
 import { VSCVideoOpener } from "../vidoc/drivers/vscode/VSCVideoOpener";
-import { VSCVidocRepository } from "../vidoc/drivers/vscode/VSCVidocRepository";
+import { DefaultVidocRepository } from "../vidoc/drivers/general/DefaultVidocRepository";
 import { VidocRepository } from "../vidoc/interfaces/VidocRepository";
 import { VSCVidocTreeProvider } from "../vidoc/drivers/vscode/views/VSCVidocTreeProvider";
 import { PreferencesManager } from "../vidoc/interfaces/PreferencesManager";
@@ -102,7 +102,7 @@ container.register<VideoOpener>("VideoOpener", {
   useClass: VSCVideoOpener,
 });
 container.register<VidocRepository>("VidocRepository", {
-  useClass: VSCVidocRepository,
+  useClass: DefaultVidocRepository,
 });
 container.register<VSCVidocTreeProvider>("VSCVidocTreeProvider", {
   useClass: VSCVidocTreeProvider,

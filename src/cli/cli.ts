@@ -25,6 +25,18 @@ import { CLINotificator } from "../vidoc/drivers/cli/dummy/CLINotificator";
 import { CLIScreenRecorder } from "../vidoc/drivers/cli/CLIScreenRecorder";
 import { FFmpegInterface } from "../vidoc/interfaces/FFmpegInterface";
 import { FFmpegImplementation } from "../vidoc/drivers/general/screenRecording/FFmpegImplementation";
+import { DefaultVidocPostprocessor } from "../vidoc/drivers/general/DefaultVidocPostprocessor";
+import { FileUploadPostprocessor } from "../vidoc/drivers/general/file-upload/FileUploadPostprocessor";
+import { TmpToFilePostprocessor } from "../vidoc/drivers/general/file-upload/TmpToFilePostprocessor";
+import { AWSRemoteVideoUploader } from "../vidoc/drivers/general/file-upload/AWSRemoteVideoUploader";
+import { SpeechToTextPostprocessor } from "../vidoc/drivers/general/speech-to-text/SpeechToTextPostprocessor";
+import { AWSTranscribeSpeechToText } from "../vidoc/drivers/general/speech-to-text/AWSTranscribeSpeechToText";
+import { UnusedVidocRemover } from "../vidoc/interfaces/UnusedVidocRemover";
+import { DefaultUnusedVidocRemover } from "../vidoc/drivers/general/DefaultUnusedVidocRemover";
+import { VidocRepository } from "../vidoc/interfaces/VidocRepository";
+import { DefaultVidocRepository } from "../vidoc/drivers/general/DefaultVidocRepository";
+import { Prompter } from "../vidoc/interfaces/Prompter";
+import { CLIPrompter } from "../vidoc/drivers/cli/CLIPrompter";
 
 container.register<ConfigRetriever>("ConfigRetriever", {
   useClass: GitConfigRetriever,
@@ -61,6 +73,33 @@ container.register("CLIScreenRecorder", CLIScreenRecorder);
 container.register<FFmpegInterface>("FFmpegInterface", {
   useClass: FFmpegImplementation,
 });
+container.register<DefaultVidocPostprocessor>("DefaultVidocPostprocessor", {
+  useClass: DefaultVidocPostprocessor,
+});
+container.register<FileUploadPostprocessor>("FileUploadPostprocessor", {
+  useClass: FileUploadPostprocessor,
+});
+container.register<TmpToFilePostprocessor>("TmpToFilePostprocessor", {
+  useClass: TmpToFilePostprocessor,
+});
+container.register<AWSRemoteVideoUploader>("AWSRemoteVideoUploader", {
+  useClass: AWSRemoteVideoUploader,
+});
+container.register<SpeechToTextPostprocessor>("SpeechToTextPostprocessor", {
+  useClass: SpeechToTextPostprocessor,
+});
+container.register<AWSTranscribeSpeechToText>("AWSTranscribeSpeechToText", {
+  useClass: AWSTranscribeSpeechToText,
+});
+container.register<UnusedVidocRemover>("UnusedVidocRemover", {
+  useClass: DefaultUnusedVidocRemover,
+});
+container.register<VidocRepository>("VidocRepository", {
+  useClass: DefaultVidocRepository,
+});
+container.register<Prompter>("Prompter", {
+  useClass: CLIPrompter,
+});
 
 const configRetriever = container.resolve<ConfigRetriever>("ConfigRetriever");
 const codeParser = container.resolve<CodeParserAndWriter>(
@@ -71,6 +110,12 @@ const vidocFactory = container.resolve<VidocFactory>("VidocFactory");
 const ffmpeg = container.resolve<FFmpegInterface>("FFmpegInterface");
 const cliScreenRecorder =
   container.resolve<CLIScreenRecorder>("CLIScreenRecorder");
+const defaultPostProcessor = container.resolve<DefaultVidocPostprocessor>(
+  "DefaultVidocPostprocessor"
+);
+const unusedVidocRemover =
+  container.resolve<UnusedVidocRemover>("UnusedVidocRemover");
+const vidocRepository = container.resolve<VidocRepository>("VidocRepository");
 
 registerCommand(
   "getConfig",
@@ -127,6 +172,78 @@ registerCommand(
       type: "string",
     },
   ]
+);
+
+registerCommand(
+  "postProcessVidoc",
+  "Run the post processing chain for a freshly recorded Vidoc",
+  async (id: string) =>
+    await defaultPostProcessor.postprocessVidoc(
+      await vidocFactory.initVidocObject(id)
+    ),
+  [
+    {
+      key: "id",
+      required: true,
+      description: "Vidoc ID (e.g. <uuid>.mp4)",
+      type: "string",
+    },
+  ]
+);
+
+registerCommand(
+  "postProcessVidoc",
+  "Run the post processing chain for a freshly recorded Vidoc",
+  async (id: string) =>
+    await defaultPostProcessor.postprocessVidoc(
+      await vidocFactory.initVidocObject(id)
+    ),
+  [
+    {
+      key: "id",
+      required: true,
+      description: "Vidoc ID (e.g. <uuid>.mp4)",
+      type: "string",
+    },
+  ]
+);
+
+registerCommand(
+  "postProcessVidoc",
+  "Run the post processing chain for a freshly recorded Vidoc",
+  async (id: string) =>
+    await defaultPostProcessor.postprocessVidoc(
+      await vidocFactory.initVidocObject(id)
+    ),
+  [
+    {
+      key: "id",
+      required: true,
+      description: "Vidoc ID (e.g. <uuid>.mp4)",
+      type: "string",
+    },
+  ]
+);
+
+registerCommand(
+  "findUnusedFiles",
+  "Find Files in the S3 Bucket that are not referenced in this repository.",
+  async () =>
+    await unusedVidocRemover.findUnusedFiles(
+      (await vidocRepository.getAllVidocs()).map((v) => v.id)
+    )
+);
+
+registerCommand(
+  "removeUnusedFiles",
+  "Find Files in the S3 Bucket that are not referenced in this repository and remove them.",
+  async () => await unusedVidocRemover.removeUnusedVidocs()
+);
+
+registerCommand(
+  "getVidocs",
+  "List all vidocs including all metadata of the project",
+  async () => await vidocRepository.getAllVidocs()
 );
 
 program.parse(process.argv);

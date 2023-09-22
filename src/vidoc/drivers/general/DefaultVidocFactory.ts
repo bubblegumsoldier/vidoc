@@ -95,6 +95,7 @@ export class DefaultVidocFactory implements VidocFactory {
       );
       return vidoc;
     } catch (e) {
+      console.error(e);
       throw Error(`Could not parse vidoc file ${id}`);
     }
   }
