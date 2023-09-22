@@ -58,6 +58,10 @@
       {
         "command": "vidoc.wininfo",
         "title": "[Vidoc] wininfo"
+      },
+      {
+        "command": "vidoc.removeUnusedVidocs",
+        "title": "[Vidoc] Remove unreferenced remote files"
       }
     ],
     "viewsContainers": {

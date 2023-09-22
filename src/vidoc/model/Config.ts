@@ -35,6 +35,7 @@ export class SavingStrategyLocal {
 export class SavingStrategyRemote {
   type = "remote" as const;
   s3?: SavingInformationAWSS3;
+  s3Administration?: SavingInformationAWSS3;
   folder: string = ".vidoc";
 }
 

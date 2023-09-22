@@ -118,6 +118,16 @@ Here's a brief overview of what each field in the configuration means:
        * `awsTranscribe`: Can be used to configure aws transcribe in your projects
 
 
+#### Removing unused videos
+
+Let's say you have just pressed record and recorded a video that was not on the standard of quality you would like. So you remove the newly generated vidoc metadata file. But the file has already been uploaded. This can happen frequently and your S3 Bucket fills up over time with unreferenced videos. To "garbage-collect" these files you can run the command `[Vidoc] Remove unreferenced Remote Files`. You will need to have an S3 user with rights to list and delete files in order to perform this command. If you don't want to reuse the normal uploading credentials you can enter an `s3Administration` key into `savingStrategy` next to your existing `s3` key and fill in the same values just for the administration account. That way you can provide others with only the upload credentials and not with the administration credentials.
+
+The command will find in the bucket all files for which there is no vidoc metadata file in this repository under `./.vidoc`. It will then ask you if you want to delete these files. 
+
+**Caution!** If you are using the same bucket for another repository then it would remove the videos that are referenced there. Create a new bucket for each repository!
+
+**Caution 2!** Remember that Vidoc can only see what Vidocs are on your branch. If a colleague has added a Vidoc in another branch you might just be removing it for him.
+
 ## Contribution Guidelines
 
 
@@ -137,7 +147,7 @@ Please ensure your Pull Request adheres to the following guidelines:
 
 Thank you for your interest in improving ViDoc!
 
-## Introduction Vidoc
+## Introduction Vidoc Code
 
 ![:vidoc 014151df-545b-4ff5-a305-12de6c036c16.mp4](https://vidoc.s3.eu-central-1.amazonaws.com/014151df-545b-4ff5-a305-12de6c036c16.mp4)
 
