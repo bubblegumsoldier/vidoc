@@ -23,7 +23,9 @@ import path = require("path");
 import { VidocRepository } from "../../interfaces/VidocRepository";
 import { VSCVidocTreeProvider } from "./views/VSCVidocTreeProvider";
 import { AudioDeviceSelector } from "../../interfaces/AudioDeviceSelector";
+import { UnusedVidocRemover } from "../../interfaces/UnusedVidocRemover";
 
+/* :vidoc 957baf1b-117e-4d5e-b706-4d4d8cf416aa.mp4 */
 @singleton()
 export class VSCController implements EditorController {
   statusBarItem?: vscode.StatusBarItem;
@@ -41,10 +43,13 @@ export class VSCController implements EditorController {
     @inject("VSCHoverProvider") private hoverProvider: VSCHoverProvider,
     @inject("Notificator") private notificator: Notificator,
     @inject("VideoOpener") private videoOpener: VideoOpener,
-    @inject("VSCVidocTreeProvider") private vidocTreeProvider: VSCVidocTreeProvider,
-    @inject("AudioDeviceSelector") private audioDeviceSelector: AudioDeviceSelector,
+    @inject("VSCVidocTreeProvider")
+    private vidocTreeProvider: VSCVidocTreeProvider,
+    @inject("AudioDeviceSelector")
+    private audioDeviceSelector: AudioDeviceSelector,
     @inject("DefaultVidocPostprocessor")
-    private vidocPostprocessor: DefaultVidocPostprocessor
+    private vidocPostprocessor: DefaultVidocPostprocessor,
+    @inject("UnusedVidocRemover") private unusedVidocRemover: UnusedVidocRemover
   ) {
     this.vidocTreeView = vscode.window.createTreeView("vidocView", {
       treeDataProvider: this.vidocTreeProvider,
@@ -266,22 +271,10 @@ export class VSCController implements EditorController {
       }
     );
 
-    /**
-     * Left view opening file at position
-     */
-    let openFileAtPosition = vscode.commands.registerCommand(
-      "extension.openFileAtPosition",
-      async (relativeFilePath, lineIndex, charIndex) => {
-        const absolutePath = vscode.Uri.file(
-          vscode.workspace.workspaceFolders![0].uri.fsPath +
-            "/" +
-            relativeFilePath
-        );
-        const document = await vscode.workspace.openTextDocument(absolutePath);
-        const editor = await vscode.window.showTextDocument(document);
-
-        const position = new vscode.Position(lineIndex, charIndex);
-        editor.selection = new vscode.Selection(position, position);
+    let removeUnusedVidocs = vscode.commands.registerCommand(
+      "vidoc.removeUnusedVidocs",
+      async () => {
+        await this.unusedVidocRemover.removeUnusedVidocs();
       }
     );
 
@@ -296,12 +289,12 @@ export class VSCController implements EditorController {
     context.subscriptions.push(readConfig);
     context.subscriptions.push(startRecording);
     context.subscriptions.push(stopRecording);
-    context.subscriptions.push(openFileAtPosition);
+    context.subscriptions.push(removeUnusedVidocs);
     context.subscriptions.push(winInfoCmd);
     context.subscriptions.push(updateDecorations);
     context.subscriptions.push(openVideo);
     context.subscriptions.push(selectAudioDevice);
-    
+
     this.registerRecalculationOfHighlightings(context);
 
     this.initStatusBarItem();

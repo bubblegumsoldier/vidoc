@@ -5,11 +5,7 @@
 
 ## Simple introduction video
 
-<img src="https://github.com/bubblegumsoldier/vidoc/assets/3788628/27280d02-a6ea-4180-99ec-f7b174d4ec6f" alt="CLICK HERE for Vidoc Example Usage in Loom" />
-
 [CLICK HERE for Vidoc Example Usage in Loom](https://www.loom.com/share/ecb3abd8e7dc4b77b224b96b1e8e56e8?sid=ea4755ac-b948-4562-9876-0170f77c4427)
-
-<img src="https://github.com/bubblegumsoldier/vidoc/assets/3788628/27280d02-a6ea-4180-99ec-f7b174d4ec6f" alt="CLICK HERE for Vidoc Example Usage in Loom" />
 
 [CLICK HERE for Vidoc Advanced Configuration in Loom](https://www.loom.com/share/ee831812754c487bbac3d072dd8c14fe?sid=73af1439-9825-4be0-bc0b-5349bc5972c5)
 
@@ -18,6 +14,23 @@
 In modern software development, clear and comprehensive documentation is key. ViDoc is a VS Code extension that aims to revolutionize how documentation is done by incorporating audio-visual elements directly into your code. The extension enables users to record their screen, providing real-time context and commentary on their actions. The result? Documentation that feels like a pair-programming session.
 
 ViDoc aims to promote collaboration, enhance code comprehension, and simplify the documentation process by providing an intuitive, engaging and interactive way to explain complex code snippets. Rather than just reading about how a piece of code works, ViDoc allows you to show, tell, and share in a more dynamic way.
+
+## When to use Vidoc
+
+Video's are a bit like voice-messages. People love to send them but don't like to receive them. It is a sender-friendly medium not a receiver-friendly medium. This gives some hints on when we think it should be used:
+
+**Do's:**
+
+- Do use Vidocs for very complex classes that have interdependencies with other classes
+- Do use Vidoc when you want to explain how different parts of the software relate to one another
+- Do use Vidoc if it is easier for you than writing long paragraphs and the alternative would be no documentation at all
+- Do use Vidoc as an additional alternative to text (some people prefer video tutorials, some text)
+
+*Don'ts:*
+
+- Don't use Vidocs for very frequently accessed documentation like public documentation for a library, people tend to skim rather than having to watch a video
+- Don't use Vidocs for simple documentation where a text suffices
+- Don't record Vidocs longer than 10 Minutes - you're not shooting a movie here
 
 ## Storing video recordings within the repository
 
@@ -49,6 +62,7 @@ Example `.vidocconf.json`:
 
 ```json
 {
+    "$schema": "https://raw.githubusercontent.com/bubblegumsoldier/vidoc/main/config-schema.json",
     "savingStrategy": {
         "type": "remote",
         "s3": {
@@ -105,6 +119,16 @@ Here's a brief overview of what each field in the configuration means:
        * `awsTranscribe`: Can be used to configure aws transcribe in your projects
 
 
+#### Removing unused videos
+
+Let's say you have just pressed record and recorded a video that was not on the standard of quality you would like. So you remove the newly generated vidoc metadata file. But the file has already been uploaded. This can happen frequently and your S3 Bucket fills up over time with unreferenced videos. To "garbage-collect" these files you can run the command `[Vidoc] Remove unreferenced Remote Files`. You will need to have an S3 user with rights to list and delete files in order to perform this command. If you don't want to reuse the normal uploading credentials you can enter an `s3Administration` key into `savingStrategy` next to your existing `s3` key and fill in the same values just for the administration account. That way you can provide others with only the upload credentials and not with the administration credentials.
+
+The command will find in the bucket all files for which there is no vidoc metadata file in this repository under `./.vidoc`. It will then ask you if you want to delete these files. 
+
+**Caution!** If you are using the same bucket for another repository then it would remove the videos that are referenced there. Create a new bucket for each repository!
+
+**Caution 2!** Remember that Vidoc can only see what Vidocs are on your branch. If a colleague has added a Vidoc in another branch you might just be removing it for him.
+
 ## Contribution Guidelines
 
 
@@ -123,6 +147,10 @@ Please ensure your Pull Request adheres to the following guidelines:
 - Make sure your PR passes all our automated tests and if it doesn't, provide a clear explanation of why.
 
 Thank you for your interest in improving ViDoc!
+
+## Introduction Vidoc Code
+
+![:vidoc 014151df-545b-4ff5-a305-12de6c036c16.mp4](https://vidoc.s3.eu-central-1.amazonaws.com/014151df-545b-4ff5-a305-12de6c036c16.mp4)
 
 ## License
 
