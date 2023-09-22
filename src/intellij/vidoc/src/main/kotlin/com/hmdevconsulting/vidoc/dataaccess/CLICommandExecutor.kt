@@ -1,18 +1,15 @@
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.hmdevconsulting.vidoc.dataaccess.BinaryPathReceiver
+import com.hmdevconsulting.vidoc.dataaccess.CommandStringBuilder
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 
 class CliCommandExecutor {
-
-    private fun getBinaryPath(): String {
-        return "C:\\Users\\hmues\\repos\\vidoc\\dist\\cli\\bin\\vidoc-win.exe"
-    }
-
     @Throws(Exception::class)
     inline fun <reified T> performCommand(projectBasePath: String, action: String, arguments: Map<String, String> = emptyMap()): T {
-        val command = buildCommandString(action, arguments)
+        val command = CommandStringBuilder.buildCommandString(BinaryPathReceiver.getBinaryPath(), action, arguments)
 
         val processBuilder = ProcessBuilder()
         val process = processBuilder
@@ -37,10 +34,5 @@ class CliCommandExecutor {
         } catch (e: JsonSyntaxException) {
             throw Exception("Failed to parse output to ${T::class.java.simpleName}: $output", e)
         }
-    }
-
-    public fun buildCommandString(action: String, arguments: Map<String, String>): String {
-        val argumentsString = arguments.entries.joinToString(" ") { "--${it.key}=${it.value}" }
-        return "${getBinaryPath()} $action $argumentsString"
     }
 }

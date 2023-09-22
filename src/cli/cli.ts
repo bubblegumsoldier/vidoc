@@ -143,12 +143,39 @@ registerCommand(
 registerCommand(
   "record",
   "Start Recording. Press Ctrl + C to stop and trigger upload + postprocessing.",
-  async (audioDevice: string) => await cliScreenRecorder.run(audioDevice),
+  async (audioDevice: string, focusInformation?: string) =>
+    await cliScreenRecorder.run(
+      audioDevice,
+      focusInformation ? JSON.parse(focusInformation) : undefined
+    ),
   [
     {
       key: "audioDevice",
       required: true,
       description: "Audio Device ID",
+      type: "string",
+    },
+    {
+      key: "focusInformation",
+      required: false,
+      description: "JSON of the focusInformation",
+      type: "string",
+    },
+  ]
+);
+
+registerCommand(
+  "getStringToAppend",
+  "Get String to append to line in vidoc based on its metadata.",
+  async (vidocId: string) =>
+    await codeParser.getStringToAppend(
+      await vidocFactory.initVidocObject(vidocId)
+    ),
+  [
+    {
+      key: "vidocId",
+      required: true,
+      description: "Vidoc ID",
       type: "string",
     },
   ]

@@ -1,6 +1,7 @@
 package com.hmdevconsulting.vidoc.dataaccess
 
 import com.hmdevconsulting.vidoc.model.Config
+import com.hmdevconsulting.vidoc.model.FocusInformation
 import com.hmdevconsulting.vidoc.model.PositionedVidocInstance
 import com.hmdevconsulting.vidoc.model.Vidoc
 
@@ -9,7 +10,7 @@ interface VidocAccessor {
 
     suspend fun parseFile(projectBasePath: String, filePath: String): List<PositionedVidocInstance>
 
-    suspend fun record(projectBasePath: String, audioDevice: String): Vidoc
+    suspend fun record(projectBasePath: String, audioDevice: String, focusInformation: FocusInformation): CLIAsyncCommandExecutor.ProcessWrapper
 
     suspend fun getAudioDevices(projectBasePath: String): List<String>
 

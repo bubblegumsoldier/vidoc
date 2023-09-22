@@ -45,13 +45,11 @@ data class EditorSelection(
     val text: String
 )
 
-data class GivenFocusInformation(
+data class FocusInformation(
     val cursorPosition: EditorPosition,
     val currentSelection: EditorSelection,
     val currentlyOpenedFileRelativeFilePath: String
 )
-
-typealias FocusInformation = GivenFocusInformation?
 
 data class GivenAuthorInformation(
     val username: String? = null,

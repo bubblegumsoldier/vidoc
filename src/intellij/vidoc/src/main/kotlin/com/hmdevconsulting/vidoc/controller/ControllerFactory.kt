@@ -5,5 +5,5 @@ import com.hmdevconsulting.vidoc.dataaccess.VidocCLIAccessor
 
 object ControllerFactory {
     private val instance: VidocIntelliJController = VidocIntelliJController()
-    fun getAccessor(): VidocIntelliJController = instance
+    fun getController(): VidocIntelliJController = instance
 }
