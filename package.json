@@ -16,6 +16,7 @@
   "engines": {
     "vscode": "^1.80.0"
   },
+  "bin": "./dist/cli.js",
   "categories": [
     "Other"
   ],
@@ -94,15 +95,16 @@
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
     "copy-binaries": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./bin/* ./dist/bin",
+    "cli:copy-binaries": "mkdir -p ./dist/cli/bin && cp -r -f ./node_modules/@arcsine/win-info/bin/* ./dist/cli/bin && cp -r -f ./bin/* ./dist/cli/bin",
     "package-win": "npm run package --script-shell=bash",
     "cli:compile": "webpack --config webpack.config.cli.js",
-    "cli:package": "pkg .",
+    "cli:package": "npm run cli:compile && pkg .",
     "cli:br": "npm run cli:compile && node ./dist/cli.js",
     "cli": "node ./dist/cli.js"
   },
   "pkg": {
     "scripts": [
-      "dist/cli/cli.js"
+      "dist/cli.js"
     ],
     "outputPath": "dist/cli/bin"
   },
