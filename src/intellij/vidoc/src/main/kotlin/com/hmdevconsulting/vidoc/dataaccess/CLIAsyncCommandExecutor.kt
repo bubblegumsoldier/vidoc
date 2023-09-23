@@ -33,7 +33,7 @@ class CLIAsyncCommandExecutor {
                     println("Line is null, breaking")
                     break
                 }
-                if(!line.startsWith("{") && !line.startsWith("[") && !jsonHasStarted) {
+                if (!line.startsWith("{") && !line.startsWith("[") && !jsonHasStarted) {
                     println("Received non-json line")
                     continue
                 }
@@ -51,7 +51,11 @@ class CLIAsyncCommandExecutor {
         return processWrapper
     }
 
-    inner class ProcessWrapper(private val process: Process, public var output: String?, public var readerThread: Thread? = null) {
+    inner class ProcessWrapper(
+        private val process: Process,
+        public var output: String?,
+        public var readerThread: Thread? = null
+    ) {
         fun sendInterrupt() {
             val os = System.getProperty("os.name").lowercase()
             when {
@@ -66,6 +70,7 @@ class CLIAsyncCommandExecutor {
                         e.printStackTrace()
                     }
                 }
+
                 os.contains("mac") || os.contains("nix") || os.contains("nux") || os.contains("aix") -> {
                     // On Unix-based systems, send a SIGINT
                     val pid = getPid()
@@ -77,6 +82,7 @@ class CLIAsyncCommandExecutor {
                         }
                     }
                 }
+
                 else -> println("Unsupported operating system")
             }
         }
@@ -95,7 +101,7 @@ class CLIAsyncCommandExecutor {
         fun stop(): Vidoc {
             sendInterrupt()
             val exitCode = waitFor()
-            if(output == null) {
+            if (output == null) {
                 process.destroy()
                 println("Process exited with code $exitCode")
                 readerThread?.interrupt()

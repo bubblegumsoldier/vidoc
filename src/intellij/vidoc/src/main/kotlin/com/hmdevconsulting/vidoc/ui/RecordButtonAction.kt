@@ -1,6 +1,6 @@
 package com.hmdevconsulting.vidoc.ui
 
-import com.hmdevconsulting.vidoc.controller.ControllerFactory
+import com.hmdevconsulting.vidoc.controller.VidocIntelliJController
 import com.hmdevconsulting.vidoc.exceptions.NoCursorPositionSelected
 import com.hmdevconsulting.vidoc.exceptions.NoWorkspaceOpened
 import com.hmdevconsulting.vidoc.model.VidocPluginState
@@ -8,6 +8,8 @@ import com.hmdevconsulting.vidoc.ui.icons.VidocIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import javax.swing.Icon
 import com.intellij.ui.AnimatedIcon
@@ -18,13 +20,9 @@ import javax.swing.ListSelectionModel.SINGLE_SELECTION
 class RecordButtonAction : AnAction() {
 
     override fun update(e: AnActionEvent) {
-        if (e.project?.basePath == null) {
-            return;
-        }
-        val controller = ControllerFactory.getController()
-        controller.projectBasePath = e.project?.basePath;
+        var controller = e.project?.service<VidocIntelliJController>() ?: return
         val presentation: Presentation = e.presentation
-        when (ControllerFactory.getController().state) {
+        when (controller.state) {
             VidocPluginState.IDLE -> {
                 presentation.text = "Record Vidoc"
                 presentation.icon = VidocIcons.RecordIcon
@@ -62,9 +60,8 @@ class RecordButtonAction : AnAction() {
             )
             throw NoCursorPositionSelected()
         }
-        ControllerFactory.getController().state = VidocPluginState.WAITING_FOR_AUDIO_DEVICE_SELECT
-        val controller = ControllerFactory.getController()
-        controller.projectBasePath = e.project?.basePath
+        var controller = e.project?.service<VidocIntelliJController>()
+        controller?: throw Exception("Controller not found")
         val audioDevices = controller.getAudioDevices()
         val popup = JBPopupFactory.getInstance().createPopupChooserBuilder(audioDevices)
             .setVisibleRowCount(7)
@@ -73,11 +70,11 @@ class RecordButtonAction : AnAction() {
                 controller.selectedAudioDevice = it
                 controller.state = VidocPluginState.WAITING_FOR_RECORDING_START
                 controller.startRecording(
-                    focusPosition
+                    e
                 )
             }
             .setCancelCallback {
-                abortDeviceSelection()
+                abortDeviceSelection(e)
                 true
             }
             .createPopup()
@@ -87,29 +84,33 @@ class RecordButtonAction : AnAction() {
         popup.showUnderneathOf(button)
     }
 
-    private fun abortDeviceSelection() {
-        ControllerFactory.getController().state = VidocPluginState.IDLE
+    private fun abortDeviceSelection(e: AnActionEvent) {
+        var controller = e.project?.service<VidocIntelliJController>()
+        controller?: throw Exception("Controller not found")
+        controller.state = VidocPluginState.IDLE
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        when (ControllerFactory.getController().state) {
+        var controller = e.project?.service<VidocIntelliJController>()
+        controller?: throw Exception("Controller not found")
+        when (controller.state) {
             VidocPluginState.IDLE -> {
                 requestAudioSelection(e)
                 return;
             }
 
             VidocPluginState.WAITING_FOR_AUDIO_DEVICE_SELECT -> {
-                abortDeviceSelection()
+                abortDeviceSelection(e)
                 return;
             }
 
             VidocPluginState.WAITING_FOR_RECORDING_START -> {
-                ControllerFactory.getController().stopRecording()
+                controller.stopRecording(e)
                 return;
             }
 
             VidocPluginState.RECORDING -> {
-                ControllerFactory.getController().stopRecording()
+                controller.stopRecording(e)
                 return;
             }
 

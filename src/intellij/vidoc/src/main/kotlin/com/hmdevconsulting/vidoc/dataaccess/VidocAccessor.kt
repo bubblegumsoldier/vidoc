@@ -10,11 +10,14 @@ interface VidocAccessor {
 
     fun parseFile(projectBasePath: String, filePath: String): List<PositionedVidocInstance>
 
-    fun record(projectBasePath: String, audioDevice: String, focusInformation: FocusInformation): CLIAsyncCommandExecutor.ProcessWrapper
+    fun record(projectBasePath: String, vidocId: String, audioDevice: String): CLIAsyncCommandExecutor.ProcessWrapper
 
     fun getAudioDevices(projectBasePath: String): List<String>
 
     fun getVidocObject(projectBasePath: String, id: String): Vidoc
+
+    fun prepareVidocObject(projectBasePath: String, focusInformation: FocusInformation): Vidoc
+    fun getStringToAppend(projectBasePath: String, vidocId: String): String
 
     fun postProcessVidoc(projectBasePath: String, id: String): Vidoc
 

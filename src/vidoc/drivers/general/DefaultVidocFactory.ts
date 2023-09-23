@@ -69,8 +69,7 @@ export class DefaultVidocFactory implements VidocFactory {
     }
 
     this.updateVidocMetadataFile(vidoc);
-
-    return vidoc;
+    return await this.initVidocObject(vidoc.id);
   }
 
   private getRelativeFilePathMetadata(config: Config, id: string): string {

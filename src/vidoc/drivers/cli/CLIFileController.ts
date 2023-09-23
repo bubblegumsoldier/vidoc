@@ -61,7 +61,12 @@ export class CLIFileController implements FileController {
     const resolvedPath = relative
       ? path.resolve(process.cwd(), filePath)
       : filePath;
+    console.log(`Writing file ${resolvedPath}`);
+    console.log(`Content ${content}`)
     await fs.writeFile(resolvedPath, content, "utf-8");
+    if(await fs.readFile(resolvedPath, "utf-8") !== content) {
+      throw Error('Writing content did not really work')
+    }
   }
 
   getAbsolutePath(relativePath: string): string {
@@ -112,9 +117,11 @@ export class CLIFileController implements FileController {
   }
 
   async generateTmpFilePath(id: string): Promise<string> {
-    const tmpDir = os.tmpdir();
-    const tmpFilePath = path.join(tmpDir, id);
-    return tmpFilePath;
+    const tmpDir = path.join(process.cwd(), ".vidoc", "tmp");
+    if(!(await this.exists(tmpDir))) {
+      await fs.mkdir(tmpDir);
+    }
+    return path.join(tmpDir, id);
   }
 
   async getBinPath(binName: string): Promise<string> {

@@ -1,10 +1,12 @@
 import { program } from "commander";
+import { Buffer } from 'buffer'; // Import Buffer module
 
 export type CommandArg = {
   key: string;
   required: boolean;
   description: string;
   type: "string" | "boolean" | "number";
+  isBase64?: boolean;
 };
 
 export function registerCommand(
@@ -42,7 +44,14 @@ export function registerCommand(
     }
 
     try {
-      const params = args.map((arg) => cmdObj[arg.key]);
+      const params = args.map((arg) => {
+        // If the argument is marked as Base64, decode it
+        if (arg.isBase64) {
+          return Buffer.from(cmdObj[arg.key], 'base64').toString('utf-8');
+        }
+        return cmdObj[arg.key];
+      });
+      
       const result = await action(...params);
       
       // Restore original console methods before final output

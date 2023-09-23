@@ -11,10 +11,10 @@ export class CLIScreenRecorder {
     @inject("VidocFactory") private vidocFactory: VidocFactory
   ) {}
 
-  public run(audioDevice: string, focusInformation?: FocusInformation): Promise<Vidoc> {
+  public run(vidocId: string, audioDevice: string): Promise<Vidoc> {
     return new Promise(async (resolve, reject) => {
       try {
-        const vidoc = await this.vidocFactory.createVidocObject(focusInformation);
+        const vidoc = await this.vidocFactory.initVidocObject(vidocId);
         await this.screenRecorder.startRecordingWithAudioDevice(vidoc, audioDevice);
 
         process.stdin.setEncoding('utf8');
@@ -29,7 +29,7 @@ export class CLIScreenRecorder {
 
           process.off("SIGINT", stopAndResolve);
           process.off("SIGTERM", stopAndResolve);
-          
+
           resolve(vidoc);
         };
 

@@ -37,6 +37,7 @@ import { VidocRepository } from "../vidoc/interfaces/VidocRepository";
 import { DefaultVidocRepository } from "../vidoc/drivers/general/DefaultVidocRepository";
 import { Prompter } from "../vidoc/interfaces/Prompter";
 import { CLIPrompter } from "../vidoc/drivers/cli/CLIPrompter";
+import { FocusInformation } from "../vidoc/model/FocusInformation";
 
 container.register<ConfigRetriever>("ConfigRetriever", {
   useClass: GitConfigRetriever,
@@ -143,23 +144,39 @@ registerCommand(
 registerCommand(
   "record",
   "Start Recording. Press Ctrl + C to stop and trigger upload + postprocessing.",
-  async (audioDevice: string, focusInformation?: string) =>
+  async (vidocId: string, audioDevice: string) =>
     await cliScreenRecorder.run(
-      audioDevice,
-      focusInformation ? JSON.parse(focusInformation) : undefined
+      vidocId,
+      audioDevice
     ),
   [
+    {
+      key: "vidocId",
+      required: true,
+      description: "Vidoc ID",
+      type: "string",
+    },
     {
       key: "audioDevice",
       required: true,
       description: "Audio Device ID",
       type: "string",
     },
+  ]
+);
+
+registerCommand(
+  "prepareVidoc",
+  "Prepare a Vidoc before you will then record the MP4 for it. This will create the metadata file.",
+  async (focusInformationJson: string) =>
+    await vidocFactory.createVidocObject(JSON.parse(focusInformationJson)),
+  [
     {
       key: "focusInformation",
       required: false,
       description: "JSON of the focusInformation",
       type: "string",
+      isBase64: true
     },
   ]
 );
@@ -204,13 +221,13 @@ registerCommand(
 registerCommand(
   "postProcessVidoc",
   "Run the post processing chain for a freshly recorded Vidoc",
-  async (id: string) =>
+  async (vidocId: string) =>
     await defaultPostProcessor.postprocessVidoc(
-      await vidocFactory.initVidocObject(id)
+      await vidocFactory.initVidocObject(vidocId)
     ),
   [
     {
-      key: "id",
+      key: "vidocId",
       required: true,
       description: "Vidoc ID (e.g. <uuid>.mp4)",
       type: "string",

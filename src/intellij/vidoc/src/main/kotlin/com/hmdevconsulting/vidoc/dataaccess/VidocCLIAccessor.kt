@@ -17,16 +17,32 @@ class VidocCLIAccessor : VidocAccessor {
         TODO("Not yet implemented")
     }
 
+    override fun prepareVidocObject(projectBasePath: String, focusInformation: FocusInformation): Vidoc {
+        val focusInformationJsonString: String = Gson().toJson(focusInformation)
+        return cliCommandExecutor.performCommand(
+            projectBasePath, "prepareVidoc", mapOf(
+                "focusInformation" to focusInformationJsonString
+            ), listOf("focusInformation")
+        )
+    }
+
+
+    override fun getStringToAppend(projectBasePath: String, vidocId: String): String =
+        cliCommandExecutor.performCommand(
+            projectBasePath, "getStringToAppend", mapOf(
+                "vidocId" to vidocId
+            )
+        )
+
     override fun record(
         projectBasePath: String,
-        audioDevice: String,
-        focusInformation: FocusInformation
+        vidocId: String,
+        audioDevice: String
     ): CLIAsyncCommandExecutor.ProcessWrapper {
-        val focusInformationJsonString: String = Gson().toJson(focusInformation)
         val commandString = CommandStringBuilder.buildCommandString(
             BinaryPathReceiver.getBinaryPath(), "record", mapOf(
-                "focusInformation" to focusInformationJsonString,
-                "audioDevice" to audioDevice
+                "audioDevice" to audioDevice,
+                "vidocId" to vidocId
             )
         );
         return CLIAsyncCommandExecutor().startCommand(commandString, projectBasePath)
@@ -35,13 +51,17 @@ class VidocCLIAccessor : VidocAccessor {
     override fun getAudioDevices(projectBasePath: String): List<String> =
         cliCommandExecutor.performCommand(projectBasePath, "getAudioDevices")
 
-    override fun getVidocObject(projectBasePath: String, id: String): Vidoc {
-        TODO("Not yet implemented")
-    }
+    override fun getVidocObject(projectBasePath: String, vidocId: String): Vidoc = cliCommandExecutor.performCommand(
+        projectBasePath, "getVidocObject", mapOf(
+            "vidocId" to vidocId
+        )
+    )
 
-    override fun postProcessVidoc(projectBasePath: String, id: String): Vidoc {
-        TODO("Not yet implemented")
-    }
+    override fun postProcessVidoc(projectBasePath: String, vidocId: String): Vidoc = cliCommandExecutor.performCommand(
+        projectBasePath, "postProcessVidoc", mapOf(
+            "vidocId" to vidocId
+        )
+    )
 
     override fun findUnusedFiles(projectBasePath: String): List<String> {
         TODO("Not yet implemented")

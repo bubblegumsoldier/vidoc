@@ -8,8 +8,12 @@ import java.io.InputStreamReader
 
 class CliCommandExecutor {
     @Throws(Exception::class)
-    inline fun <reified T> performCommand(projectBasePath: String, action: String, arguments: Map<String, String> = emptyMap()): T {
-        val command = CommandStringBuilder.buildCommandString(BinaryPathReceiver.getBinaryPath(), action, arguments)
+    inline fun <reified T> performCommand(
+        projectBasePath: String, action: String, arguments: Map<String, String> = emptyMap(),
+        base64Keys: List<String>? = null
+    ): T {
+        val command =
+            CommandStringBuilder.buildCommandString(BinaryPathReceiver.getBinaryPath(), action, arguments, base64Keys)
         println(command)
 
         val processBuilder = ProcessBuilder()
