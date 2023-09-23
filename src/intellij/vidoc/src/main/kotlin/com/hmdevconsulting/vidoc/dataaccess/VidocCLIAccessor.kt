@@ -53,7 +53,7 @@ class VidocCLIAccessor : VidocAccessor {
 
     override fun getVidocObject(projectBasePath: String, vidocId: String): Vidoc = cliCommandExecutor.performCommand(
         projectBasePath, "getVidocObject", mapOf(
-            "vidocId" to vidocId
+            "id" to vidocId
         )
     )
 

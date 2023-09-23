@@ -44,6 +44,10 @@ class VidocIntelliJController(
         return vidocAccessor.getAudioDevices(project.basePath?: throw NoWorkspaceOpened())
     }
 
+    fun getVidoc(vidocId: String): Vidoc {
+        return vidocAccessor.getVidocObject(project.basePath?: throw NoWorkspaceOpened(), vidocId);
+    }
+
     fun startRecording(e: AnActionEvent) {
         val basePath = project.basePath?: throw NoWorkspaceOpened()
         val focusInformation = EditorInfoUtil.getFocusInformation(e) ?: throw NoCursorPositionSelected()

@@ -25,7 +25,6 @@ intellij {
     type.set("IC") // Target IDE Platform
 
     plugins.set(listOf(
-        "Pythonid:$depsPyVersion"
     ))
 }
 
