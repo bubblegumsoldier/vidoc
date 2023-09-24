@@ -1,16 +1,61 @@
-name: Create VSIX package
+name: Create and Publish Packages
 
 on:
   push:
-    branches:
-      - '**'
     tags:
-      - '**'
-
+      - 'artifact/*'
+      - 'publish/*'
 
 jobs:
-  build-and-release:
+  build-intellij:
     runs-on: ubuntu-latest
+    if: contains(github.ref, '/intellij/')
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build pkg
+      run: |
+        yarn run cli:package
+        yarn run cli:copy-binaries
+        yarn run prepare-intellij-bins
+
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+      
+    - name: Update Version
+      run: |
+        VERSION=${GITHUB_REF#*/*/}
+        sed -i 's/^pluginVersion=.*/pluginVersion='"$VERSION"'/' gradle.properties
+
+    - name: Build and Sign IntelliJ Plugin
+      working-directory: ./src/intellij/vidoc
+      run: |
+        ./gradlew buildPlugin
+        ./gradlew signPlugin
+        cp build/distributions/*.zip ../../../artifact-intellij.zip
+
+    - name: Upload IntelliJ artifact
+      if: startsWith(github.ref, 'refs/tags/artifact/')
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifact-intellij
+        path: ./artifact-intellij.zip
+      
+  build-vscode:
+    runs-on: ubuntu-latest
+    if: contains(github.ref, '/vscode/')
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -29,16 +74,9 @@ jobs:
     - name: Run custom build script
       run: npm run copy-binaries
 
-    - name: Set Version (Non-tagged commit)
-      if: "!startsWith(github.ref, 'refs/tags/')"
+    - name: Set Version
       run: |
-        echo "Setting version to: 0.0.1"
-        jq '.version="0.0.1"' package.json > tmp.json && mv tmp.json package.json
-
-    - name: Set Version (Tagged commit)
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        VERSION=${GITHUB_REF#refs/tags/}
+        VERSION=${GITHUB_REF#*/*/}
         echo "Setting version to: $VERSION"
         jq '.version="'$VERSION'"' package.json > tmp.json && mv tmp.json package.json
 
@@ -47,13 +85,15 @@ jobs:
         yarn run copy-binaries
         vsce package
 
-    - name: Upload artifact
+    - name: Upload VSCode artifact
+      if: startsWith(github.ref, 'refs/tags/artifact/')
       uses: actions/upload-artifact@v2
       with:
         name: my-vsix-file
         path: ./*.vsix
+
     - name: Publish to Visual Studio Marketplace
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/publish/')
       uses: HaaLeo/publish-vscode-extension@v1
       with:
         preRelease: true
