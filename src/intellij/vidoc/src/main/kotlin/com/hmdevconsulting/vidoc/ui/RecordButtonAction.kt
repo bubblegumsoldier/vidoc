@@ -78,10 +78,10 @@ class RecordButtonAction : AnAction() {
                 true
             }
             .createPopup()
-        val button = e.inputEvent.component
+        val button = e.inputEvent?.component
 
         // Show the popup relative to the button
-        popup.showUnderneathOf(button)
+        popup.showUnderneathOf(button?: throw Exception("button not found"))
     }
 
     private fun abortDeviceSelection(e: AnActionEvent) {
