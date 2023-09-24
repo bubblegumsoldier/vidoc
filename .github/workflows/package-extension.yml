@@ -3,8 +3,8 @@ name: Create and Publish Packages
 on:
   push:
     tags:
-      - 'artifact/*'
-      - 'publish/*'
+      - 'artifact/**/*'
+      - 'publish/**/*'
 
 jobs:
   build-intellij:
