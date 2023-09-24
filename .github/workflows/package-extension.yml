@@ -53,7 +53,9 @@ jobs:
         chmod +x ./gradlew
         ./gradlew buildPlugin
         ./gradlew signPlugin
-        cp build/distributions/*.zip ../../../artifact-intellij.zip
+        FILENAME=$(ls build/distributions/*.zip | head -n 1)
+        cp "$FILENAME" ../../../artifact-intellij.zip
+
 
     - name: Upload IntelliJ artifact
       if: startsWith(github.ref, 'refs/tags/artifact/')
