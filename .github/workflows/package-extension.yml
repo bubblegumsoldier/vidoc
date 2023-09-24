@@ -38,7 +38,8 @@ jobs:
       
     - name: Update Version
       run: |
-        VERSION=${GITHUB_REF#*/*/}
+        VERSION=${GITHUB_REF##*/}
+        echo $VERSION
         sed -i 's/^pluginVersion=.*/pluginVersion='"$VERSION"'/' gradle.properties
 
     - name: Build and Sign IntelliJ Plugin
@@ -82,7 +83,7 @@ jobs:
 
     - name: Set Version
       run: |
-        VERSION=${GITHUB_REF#*/*/}
+        VERSION=${GITHUB_REF##*/}
         echo "Setting version to: $VERSION"
         jq '.version="'$VERSION'"' package.json > tmp.json && mv tmp.json package.json
 
