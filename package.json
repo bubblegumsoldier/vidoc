@@ -100,7 +100,8 @@
     "cli:compile": "webpack --config webpack.config.cli.js",
     "cli:package": "npm run cli:compile && pkg .",
     "cli:br": "npm run cli:compile && node ./dist/cli.js",
-    "cli": "node ./dist/cli.js"
+    "cli": "node ./dist/cli.js",
+    "prepare-intellij-bins": "cp -r -f ./dist/cli/bin/* ./src/intellij/vidoc/src/main/resources/bin"
   },
   "pkg": {
     "scripts": [
