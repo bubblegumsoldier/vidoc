@@ -46,10 +46,11 @@ jobs:
     - name: Build and Sign IntelliJ Plugin
       working-directory: ./src/intellij/vidoc
       env:
-          INTELLIJ_CERTIFICATE_CHAIN: ${{ secrets.INTELLIJ_CERTIFICATE_CHAIN }}
-          INTELLIJ_PRIVATE_KEY: ${{ secrets.INTELLIJ_PRIVATE_KEY }}
-          INTELLIJ_PRIVATE_KEY_PASSWORD: ${{ secrets.INTELLIJ_PRIVATE_KEY_PASSWORD }}
+        INTELLIJ_CERTIFICATE_CHAIN: ${{ secrets.INTELLIJ_CERTIFICATE_CHAIN }}
+        INTELLIJ_PRIVATE_KEY: ${{ secrets.INTELLIJ_PRIVATE_KEY }}
+        INTELLIJ_PRIVATE_KEY_PASSWORD: ${{ secrets.INTELLIJ_PRIVATE_KEY_PASSWORD }}
       run: |
+        chmod +x ./gradlew
         ./gradlew buildPlugin
         ./gradlew signPlugin
         cp build/distributions/*.zip ../../../artifact-intellij.zip
