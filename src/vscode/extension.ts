@@ -47,6 +47,8 @@ import { SpeechToTextPostprocessor } from "../vidoc/drivers/general/speech-to-te
 import { AWSTranscribeSpeechToText } from "../vidoc/drivers/general/speech-to-text/AWSTranscribeSpeechToText";
 import { DefaultUnusedVidocRemover } from "../vidoc/drivers/general/DefaultUnusedVidocRemover";
 import { UnusedVidocRemover } from "../vidoc/interfaces/UnusedVidocRemover";
+import { DefaultHTMLPageGetter } from "../vidoc/drivers/general/DefaultHTMLPageGetter";
+import { HTMLPageGetter } from "../vidoc/interfaces/HTMLPageGetter";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -124,6 +126,9 @@ container.register<AWSTranscribeSpeechToText>("AWSTranscribeSpeechToText", {
 });
 container.register<UnusedVidocRemover>("UnusedVidocRemover", {
   useClass: DefaultUnusedVidocRemover,
+});
+container.register<HTMLPageGetter>("HTMLPageGetter", {
+  useClass: DefaultHTMLPageGetter,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

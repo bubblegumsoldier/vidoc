@@ -1,9 +1,6 @@
 package com.hmdevconsulting.vidoc.dataaccess
 
-import com.hmdevconsulting.vidoc.model.Config
-import com.hmdevconsulting.vidoc.model.FocusInformation
-import com.hmdevconsulting.vidoc.model.PositionedVidocInstance
-import com.hmdevconsulting.vidoc.model.Vidoc
+import com.hmdevconsulting.vidoc.model.*
 
 interface VidocAccessor {
     fun getConfig(projectBasePath: String): Config
@@ -26,4 +23,5 @@ interface VidocAccessor {
     fun removeUnusedFiles(projectBasePath: String): List<String>
 
     fun getVidocs(projectBasePath: String): List<Vidoc>
+    fun getVidocHTMLPage(projectBasePath: String, vidocId: String): HTMLPageOutput
 }

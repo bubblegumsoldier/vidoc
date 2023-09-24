@@ -7,10 +7,7 @@ import com.hmdevconsulting.vidoc.dataaccess.VidocAccessorFactory
 import com.hmdevconsulting.vidoc.exceptions.NoAudioDeviceSelected
 import com.hmdevconsulting.vidoc.exceptions.NoCursorPositionSelected
 import com.hmdevconsulting.vidoc.exceptions.NoWorkspaceOpened
-import com.hmdevconsulting.vidoc.model.Config
-import com.hmdevconsulting.vidoc.model.FocusInformation
-import com.hmdevconsulting.vidoc.model.Vidoc
-import com.hmdevconsulting.vidoc.model.VidocPluginState
+import com.hmdevconsulting.vidoc.model.*
 import com.hmdevconsulting.vidoc.ui.EditorInfoUtil
 import com.hmdevconsulting.vidoc.ui.RecordButtonAction
 import com.hmdevconsulting.vidoc.ui.VidocNotifier
@@ -46,6 +43,10 @@ class VidocIntelliJController(
 
     fun getVidoc(vidocId: String): Vidoc {
         return vidocAccessor.getVidocObject(project.basePath?: throw NoWorkspaceOpened(), vidocId);
+    }
+
+    fun getVidocHTMLPage(vidocId: String): HTMLPageOutput {
+        return vidocAccessor.getVidocHTMLPage(project.basePath?: throw NoWorkspaceOpened(), vidocId);
     }
 
     fun startRecording(e: AnActionEvent) {

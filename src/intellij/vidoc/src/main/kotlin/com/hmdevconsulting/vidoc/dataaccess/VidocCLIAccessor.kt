@@ -2,10 +2,7 @@ package com.hmdevconsulting.vidoc.dataaccess
 
 import CliCommandExecutor
 import com.google.gson.Gson
-import com.hmdevconsulting.vidoc.model.Config
-import com.hmdevconsulting.vidoc.model.FocusInformation
-import com.hmdevconsulting.vidoc.model.PositionedVidocInstance
-import com.hmdevconsulting.vidoc.model.Vidoc
+import com.hmdevconsulting.vidoc.model.*
 
 class VidocCLIAccessor : VidocAccessor {
     private val cliCommandExecutor = CliCommandExecutor()
@@ -75,5 +72,11 @@ class VidocCLIAccessor : VidocAccessor {
         TODO("Not yet implemented")
     }
 
+    override fun getVidocHTMLPage(projectBasePath: String, vidocId: String): HTMLPageOutput =
+        cliCommandExecutor.performCommand(
+            projectBasePath, "writeVidocHTML", mapOf(
+                "vidocId" to vidocId
+            )
+        )
 
 }

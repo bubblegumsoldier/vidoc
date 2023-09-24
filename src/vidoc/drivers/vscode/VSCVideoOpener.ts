@@ -4,11 +4,12 @@ import { VideoOpener } from "../../interfaces/VideoOpener";
 import { LocalMetadataLocalVideoVidoc, Vidoc } from "../../model/Vidoc";
 import { FileController } from "../../interfaces/FileController";
 import { VidocFactory } from "../../interfaces/VidocFactory";
+import { HTMLPageGetter } from "../../interfaces/HTMLPageGetter";
 
 class VideoScreen {
   public static panel: vscode.WebviewPanel | undefined;
 
-  public static async createOrShow(vidoc: Vidoc, sourcePath: Promise<string>) {
+  public static async createOrShow(content: string) {
     if (VideoScreen.panel) {
       VideoScreen.panel.reveal();
     } else {
@@ -24,34 +25,7 @@ class VideoScreen {
       });
     }
 
-    const path = await sourcePath;
-    VideoScreen.panel.webview.html = VideoScreen.getWebviewContent(vidoc, path);
-  }
-
-  private static getWebviewContent(vidoc: Vidoc, sourcePath: string): string {
-    const title = vidoc.id;
-    const createdAt = vidoc.metadata.createdAt;
-    let transcript = ``;
-    if (vidoc.speechToText?.text) {
-      const text = vidoc.speechToText.text;
-      transcript = `<h2>Transcript</h2><p>${text}</p>`;
-    }
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${title}</title>
-        </head>
-        <body>
-          <h1>${title}</h1>
-          ${transcript}
-          <p>Created at: ${createdAt}</p>
-          <video controls>
-            <source src="${sourcePath}" type="video/mp4">
-          </video>
-        </body>
-      </html>
-    `;
+    VideoScreen.panel.webview.html = content;
   }
 }
 
@@ -59,7 +33,8 @@ class VideoScreen {
 export class VSCVideoOpener implements VideoOpener {
   constructor(
     @inject("FileController") private fileController: FileController,
-    @inject("VidocFactory") private vidocFactory: VidocFactory
+    @inject("VidocFactory") private vidocFactory: VidocFactory,
+    @inject("HTMLPageGetter") private htmlPageGetter: HTMLPageGetter
   ) {}
 
   async openVideoById(vidocId: string): Promise<void> {
@@ -67,22 +42,7 @@ export class VSCVideoOpener implements VideoOpener {
     return await this.openVideo(vidoc);
   }
 
-  private async getSourcePath(vidoc: Vidoc): Promise<string> {
-    if ((<any>vidoc).relativeFilePathToVideo) {
-      const castedVidoc = <LocalMetadataLocalVideoVidoc>vidoc;
-      // Doesnt work currently for some reason
-      return `file://${this.fileController.getAbsolutePath(
-        castedVidoc.relativeFilePathToVideo
-      )}`;
-    }
-    if ((<any>vidoc).remoteVideoUrl) {
-      return (<any>vidoc).remoteVideoUrl;
-    }
-    return "";
-  }
-
   async openVideo(vidoc: Vidoc): Promise<void> {
-    const sourcePath = this.getSourcePath(vidoc);
-    await VideoScreen.createOrShow(vidoc, sourcePath);
+    await VideoScreen.createOrShow(await this.htmlPageGetter.getHTML(vidoc));
   }
 }

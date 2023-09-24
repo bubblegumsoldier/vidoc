@@ -57,4 +57,9 @@ data class GivenAuthorInformation(
     val email: String? = null
 )
 
+data class HTMLPageOutput(
+    val html: String? = null,
+    val path: String? = null
+)
+
 typealias AuthorInformation = GivenAuthorInformation?

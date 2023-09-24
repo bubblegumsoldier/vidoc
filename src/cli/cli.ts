@@ -38,6 +38,10 @@ import { DefaultVidocRepository } from "../vidoc/drivers/general/DefaultVidocRep
 import { Prompter } from "../vidoc/interfaces/Prompter";
 import { CLIPrompter } from "../vidoc/drivers/cli/CLIPrompter";
 import { FocusInformation } from "../vidoc/model/FocusInformation";
+import { HTMLPageGetter } from "../vidoc/interfaces/HTMLPageGetter";
+import { DefaultHTMLPageGetter } from "../vidoc/drivers/general/DefaultHTMLPageGetter";
+import { CLIHTMLPageWriter } from "../vidoc/drivers/cli/CLIHTMLPageWriter";
+import { PageWriter } from "../vidoc/interfaces/PageWriter";
 
 container.register<ConfigRetriever>("ConfigRetriever", {
   useClass: GitConfigRetriever,
@@ -101,6 +105,12 @@ container.register<VidocRepository>("VidocRepository", {
 container.register<Prompter>("Prompter", {
   useClass: CLIPrompter,
 });
+container.register<HTMLPageGetter>("HTMLPageGetter", {
+  useClass: DefaultHTMLPageGetter,
+});
+container.register<PageWriter>("PageWriter", {
+  useClass: CLIHTMLPageWriter,
+});
 
 const configRetriever = container.resolve<ConfigRetriever>("ConfigRetriever");
 const codeParser = container.resolve<CodeParserAndWriter>(
@@ -117,6 +127,7 @@ const defaultPostProcessor = container.resolve<DefaultVidocPostprocessor>(
 const unusedVidocRemover =
   container.resolve<UnusedVidocRemover>("UnusedVidocRemover");
 const vidocRepository = container.resolve<VidocRepository>("VidocRepository");
+const cliPageWriter = container.resolve<PageWriter>("PageWriter");
 
 registerCommand(
   "getConfig",
@@ -145,10 +156,7 @@ registerCommand(
   "record",
   "Start Recording. Press Ctrl + C to stop and trigger upload + postprocessing.",
   async (vidocId: string, audioDevice: string) =>
-    await cliScreenRecorder.run(
-      vidocId,
-      audioDevice
-    ),
+    await cliScreenRecorder.run(vidocId, audioDevice),
   [
     {
       key: "vidocId",
@@ -176,7 +184,7 @@ registerCommand(
       required: false,
       description: "JSON of the focusInformation",
       type: "string",
-      isBase64: true
+      isBase64: true,
     },
   ]
 );
@@ -288,6 +296,23 @@ registerCommand(
   "getVidocs",
   "List all vidocs including all metadata of the project",
   async () => await vidocRepository.getAllVidocs()
+);
+
+registerCommand(
+  "writeVidocHTML",
+  "Write out a vidoc HTML page to be viewed in the browser",
+  async (vidocId: string) =>
+    await cliPageWriter.writeHTMLPage(
+      await vidocFactory.initVidocObject(vidocId)
+    ),
+  [
+    {
+      key: "vidocId",
+      required: true,
+      description: "Vidoc ID (e.g. <uuid>.mp4)",
+      type: "string",
+    },
+  ]
 );
 
 program.parse(process.argv);

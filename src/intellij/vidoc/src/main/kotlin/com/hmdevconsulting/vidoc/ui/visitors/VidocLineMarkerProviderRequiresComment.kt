@@ -13,6 +13,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.util.NotNullFactory
 import com.intellij.psi.PsiElement
 import java.awt.Desktop
+import java.io.IOException
 import java.net.URI
 import java.nio.file.Paths
 
@@ -37,22 +38,18 @@ open class VidocLineMarkerProviderRequiresComment : RelatedItemLineMarkerProvide
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 var controller = element.project?.service<VidocIntelliJController>()
                 controller ?: throw Exception("Controller not found")
-                var vidoc = controller.getVidoc(
-                    VidocHighlight.getVidocId(element, false) ?: throw Exception("No Vidoc Element found here?")
-                )
-                // TODO: Generate a temporary html page using the CLI and go that HTML page in the browser
+                val vidocId = VidocHighlight.getVidocId(element, false)
+                vidocId?: throw Exception("No vidocId found")
                 // Later we might integrate it into IntelliJ... no now though...
-                val basePath = Paths.get(element.project.basePath?: throw NoWorkspaceOpened())
-                val url = if (vidoc.remoteVideoUrl != null) {
-                    vidoc.remoteVideoUrl
-                } else {
-                    basePath.resolve(
-                        Paths.get(
-                            vidoc.relativeFilePathToVideo ?: throw Exception("No path found")
-                        )
-                    ).toString()
+                val htmlOutput = controller.getVidocHTMLPage(vidocId)
+                htmlOutput.path?: throw Exception("No HTML file could be generated")
+                val path = Paths.get(htmlOutput.path)
+                try {
+                    Desktop.getDesktop().open(path.toFile())
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
-                Desktop.getDesktop().browse(URI.create(url?: throw Exception("No URL could be generated")))
+
             }
         }
         val factory = NotNullFactory {
