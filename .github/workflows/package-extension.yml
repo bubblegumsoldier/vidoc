@@ -37,6 +37,7 @@ jobs:
         java-version: '11'
       
     - name: Update Version
+      working-directory: ./src/intellij/vidoc
       run: |
         VERSION=${GITHUB_REF##*/}
         echo $VERSION
