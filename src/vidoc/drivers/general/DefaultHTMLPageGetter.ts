@@ -46,6 +46,7 @@ export class DefaultHTMLPageGetter implements HTMLPageGetter {
                 padding: 20px;
                 display: flex;
                 flex-flow: column;
+                max-width: 1200px;
             }
             video {
                 border-radius: 15px;
