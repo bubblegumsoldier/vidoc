@@ -48,15 +48,15 @@ class VidocCLIAccessor : VidocAccessor {
     override fun getAudioDevices(projectBasePath: String): List<String> =
         cliCommandExecutor.performCommand(projectBasePath, "getAudioDevices")
 
-    override fun getVidocObject(projectBasePath: String, vidocId: String): Vidoc = cliCommandExecutor.performCommand(
+    override fun getVidocObject(projectBasePath: String, id: String): Vidoc = cliCommandExecutor.performCommand(
         projectBasePath, "getVidocObject", mapOf(
-            "id" to vidocId
+            "id" to id
         )
     )
 
-    override fun postProcessVidoc(projectBasePath: String, vidocId: String): Vidoc = cliCommandExecutor.performCommand(
+    override fun postProcessVidoc(projectBasePath: String, id: String): Vidoc = cliCommandExecutor.performCommand(
         projectBasePath, "postProcessVidoc", mapOf(
-            "vidocId" to vidocId
+            "vidocId" to id
         )
     )
 

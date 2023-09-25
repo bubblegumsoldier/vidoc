@@ -16,7 +16,7 @@
     <description>In modern software development, clear and comprehensive documentation is key. ViDoc is a VS Code extension
         and IntelliJ plugin that aims to revolutionize how documentation is done by incorporating audio-visual elements directly
         into your code. The extension enables users to record their screen, providing real-time context and commentary
-        on their actions. The result? <b>Documentation that feels like a pair-programming session.</b><br/> <br/>
+        on their actions. The result? Documentation that feels like a pair-programming session.
 
         ViDoc aims to promote collaboration, enhance code comprehension, and simplify the documentation process by
         providing an intuitive, engaging and interactive way to explain complex code snippets. Rather than just reading

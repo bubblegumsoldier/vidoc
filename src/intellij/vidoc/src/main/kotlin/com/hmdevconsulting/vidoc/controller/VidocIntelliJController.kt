@@ -23,7 +23,7 @@ import kotlinx.coroutines.*
 class VidocIntelliJController(
     private val project: Project
 ) {
-    var state: VidocPluginState = VidocPluginState.IDLE
+    var state: String = VidocPluginState.IDLE
     private var vidocAccessor: VidocAccessor = VidocAccessorFactory.getAccessor()
     var selectedAudioDevice: String? = null
     private var processWrapper: CLIAsyncCommandExecutor.ProcessWrapper? = null

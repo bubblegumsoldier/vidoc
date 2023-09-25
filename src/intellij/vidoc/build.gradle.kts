@@ -9,7 +9,7 @@ dependencies {
 }
 
 group = "com.hmdevconsulting"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -21,8 +21,9 @@ val depsPyVersion: String = properties("depsPyVersion")
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2023.2.2")
-    type.set("IC") // Target IDE Platform
+    pluginName.set("Vidoc")
+    version.set("LATEST-EAP-SNAPSHOT")
+    type.set("IU") // Target IDE Platform
 
     plugins.set(listOf(
     ))
@@ -38,9 +39,17 @@ tasks {
         kotlinOptions.jvmTarget = "17"
     }
 
+    wrapper {
+        gradleVersion = "8.2.1"
+    }
+
+    runPluginVerifier {
+        ideVersions.set("2022.1, 2023.2".split(',').map { it.trim() }.toList())
+    }
+
     patchPluginXml {
         sinceBuild.set("222")
-        untilBuild.set("232.*")
+        untilBuild.set("233.*")
     }
 
     signPlugin {

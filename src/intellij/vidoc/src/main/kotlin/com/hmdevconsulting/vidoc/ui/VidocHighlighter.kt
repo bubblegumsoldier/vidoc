@@ -37,7 +37,7 @@ class VidocHighlighter : Annotator {
             // Register the annotation
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(range)
-                .textAttributes(TextAttributesKey.createTextAttributesKey("MY_HIGHLIGHT", attributes))
+                .textAttributes(TextAttributesKey.createTempTextAttributesKey("MY_HIGHLIGHT", attributes))
                 .create()
 
             // For tooltip

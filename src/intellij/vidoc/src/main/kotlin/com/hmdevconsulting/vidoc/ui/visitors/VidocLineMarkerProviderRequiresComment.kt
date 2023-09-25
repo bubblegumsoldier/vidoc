@@ -32,12 +32,11 @@ open class VidocLineMarkerProviderRequiresComment : RelatedItemLineMarkerProvide
         }
 
         val tooltipProvider: (Any?) -> String = { "View Vidoc" };
-        val navigationHandler = GutterIconNavigationHandler<PsiElement> { e, element ->
+        val navigationHandler = GutterIconNavigationHandler<PsiElement> { _, elementInner ->
             // Handle the navigation action here.
             // 'e' is the MouseEvent, and 'element' is the associated PsiElement.
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                var controller = element.project?.service<VidocIntelliJController>()
-                controller ?: throw Exception("Controller not found")
+                var controller = elementInner.project.service<VidocIntelliJController>()
                 val vidocId = VidocHighlight.getVidocId(element, false)
                 vidocId?: throw Exception("No vidocId found")
                 // Later we might integrate it into IntelliJ... no now though...

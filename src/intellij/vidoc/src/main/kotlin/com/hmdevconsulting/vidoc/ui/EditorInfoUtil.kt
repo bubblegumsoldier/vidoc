@@ -20,7 +20,6 @@ class EditorInfoUtil private constructor() {
             val file = FileDocumentManager.getInstance().getFile(document) ?: return null
 
             val selectionModel = editor.selectionModel
-            val caretModel = editor.caretModel
 
             val offsetStart = selectionModel.selectionStart
             val offsetEnd = selectionModel.selectionEnd

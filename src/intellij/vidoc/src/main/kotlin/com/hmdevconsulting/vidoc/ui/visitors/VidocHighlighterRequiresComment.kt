@@ -30,7 +30,7 @@ open class VidocHighlighterRequiresComment : Annotator {
         attributes.effectType = EffectType.ROUNDED_BOX
         attributes.effectColor = JBColor.YELLOW
 
-        val textAttributesKey = TextAttributesKey.createTextAttributesKey("VIDOC_STRING", attributes)
+        val textAttributesKey = TextAttributesKey.createTempTextAttributesKey("VIDOC_STRING", attributes)
         val range = element.textRange
 
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
