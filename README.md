@@ -6,6 +6,15 @@
 
 ![3](https://github.com/bubblegumsoldier/vidoc/assets/3788628/7793dd69-d2d4-49aa-b683-67793033b30b)
 
+
+## Disclaimer
+
+**UNTIL NOW RECORDING VIDOCS WILL ONLY WORK ON WINDOWS!**
+**WATCHING VIDOCS OF OTHER DEVELOPERS IS POSSIBLE ON ALL DEVICES!**
+**MAC SUPPORT WILL FOLLOW SHORTLY!**
+
+**FEEL FREE TO OPEN A MERGE REQUEST IF YOU WANT TO ADD MAC OR LINUX SUPPORT**
+
 ## Simple introduction video
 
 [CLICK HERE for Vidoc Example Usage in Loom](https://www.loom.com/share/ecb3abd8e7dc4b77b224b96b1e8e56e8?sid=ea4755ac-b948-4562-9876-0170f77c4427)
@@ -29,7 +38,7 @@ Video's are a bit like voice-messages. People love to send them but don't like t
 - Do use Vidoc if it is easier for you than writing long paragraphs and the alternative would be no documentation at all
 - Do use Vidoc as an additional alternative to text (some people prefer video tutorials, some text)
 
-*Don'ts:*
+**Don'ts:**
 
 - Don't use Vidocs for very frequently accessed documentation like public documentation for a library, people tend to skim rather than having to watch a video
 - Don't use Vidocs for simple documentation where a text suffices
