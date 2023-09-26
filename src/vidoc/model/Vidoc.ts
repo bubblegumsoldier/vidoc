@@ -38,3 +38,8 @@ export interface VidocReference {
     vidoc: Vidoc;
     editorPosition: EditorPosition;
 }
+
+export interface HTMLPageOutput {
+    html: string;
+    path: string;
+}

@@ -20,7 +20,7 @@ export class GitConfigRetriever implements ConfigRetriever {
     const existingConfigs = <string[]>(
       await Promise.all(
         DEFAULT_CONFIG_PATH.map(async (c: string) => {
-          const exists = await this.fileController.existsSync(c);
+          const exists = await this.fileController.exists(c);
           return exists ? c : null;
         })
       )
@@ -47,7 +47,7 @@ export class GitConfigRetriever implements ConfigRetriever {
     const existingSecretFiles = <string[]>(
       await Promise.all(
         DEFAULT_SECRET_CONFIG_PATH.map(async (c: string) => {
-          const exists = await this.fileController.existsSync(c);
+          const exists = await this.fileController.exists(c);
           return exists ? c : null;
         })
       )

@@ -1,0 +1,135 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.hmdevconsulting.vidoc</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Vidoc</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="hm@hm-dev-consulting.de" url="https://hm-dev.consulting">HM Dev Consulting</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description>In modern software development, clear and comprehensive documentation is key. ViDoc is a VS Code extension
+        and IntelliJ plugin that aims to revolutionize how documentation is done by incorporating audio-visual elements directly
+        into your code. The extension enables users to record their screen, providing real-time context and commentary
+        on their actions. The result? Documentation that feels like a pair-programming session.
+
+        ViDoc aims to promote collaboration, enhance code comprehension, and simplify the documentation process by
+        providing an intuitive, engaging and interactive way to explain complex code snippets. Rather than just reading
+        about how a piece of code works, ViDoc allows you to show, tell, and share in a more dynamic way.
+    </description>
+
+
+    <actions>
+        <action id="Vidoc.RecordButton"
+                class="com.hmdevconsulting.vidoc.ui.RecordButtonAction"
+                text="Record"
+                icon="AllIcons.CodeWithMe.CwmScreenOn"
+                description="Start recording">
+            <add-to-group group-id="NavBarToolBar" anchor="first"/>
+        </action>
+    </actions>
+
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Python -->
+        <annotator language="Python"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="Python"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- HTML -->
+        <annotator language="HTML"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="HTML"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- XML -->
+        <annotator language="XML"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="XML"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- XML -->
+        <annotator language="JAVA"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="JAVA"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- Javascript -->
+        <annotator language="JavaScript"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="JavaScript"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- TypeScript -->
+        <annotator language="TypeScript"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="TypeScript"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- TypeScript -->
+        <annotator language="Kotlin"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="Kotlin"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- TypeScript -->
+        <annotator language="PHP"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="PHP"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- C++ -->
+        <annotator language="C++"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="C++"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- CPP -->
+        <annotator language="Cpp"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="Cpp"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- CPP -->
+        <annotator language="C"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="C"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- CPP -->
+        <annotator language="CSS"
+                   implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterRequiresComment"/>
+        <codeInsight.lineMarkerProvider
+                language="CSS"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderRequiresComment"/>
+
+        <!-- TEXT -->
+        <annotator language="TEXT" implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocHighlighterText"/>
+        <codeInsight.lineMarkerProvider
+                language="TEXT"
+                implementationClass="com.hmdevconsulting.vidoc.ui.visitors.VidocLineMarkerProviderText"/>
+    </extensions>
+</idea-plugin>

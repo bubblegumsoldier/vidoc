@@ -1,4 +1,4 @@
-import * as win from '@arcsine/win-info';
+import * as win from './winInfo';
 import { ChildProcess } from 'child_process';
 
 export interface Bounds {

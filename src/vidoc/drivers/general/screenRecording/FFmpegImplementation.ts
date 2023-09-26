@@ -35,7 +35,7 @@ export class FFmpegImplementation implements FFmpegInterface {
       await this.fileController.getBinPath(
         process.platform === "win32" ? "ffmpeg-win32.exe" : "ffmpeg-darwin"
       );
-    if (!this.fileController.existsSync(pathToFFmpegBinary)) {
+    if (!this.fileController.exists(pathToFFmpegBinary)) {
       this.notificator.warn(
         "We didn't find an ffmpeg for your system. We will look on the PATH for it."
       );

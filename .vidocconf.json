@@ -1,12 +1,17 @@
 {
-    "$schema": "https://raw.githubusercontent.com/bubblegumsoldier/vidoc/main/config-schema.json",
     "savingStrategy": {
         "type": "remote",
         "s3": {
-            "bucketName": "${AWS_BUCKET}",
-            "region": "${AWS_REGION}",
+            "bucketName": "vidoc",
+            "region": "eu-central-1",
             "accessKeyId": "${ACCESS_KEY_AWS}",
             "secretAccessKey": "${SECRET_KEY_AWS}"
+        },
+        "s3Administration": {
+            "bucketName": "vidoc",
+            "region": "eu-central-1",
+            "accessKeyId": "${ADMIN_ACCESS_KEY_AWS}",
+            "secretAccessKey": "${ADMIN_SECRET_KEY_AWS}"
         }
     },
     "recordingOptions": {
@@ -15,8 +20,8 @@
                 "enabled": true,
                 "type": "aws-transcribe",
                 "awsTranscribe": {
-                    "bucketName": "${AWS_BUCKET}",
-                    "region": "${AWS_REGION}",
+                    "bucketName": "vidoc",
+                    "region": "eu-central-1",
                     "accessKeyId": "${ACCESS_KEY_AWS}",
                     "secretAccessKey": "${SECRET_KEY_AWS}"
                 }

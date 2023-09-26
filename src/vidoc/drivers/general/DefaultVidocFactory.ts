@@ -26,7 +26,7 @@ export class DefaultVidocFactory implements VidocFactory {
     private authorInformationRetriever: AuthorInformationRetriever
   ) {}
 
-  async createVidocObject(focusInformation: FocusInformation): Promise<Vidoc> {
+  async createVidocObject(focusInformation?: FocusInformation): Promise<Vidoc> {
     // First we will get the config. We will need it later
     const config = await this.configRetriever.getConfig();
 
@@ -69,8 +69,7 @@ export class DefaultVidocFactory implements VidocFactory {
     }
 
     this.updateVidocMetadataFile(vidoc);
-
-    return vidoc;
+    return await this.initVidocObject(vidoc.id);
   }
 
   private getRelativeFilePathMetadata(config: Config, id: string): string {
@@ -95,6 +94,7 @@ export class DefaultVidocFactory implements VidocFactory {
       );
       return vidoc;
     } catch (e) {
+      console.error(e);
       throw Error(`Could not parse vidoc file ${id}`);
     }
   }

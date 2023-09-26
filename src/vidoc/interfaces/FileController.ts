@@ -1,5 +1,5 @@
 export interface FileController {
-    existsSync(file: string): Promise<boolean>;
+    exists(file: string): Promise<boolean>;
     readFileContent(file: string, relative: boolean): Promise<string>;
     readFileContentBinary(file: string, relative: boolean): Promise<Uint8Array>;
     writeFileContent(filePath: string, content: string, relative: boolean): Promise<void>;

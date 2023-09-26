@@ -21,7 +21,8 @@ export class VSCAudioDeviceSelector implements AudioDeviceSelector {
     }
     let selectedAudioInterface = await this.prompter.getAnswer(
       "Select audio device",
-      audioInterfaces
+      audioInterfaces,
+      audioInterfaces[0]
     );
     if (!selectedAudioInterface) {
       return undefined;

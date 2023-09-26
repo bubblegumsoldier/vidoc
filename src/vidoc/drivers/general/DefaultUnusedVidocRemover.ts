@@ -89,34 +89,35 @@ export class DefaultUnusedVidocRemover implements UnusedVidocRemover {
   }
 
 
-  async removeUnusedVidocs(): Promise<void> {
+  async removeUnusedVidocs(): Promise<string[]> {
     const config = await this.configRetriever.getConfig();
     if (config.savingStrategy.type !== "remote") {
-      this.notificator.warn(
+      throw Error(
         "Currently we only support removal of remotely saved files"
       );
-      return;
     }
     const unusedFiles = await this.findUnusedFiles(
       (await this.vidocRepository.getAllVidocs()).map((vidoc) => vidoc.id)
     );
     if (unusedFiles.length === 0) {
       this.notificator.info("No unused files found");
-      return;
+      return [];
     }
     const answer = await this.prompter.getAnswer(
       `We have found ${unusedFiles.length} unused files. Do you want to remove them?`,
-      ["Yes", "No", "Show files to be removed"]
+      ["Yes", "No", "Show files to be removed"],
+      "Yes"
     );
     if (answer === "Yes") {
       try { 
         await this.removeFiles(unusedFiles);
+        return unusedFiles;
       } catch (error) {
-        this.notificator.error(`Error removing files: ${error}`);
-        return;
+        throw Error(`Error removing files: ${error}`);
       }
     } else if (answer === "Show files to be removed") {
       this.notificator.info(unusedFiles.join("\n"));
     }
+    return [];
   }
 }
