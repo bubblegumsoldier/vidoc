@@ -19,7 +19,7 @@
 		"command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./bin/* ./dist/bin",
 		"options": {
 		  "shell": {
-			"executable": "C:\\Program Files\\Git\\bin\\bash.exe",
+			"executable": "bash.exe",
 			"args": ["-c"]
 		  }
 		},
