@@ -6,6 +6,7 @@ export const DEFAULT_CONFIG: Config = {
         folder: '.vidoc'
     },
     recordingOptions: {
-        fileFormat: 'mp4'
+        fileFormat: 'mp4',
+        fps: 10,
     }
 };

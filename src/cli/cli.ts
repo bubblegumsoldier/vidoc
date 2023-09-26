@@ -42,6 +42,10 @@ import { HTMLPageGetter } from "../vidoc/interfaces/HTMLPageGetter";
 import { DefaultHTMLPageGetter } from "../vidoc/drivers/general/DefaultHTMLPageGetter";
 import { CLIHTMLPageWriter } from "../vidoc/drivers/cli/CLIHTMLPageWriter";
 import { PageWriter } from "../vidoc/interfaces/PageWriter";
+import { CommandExecutor } from "../vidoc/interfaces/CommandExecutor";
+import { DefaultCommandExecutor } from "../vidoc/drivers/general/screenRecording/DefaultCommandExecutor";
+import { WindowSelector } from "../vidoc/interfaces/WindowSelector";
+import { ActiveWindowSelector } from "../vidoc/drivers/general/screenRecording/ActiveWindowSelector";
 
 container.register<ConfigRetriever>("ConfigRetriever", {
   useClass: GitConfigRetriever,
@@ -110,6 +114,12 @@ container.register<HTMLPageGetter>("HTMLPageGetter", {
 });
 container.register<PageWriter>("PageWriter", {
   useClass: CLIHTMLPageWriter,
+});
+container.register<CommandExecutor>("CommandExecutor", {
+  useClass: DefaultCommandExecutor,
+});
+container.register<WindowSelector>("WindowSelector", {
+  useClass: ActiveWindowSelector,
 });
 
 const configRetriever = container.resolve<ConfigRetriever>("ConfigRetriever");

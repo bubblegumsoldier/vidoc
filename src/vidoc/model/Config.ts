@@ -7,6 +7,7 @@ export interface Config {
 
 export class RecordingOptions {
   fileFormat?: AllowedFileFormats;
+  fps?: number;
   postProcessingOptions?: PostprocessingOptions;
 }
 

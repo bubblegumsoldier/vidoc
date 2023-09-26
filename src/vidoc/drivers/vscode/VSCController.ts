@@ -12,8 +12,8 @@ import { VidocFactory } from "../../interfaces/VidocFactory";
 import { EditorInteractor } from "../../interfaces/EditorInteractor";
 import { PositionedVidocInstance, VidocReference } from "../../model/Vidoc";
 import { FileController } from "../../interfaces/FileController";
-import { OSUtil } from "../general/screenRecording/screen-recorder/os";
-import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
+// import { OSUtil } from "../general/screenRecording/screen-recorder/os";
+// import { FFmpegUtil } from "../general/screenRecording/screen-recorder/ffmpeg";
 import { VSCHoverProvider } from "./VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
 import { Notificator } from "../../interfaces/Notificator";
@@ -241,18 +241,6 @@ export class VSCController implements EditorController {
     );
 
     /**
-     * WIN-INFO COMMAND
-     */
-    let winInfoCmd = vscode.commands.registerCommand(
-      "vidoc.wininfo",
-      async () => {
-        const opts = await FFmpegUtil.findFFmpegBinIfMissing({});
-        const devices = await OSUtil.getWinDevices(opts.ffmpeg.binary, true);
-        this.notificator.info(JSON.stringify(devices));
-      }
-    );
-
-    /**
      * SELECT AUDIO DEVICE COMMAND
      */
     let selectAudioDevice = vscode.commands.registerCommand(
@@ -291,7 +279,6 @@ export class VSCController implements EditorController {
     context.subscriptions.push(startRecording);
     context.subscriptions.push(stopRecording);
     context.subscriptions.push(removeUnusedVidocs);
-    context.subscriptions.push(winInfoCmd);
     context.subscriptions.push(updateDecorations);
     context.subscriptions.push(openVideo);
     context.subscriptions.push(selectAudioDevice);

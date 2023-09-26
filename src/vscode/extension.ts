@@ -49,6 +49,10 @@ import { DefaultUnusedVidocRemover } from "../vidoc/drivers/general/DefaultUnuse
 import { UnusedVidocRemover } from "../vidoc/interfaces/UnusedVidocRemover";
 import { DefaultHTMLPageGetter } from "../vidoc/drivers/general/DefaultHTMLPageGetter";
 import { HTMLPageGetter } from "../vidoc/interfaces/HTMLPageGetter";
+import { DefaultCommandExecutor } from "../vidoc/drivers/general/screenRecording/DefaultCommandExecutor";
+import { CommandExecutor } from "../vidoc/interfaces/CommandExecutor";
+import { WindowSelector } from "../vidoc/interfaces/WindowSelector";
+import { ActiveWindowSelector } from "../vidoc/drivers/general/screenRecording/ActiveWindowSelector";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -130,6 +134,13 @@ container.register<UnusedVidocRemover>("UnusedVidocRemover", {
 container.register<HTMLPageGetter>("HTMLPageGetter", {
   useClass: DefaultHTMLPageGetter,
 });
+container.register<CommandExecutor>("CommandExecutor", {
+  useClass: DefaultCommandExecutor,
+});
+container.register<WindowSelector>("WindowSelector", {
+  useClass: ActiveWindowSelector,
+});
+
 
 const vscController = container.resolve<VSCController>("VSCController");
 // This method is called when your extension is activated

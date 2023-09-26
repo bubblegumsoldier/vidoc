@@ -1,6 +1,5 @@
 import { inject, injectable } from "tsyringe";
 import { AudioDeviceSelector } from "../../interfaces/AudioDeviceSelector";
-import { OSUtil } from "../general/screenRecording/screen-recorder/os";
 import { Prompter } from "../../interfaces/Prompter";
 import { PreferencesManager } from "../../interfaces/PreferencesManager";
 import { FFmpegInterface } from "../../interfaces/FFmpegInterface";
