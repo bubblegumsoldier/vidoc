@@ -8,6 +8,7 @@ import java.awt.Color
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.markup.EffectType
 import com.intellij.ui.JBColor
 
@@ -30,7 +31,10 @@ open class VidocHighlighterRequiresComment : Annotator {
         attributes.effectType = EffectType.ROUNDED_BOX
         attributes.effectColor = JBColor.YELLOW
 
-        val textAttributesKey = TextAttributesKey.createTextAttributesKey("VIDOC_STRING", attributes)
+        val textAttributesKey = TextAttributesKey.createTextAttributesKey(
+            "VIDOC_STRING",
+            DefaultLanguageHighlighterColors.HIGHLIGHTED_REFERENCE
+        )
         val range = element.textRange
 
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
