@@ -64,16 +64,32 @@ export class FFmpegImplementation implements FFmpegInterface {
     ];
   }
 
+  private async getDarwinVideoDevice(
+    screenId: number
+  ): Promise<string | undefined> {
+    const matchingScreen = await this.commandExecutor.executeProcess(
+      await this.getPathToFFmpegBinary(),
+      ["-f", "-list_devices", "true", "-i", '""']
+    );
+    const output = matchingScreen.stderr || "" + matchingScreen.stdout;
+    const regex = new RegExp(`\\[([0-9]+)\\] Capture screen ${screenId}`);
+    const match = output.match(regex);
+    return match ? parseInt(match[1], 10).toString() : undefined;
+  }
+
   private async getDarwinArgs(
     audioDevice: string,
     window: any,
     fps: number
   ): Promise<any> {
-    if(!window.screens) {
-      throw Error('Couldnt find any screens');
+    if (!window.screens) {
+      throw Error("Couldnt find any screens");
     }
     const screenIndex = window.screens[0].index; // assuming the first screen is the one we want to capture.
-
+    const screenIndexFFMPEG = await this.getDarwinVideoDevice(screenIndex);
+    if (!screenIndexFFMPEG) {
+      throw Error("Did not find correct screen to record");
+    }
     return [
       "-f",
       "avfoundation", // Specifies the input format to be avfoundation for macOS.
