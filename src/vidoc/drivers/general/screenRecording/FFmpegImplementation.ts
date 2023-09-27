@@ -78,7 +78,7 @@ export class FFmpegImplementation implements FFmpegInterface {
       "-f",
       "avfoundation", // Specifies the input format to be avfoundation for macOS.
       "-framerate",
-      fps.toString(), // Specifies the frame rate of the output video.
+      "30", // Specifies the frame rate of the output video.
       "-i",
       `${screenIndex}:${audioDevice}`, // Specifies the video and audio input devices. 1 is assumed to be the screen device and audioDevice is the audio device.
       "-video_size",
