@@ -101,6 +101,10 @@ export class FFmpegImplementation implements FFmpegInterface {
       `${screenIndexFFMPEG}:"${audioDevice}"`, // Specifies the video and audio input devices. 1 is assumed to be the screen device and audioDevice is the audio device.
       "-video_size",
       `${window.bounds.width}x${window.bounds.height}`, // Specifies the video size of the output video.
+      "-offset_x",
+      `${window.bounds.x}`,
+      "-offset_y",
+      `${window.bounds.y}`,
 
       // Specify more encoding options
       "-r", // Frame rate of the output file
