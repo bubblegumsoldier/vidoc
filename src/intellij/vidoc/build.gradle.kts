@@ -8,14 +8,15 @@ dependencies {
     // Other dependencies can also be listed here
 }
 
+fun properties(key: String) = project.findProperty(key).toString()
+
 group = "com.hmdevconsulting"
-version = "1.0"
+version = properties("pluginVersion")
 
 repositories {
     mavenCentral()
 }
 
-fun properties(key: String) = project.findProperty(key).toString()
 val depsPyVersion: String = properties("depsPyVersion")
 
 // Configure Gradle IntelliJ Plugin
