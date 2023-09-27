@@ -69,44 +69,43 @@ export class FFmpegImplementation implements FFmpegInterface {
     window: any,
     fps: number
   ): Promise<any> {
+    if(!window.screens) {
+      throw Error('Couldnt find any screens');
+    }
+    const screenIndex = window.screens[0].index; // assuming the first screen is the one we want to capture.
+
     return [
       "-f",
-      "dshow", // Specifies the input format to be DirectShow.
-      "-i",
-      'audio="' + audioDevice + '"', // Specifies the audio input device.
-      "-threads",
-      "4", // Specifies the number of threads to use for encoding.
-
-      // Video
-      "-r",
+      "avfoundation", // Specifies the input format to be avfoundation for macOS.
+      "-framerate",
       fps.toString(), // Specifies the frame rate of the output video.
+      "-i",
+      `${screenIndex}:${audioDevice}`, // Specifies the video and audio input devices. 1 is assumed to be the screen device and audioDevice is the audio device.
       "-video_size",
       `${window.bounds.width}x${window.bounds.height}`, // Specifies the video size of the output video.
-      "-offset_x",
-      `${window.bounds.x}`, // Specifies the offset on the X axis of the window to be recorded.
-      "-offset_y",
-      `${window.bounds.y}`, // Specifies the offset on the Y axis of the window to be recorded.
-      "-f",
-      "avfoundation", // Specifies the input format to be GDI Grab.
-      "-i",
-      "desktop", // Specifies the desktop as the video input device.
+
+      // Specify more encoding options
+      "-r", // Frame rate of the output file
+      fps.toString(),
+      "-c:v",
+      "libx264", // Specifies the video codec to use for encoding.
       "-preset",
       "ultrafast", // Specifies a very fast encoding preset.
-
-      // Output
       "-crf",
-      "23", // Specifies the constant rate factor (CRF) for video encoding. A lower CRF value will result in higher quality video, but also a larger file size.
+      "23", // Specifies the constant rate factor (CRF) for video encoding.
       "-pix_fmt",
       "yuv420p", // Specifies the pixel format of the output video.
-      "-c:v",
-      "h264", // Specifies the video codec to use for encoding. H.264 is a widely supported codec that produces good quality video at a relatively small file size.
-      "-y", // Overwrites the output file without prompting.
+
+      // Audio Encoding options
       "-b:a",
-      "127k", // Specifies the bitrate for audio encoding. A higher bitrate will result in higher quality audio, but also a larger file size.
+      "128k", // Specifies the bitrate for audio encoding.
       "-c:a",
-      "libmp3lame", // Specifies the audio codec to use for encoding. MP3 is a widely supported codec that produces good quality audio at a relatively small file size.
+      "aac", // Specifies the audio codec to use for encoding.
       "-ac",
-      "1", // Specifies the number of audio channels to encode.
+      "2", // Specifies the number of audio channels to encode.
+
+      "-y", // Overwrites the output file without prompting.
+      "output.mp4", // Specifies the name of the output file.
     ];
   }
 
