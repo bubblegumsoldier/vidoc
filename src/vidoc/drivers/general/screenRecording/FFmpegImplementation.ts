@@ -105,7 +105,6 @@ export class FFmpegImplementation implements FFmpegInterface {
       "2", // Specifies the number of audio channels to encode.
 
       "-y", // Overwrites the output file without prompting.
-      "output.mp4", // Specifies the name of the output file.
     ];
   }
 
