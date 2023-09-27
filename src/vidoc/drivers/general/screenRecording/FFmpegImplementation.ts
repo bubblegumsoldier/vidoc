@@ -83,28 +83,33 @@ export class FFmpegImplementation implements FFmpegInterface {
     audioDevice: string,
     window: any,
     fps: number
-  ): Promise<any> {
-    if (!window.screens) {
-      throw Error("Couldnt find any screens");
+): Promise<any> {
+    if (!window.screens || window.screens.length === 0) {
+      throw Error("Couldn't find any screens");
     }
-    const screenIndex = window.screens[0].index; // assuming the first screen is the one we want to capture.
-    const screenIndexFFMPEG = await this.getDarwinVideoDevice(screenIndex);
+
+    // assuming the first screen is the one we want to capture.
+    const screen = window.screens[0];
+    const screenIndexFFMPEG = await this.getDarwinVideoDevice(screen.index);
+
     if (!screenIndexFFMPEG) {
       throw Error("Did not find correct screen to record");
     }
+    
+    // Forming the scaling and cropping filter string
+    const filterString = `scale=${screen.width}:${screen.height}:flags=lanczos,crop=${window.bounds.width}:${window.bounds.height}:${Math.abs(screen.x - window.bounds.x)}:${Math.abs(screen.y - window.bounds.y)}`;
+
     return [
       "-f",
       "avfoundation", // Specifies the input format to be avfoundation for macOS.
       "-framerate",
       "30", // Specifies the frame rate of the output video.
       "-i",
-      `${screenIndexFFMPEG}:"${audioDevice}"`, // Specifies the video and audio input devices. 1 is assumed to be the screen device and audioDevice is the audio device.
-      "-video_size",
-      `${window.bounds.width}x${window.bounds.height}`, // Specifies the video size of the output video.
-      "-offset_x",
-      `${window.bounds.x}`,
-      "-offset_y",
-      `${window.bounds.y}`,
+      `${screenIndexFFMPEG}:"${audioDevice}"`, // Specifies the video and audio input devices.
+      
+      // Video Filter (Scaling and Cropping)
+      "-vf",
+      filterString,
 
       // Specify more encoding options
       "-r", // Frame rate of the output file
@@ -117,7 +122,7 @@ export class FFmpegImplementation implements FFmpegInterface {
       "23", // Specifies the constant rate factor (CRF) for video encoding.
       "-pix_fmt",
       "yuv420p", // Specifies the pixel format of the output video.
-
+      
       // Audio Encoding options
       "-b:a",
       "128k", // Specifies the bitrate for audio encoding.
@@ -125,10 +130,11 @@ export class FFmpegImplementation implements FFmpegInterface {
       "aac", // Specifies the audio codec to use for encoding.
       "-ac",
       "2", // Specifies the number of audio channels to encode.
-
+      
       "-y", // Overwrites the output file without prompting.
     ];
-  }
+}
+
 
   async record(
     window: any,
