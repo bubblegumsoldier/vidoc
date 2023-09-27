@@ -69,7 +69,7 @@ export class FFmpegImplementation implements FFmpegInterface {
   ): Promise<string | undefined> {
     const matchingScreen = await this.commandExecutor.executeProcess(
       await this.getPathToFFmpegBinary(),
-      ["-f", "-list_devices", "true", "-i", '""']
+      ["-f", "avfoundation", "-list_devices", "true", "-i", '""']
     );
     const output = matchingScreen.stderr || "" + matchingScreen.stdout;
     console.log(output);
