@@ -127,7 +127,7 @@ export class FFmpegImplementation implements FFmpegInterface {
       "-b:a",
       "128k", // Specifies the bitrate for audio encoding.
       "-c:a",
-      "aac", // Specifies the audio codec to use for encoding.
+      "libmp3lame", // Specifies the audio codec to use for encoding.
       "-ac",
       "2", // Specifies the number of audio channels to encode.
       

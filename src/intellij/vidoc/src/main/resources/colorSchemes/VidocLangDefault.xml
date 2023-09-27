@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<list>
+    <option name="VIDOC_STRING">
+        <value>
+            <option name="FOREGROUND" value="FFFFFF"/>
+            <option name="BACKGROUND" value="FFFF0040"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
+</list>
