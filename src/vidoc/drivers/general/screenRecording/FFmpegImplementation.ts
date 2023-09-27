@@ -72,8 +72,10 @@ export class FFmpegImplementation implements FFmpegInterface {
       ["-f", "-list_devices", "true", "-i", '""']
     );
     const output = matchingScreen.stderr || "" + matchingScreen.stdout;
+    console.log(output);
     const regex = new RegExp(`\\[([0-9]+)\\] Capture screen ${screenId}`);
     const match = output.match(regex);
+    console.log({match})
     return match ? parseInt(match[1], 10).toString() : undefined;
   }
 
