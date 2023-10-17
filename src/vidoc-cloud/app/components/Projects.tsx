@@ -1,7 +1,6 @@
 // app/products/page.jsx
 'use client'
 import useSWR from 'swr';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 
 const fetcher = async (uri) => {
   const response = await fetch(uri);
