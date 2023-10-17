@@ -16,9 +16,15 @@ class ProjectRepository {
   async getProjectById(id) {
     return await prisma.project.findUnique({
       where: { id },
-      include: { members: true },
+      include: { 
+        members: {
+          include: {
+            user: true
+          }
+        }
+      },
     });
-  }
+  }  
 
   async updateProject(projectId, updateData) {
     return await prisma.project.update({

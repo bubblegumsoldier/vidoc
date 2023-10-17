@@ -4,7 +4,10 @@ import UserRepository from "../../../data-access/UserRepository";
 import MembershipRepository from "../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../data-access/ProjectRepository";
 
-export const GET = withApiAuthRequired(async function getProjectById(req, {params}) {
+export const GET = withApiAuthRequired(async function getProjectById(
+  req,
+  { params }
+) {
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
   const internalUser = await UserRepository.getCurrentUser(req, res);
@@ -19,10 +22,13 @@ export const GET = withApiAuthRequired(async function getProjectById(req, {param
   return NextResponse.json(project, res);
 });
 
-export const PATCH = withApiAuthRequired(async function updateProject(req) {
+export const PATCH = withApiAuthRequired(async function updateProject(
+  req,
+  { params }
+) {
   const res = new NextResponse();
   const { name, repositoryUrl } = req.body;
-  const projectId = req.query.id; // Get projectId from the route
+  const { projectId } = params; // Get projectId from the route
 
   const internalUser = await UserRepository.getCurrentUser(req, res);
 
@@ -56,9 +62,12 @@ export const PATCH = withApiAuthRequired(async function updateProject(req) {
   return NextResponse.json(updatedProject, res);
 });
 
-export const DELETE = withApiAuthRequired(async function deleteProject(req) {
+export const DELETE = withApiAuthRequired(async function deleteProject(
+  req,
+  { params }
+) {
   const res = new NextResponse();
-  const projectId = req.query.id; // Get projectId from the route
+  const { projectId } = params; // Get projectId from the route
 
   const internalUser = await UserRepository.getCurrentUser(req, res);
 
