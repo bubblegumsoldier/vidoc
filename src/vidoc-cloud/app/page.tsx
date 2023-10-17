@@ -1,15 +1,15 @@
-import Image from 'next/image'
-import ProfileServer from './components/ProfileServer';
-import Projects from './components/Projects';
+import { getSession } from "@auth0/nextjs-auth0";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+  if (session) {
+    return redirect("/protected");
+  }
+  
   return (
     <main>
-      <h1>Home Auth0 Login Test</h1>
       <a href="/api/auth/login">Login</a>
-      <a href="/api/auth/logout">Logout</a>
-      {/* <ProfileServer /> */}
-      <Projects />
     </main>
-  )
+  );
 }
