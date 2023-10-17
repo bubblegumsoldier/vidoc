@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import UserRepository from "../../../data-access/UserRepository";
 import MembershipRepository from "../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../data-access/ProjectRepository";
+import { ProjectStorage } from "../../../data-access/ProjectStorage";
+
 
 export const GET = withApiAuthRequired(async function getProjectById(
   req,
@@ -11,7 +13,14 @@ export const GET = withApiAuthRequired(async function getProjectById(
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
   const internalUser = await UserRepository.getCurrentUser(req, res);
-  const project = await ProjectRepository.getProjectById(projectId);
+  const { searchParams } = new URL(req.url);
+  const param = searchParams.get("updateStorage");
+  let project;
+  if (param) {
+    project = await ProjectStorage.updateUsedStorageOfProject(projectId);
+  } else {
+    project = await ProjectRepository.getProjectById(projectId);
+  }
   if (!MembershipRepository.isUserMemberOfProject(internalUser.id, projectId)) {
     return NextResponse.json(
       { error: "Only members can view the project details." },
