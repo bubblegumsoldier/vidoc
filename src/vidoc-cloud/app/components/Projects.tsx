@@ -8,8 +8,9 @@ const fetcher = async (uri) => {
 };
 
 export default function Projects() {
-  const { data, error } = useSWR('/api/projects', fetcher);
+  const { data, error } = useSWR('/api/projects/6cc813be-e24d-4625-aa7f-828daa271fd2', fetcher);
+  const text = JSON.stringify(data);
   if (error) return <div>oops... {error.message}</div>;
   if (data === undefined) return <div>Loading...</div>;
-  return <div>{data.protected}</div>;
+  return <div>{text}</div>;
 };

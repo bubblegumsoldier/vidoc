@@ -13,30 +13,32 @@ enum UserRole {
 }
 
 model User {
-  id        String      @id @default(uuid()) @unique
-  auth0Id   String      @unique
-  email     String      @unique
-  name      String
-  projects  Project[]
+  id          String       @id @unique @default(uuid())
+  auth0Id     String       @unique
+  email       String       @unique
+  name        String
+  projects    Project[]
   memberships Membership[]
 }
 
 model Project {
-  id             String      @id @default(uuid()) @unique
-  name           String
-  repositoryUrl  String?      // Optional repository URL
-  creatorId      String       // Foreign key to relate project to user
-  creator        User         @relation(fields: [creatorId], references: [id])
-  members        Membership[] 
-  allowedMemory  Int          // Memory in bytes
-  usedMemory     Int          // Memory in bytes
+  id            String       @id @unique @default(uuid())
+  name          String
+  repositoryUrl String? // Optional repository URL
+  creatorId     String // Foreign key to relate project to user
+  creator       User         @relation(fields: [creatorId], references: [id])
+  members       Membership[]
+  allowedMemory Int // Memory in bytes
+  usedMemory    Int // Memory in bytes
 }
 
 model Membership {
-  id       String    @id @default(uuid()) @unique
-  role     UserRole  // Role of the user in the project
-  userId   String
-  user     User      @relation(fields: [userId], references: [id])
+  id        String   @id @unique @default(uuid())
+  role      UserRole // Role of the user in the project
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
   projectId String
-  project  Project   @relation(fields: [projectId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
 }
