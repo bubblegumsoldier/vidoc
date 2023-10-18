@@ -51,10 +51,6 @@ export default withPageAuthRequired(
               </div>
               <div className="w-100">
                 <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 h-16">
-                  <div>
-                    Hello {user.name}, this is protected{" "}
-                    <a href="/api/auth/logout">Logout</a>
-                  </div>
                   <div className="body">{children}</div>
                 </div>
               </div>

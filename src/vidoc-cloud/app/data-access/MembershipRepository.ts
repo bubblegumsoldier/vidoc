@@ -4,7 +4,16 @@ class MembershipRepository {
   async getProjectMembershipsByUserId(userId) {
     return await prisma.membership.findMany({
       where: { userId },
-      include: { project: true },
+      include: {
+        project: {
+          include: {
+            tier: true,
+            members: {
+              take: 5,
+            },
+          },
+        },
+      },
     });
   }
   async addMemberToProject(userId, projectId, role) {
@@ -32,15 +41,19 @@ class MembershipRepository {
   }
 
   async isUserAdminOfProject(userId, projectId) {
-    return await prisma.membership.count({
-      where: { userId, role: "ADMIN", projectId },
-    }) > 0;
+    return (
+      (await prisma.membership.count({
+        where: { userId, role: "ADMIN", projectId },
+      })) > 0
+    );
   }
 
   async isUserMemberOfProject(userId, projectId) {
-    return await prisma.membership.count({
-      where: { userId, projectId },
-    }) > 0;
+    return (
+      (await prisma.membership.count({
+        where: { userId, projectId },
+      })) > 0
+    );
   }
 }
 

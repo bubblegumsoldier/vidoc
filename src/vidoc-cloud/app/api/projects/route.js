@@ -23,7 +23,6 @@ export const POST = withApiAuthRequired(async function createProject(req) {
   const newProject = await ProjectRepository.createProject({
     name,
     repositoryUrl,
-    allowedMemory: 5e9, //5 GB
     creatorId: internalUser.id,
   });
 

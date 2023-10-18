@@ -2,6 +2,7 @@
 
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Menu, Transition } from "@headlessui/react";
+import Image from "next/image";
 import { Fragment } from "react";
 
 export default function ProfileButton() {
@@ -13,10 +14,17 @@ export default function ProfileButton() {
       {/* Profile dropdown */}
       <Menu as="div" className="relative ml-3">
         <div>
-          <Menu.Button className="relative flex rounded-full bg-gray-800 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <span className="text-white">
-              {isLoading ? "Loading..." : user?.name || errorMsg}
-            </span>
+          <Menu.Button className="relative flex rounded items-center text-gray-300 hover:bg-gray-700 hover:text-white space-x-2 flex-row bg-gray-800 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            {user?.picture && (
+              <Image
+                src={user?.picture}
+                alt="Profile"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            )}
+            <span>{isLoading ? "Loading..." : user?.name || errorMsg}</span>
           </Menu.Button>
         </div>
         <Transition

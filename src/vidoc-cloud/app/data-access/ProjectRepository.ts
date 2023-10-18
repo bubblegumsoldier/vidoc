@@ -1,13 +1,22 @@
+import ProjectTierRepository from "./ProjectTierRepository";
+import { ProjectUpgradeRequiredError } from "./errors";
 import prisma from "./prismaClient";
-
 export default class ProjectRepository {
-  public static async createProject(name, repositoryUrl, creatorId, allowedMemory) {
+  public static async createProject(
+    name: string,
+    repositoryUrl: string,
+    creatorId: string,
+    tierId?: string
+  ) {
+    if (!tierId) {
+      tierId = (await ProjectTierRepository.getFirstProjectTier()).id;
+    }
     return await prisma.project.create({
       data: {
         name,
         repositoryUrl,
         creatorId,
-        allowedMemory,
+        tierId,
         usedMemory: 0,
       },
     });
@@ -16,15 +25,16 @@ export default class ProjectRepository {
   public static async getProjectById(id) {
     return await prisma.project.findUnique({
       where: { id },
-      include: { 
+      include: {
         members: {
           include: {
-            user: true
-          }
-        }
+            user: true,
+          },
+        },
+        tier: true,
       },
     });
-  }  
+  }
 
   public static async updateProject(projectId, updateData) {
     return await prisma.project.update({
@@ -37,5 +47,13 @@ export default class ProjectRepository {
     return await prisma.project.delete({
       where: { id: projectId },
     });
+  }
+
+  public static async getProjectUploadLink(projectId, uuid) {
+    if (await ProjectTierRepository.isOverLimit(projectId)) {
+      throw new ProjectUpgradeRequiredError(
+        "Maximum storage limit of project reached, please upgrade."
+      );
+    }
   }
 }
