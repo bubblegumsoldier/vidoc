@@ -23,3 +23,12 @@
 .animate-shimmer {
   animation: shimmer 1.5s infinite;
 }
+
+.hover-parent .hover-child {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.hover-parent:hover .hover-child {
+  opacity: 1;
+}

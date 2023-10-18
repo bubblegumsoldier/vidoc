@@ -20,7 +20,11 @@ import ProgressBar from "./ProgressBar";
 import BytesToString from "../utils/BytesToString";
 
 const fetcher = async (uri) => {
-  const response = await fetch(uri);
+  const response = await fetch(uri, {
+    next: {
+      revalidate: 0,
+    },
+  });
   return response.json();
 };
 
@@ -29,11 +33,11 @@ export default function Projects() {
   const { data, error } = useSWR("/api/projects", fetcher);
   return (
     <>
-      <ul>
+      <ul className="flex flex-col space-y-4">
         {data?.map((project: Project) => (
-          <li key={project.id}>
+          <li key={project.id} className="hover-parent">
             <Link href={`/protected/projects/${project.id}`}>
-              <div className="lg:flex lg:items-center lg:justify-between rounded border border-gray-200  p-4 bg-white rounded hover:shadow-lg transition-shadow duration-300 ease-in-out">
+              <div className="lg:flex lg:items-center space-x-6 lg:justify-between rounded border border-gray-200  p-4 bg-white rounded hover:shadow-lg transition-shadow duration-200 ease-out">
                 <div className="min-w-0 flex-1">
                   <h2 className="text-l font-bold leading-2 text-gray-900 sm:truncate sm:text-l sm:tracking-tight">
                     {project.name}
@@ -45,16 +49,18 @@ export default function Projects() {
                     <div className="mt-2 flex flex-1 items-center text-sm text-gray-500">
                       <ProgressBar
                         progress={
-                          project.usedMemory / project.tier.maxStorageBytes
+                          project.usedMemory / project.tier?.maxStorageBytes || 1
                         }
                       />
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500 mr-4">
-                      {BytesToString.convert(project.tier.maxStorageBytes)}
+                      {BytesToString.convert(
+                        project.tier?.maxStorageBytes || 0
+                      )}
                     </div>
                   </div>
                 </div>
-                <div className="mt-5 flex lg:ml-4 lg:mt-0">
+                <div className="mt-5 flex lg:ml-4 lg:mt-0 hover-child">
                   <span className="hidden sm:block">
                     <button
                       type="button"
