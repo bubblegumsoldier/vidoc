@@ -42,6 +42,9 @@ export default function Projects() {
                   <h2 className="text-l font-bold leading-2 text-gray-900 sm:truncate sm:text-l sm:tracking-tight">
                     {project.name}
                   </h2>
+                  <div className="text-xs text-gray-500">
+                    {project.repositoryUrl}
+                  </div>
                   <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
                     <div className="mt-2 flex items-center text-sm text-gray-500">
                       {BytesToString.convert(project.usedMemory)}
