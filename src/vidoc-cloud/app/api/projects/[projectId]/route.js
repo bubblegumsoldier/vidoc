@@ -5,14 +5,20 @@ import MembershipRepository from "../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../data-access/ProjectRepository";
 import { ProjectStorage } from "../../../data-access/ProjectStorage";
 
-
-export const GET = withApiAuthRequired(async function getProjectById(
-  req,
-  { params }
-) {
+export const GET = async function getProjectById(req, { params }) {
   const res = new NextResponse();
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
+    return NextResponse.json(
+      { error: "Failed to find authenticated user." },
+      res,
+      401
+    );
+  }
   const { projectId } = params; // Get projectId from the route
-  const internalUser = await UserRepository.getCurrentUser(req, res);
   const { searchParams } = new URL(req.url);
   const param = searchParams.get("updateStorage");
   let project;
@@ -29,17 +35,24 @@ export const GET = withApiAuthRequired(async function getProjectById(
     );
   }
   return NextResponse.json(project, res);
-});
+};
 
-export const PATCH = withApiAuthRequired(async function updateProject(
-  req,
-  { params }
-) {
+export const PATCH = async function updateProject(req, { params }) {
   const res = new NextResponse();
   const { name, repositoryUrl } = req.body;
   const { projectId } = params; // Get projectId from the route
 
-  const internalUser = await UserRepository.getCurrentUser(req, res);
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
+    return NextResponse.json(
+      { error: "Failed to find authenticated user." },
+      res,
+      401
+    );
+  }
 
   // Check if the current user is the admin of the project
   if (
@@ -69,16 +82,23 @@ export const PATCH = withApiAuthRequired(async function updateProject(
   }
 
   return NextResponse.json(updatedProject, res);
-});
+};
 
-export const DELETE = withApiAuthRequired(async function deleteProject(
-  req,
-  { params }
-) {
+export const DELETE = async function deleteProject(req, { params }) {
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
 
-  const internalUser = await UserRepository.getCurrentUser(req, res);
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
+    return NextResponse.json(
+      { error: "Failed to find authenticated user." },
+      res,
+      401
+    );
+  }
 
   // Check if the current user is the admin of the project
   if (
@@ -105,4 +125,4 @@ export const DELETE = withApiAuthRequired(async function deleteProject(
   }
 
   return NextResponse.json({ message: "Project deleted successfully" }, res);
-});
+};

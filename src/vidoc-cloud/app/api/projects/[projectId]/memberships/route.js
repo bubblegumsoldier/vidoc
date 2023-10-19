@@ -4,13 +4,21 @@ import UserRepository from "../../../../data-access/UserRepository";
 import MembershipRepository from "../../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../../data-access/ProjectRepository";
 
-export const GET = withApiAuthRequired(async function getMembershipsOfProject(
-  req,
-  { params }
-) {
+export const GET = async function getMembershipsOfProject(req, { params }) {
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
-  const internalUser = await UserRepository.getCurrentUser(req, res);
+
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
+    return NextResponse.json(
+      { error: "Failed to find authenticated user." },
+      res,
+      401
+    );
+  }
   const project = await ProjectRepository.getProjectById(projectId);
   if (!MembershipRepository.isUserMemberOfProject(internalUser.id, projectId)) {
     return NextResponse.json(
@@ -20,17 +28,24 @@ export const GET = withApiAuthRequired(async function getMembershipsOfProject(
     );
   }
   return NextResponse.json(project.members, res);
-});
+};
 
-export const POST = withApiAuthRequired(async function createMembership(
-  req,
-  { params }
-) {
+export const POST = async function createMembership(req, { params }) {
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
   const { userId, role } = req.body; // Get userId and role from request body
 
-  const internalUser = await UserRepository.getCurrentUser(req, res);
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
+    return NextResponse.json(
+      { error: "Failed to find authenticated user." },
+      res,
+      401
+    );
+  }
 
   // Check if the current user is the admin of the project
   if (
@@ -71,4 +86,4 @@ export const POST = withApiAuthRequired(async function createMembership(
   }
 
   return NextResponse.json(newMembership, res);
-});
+};

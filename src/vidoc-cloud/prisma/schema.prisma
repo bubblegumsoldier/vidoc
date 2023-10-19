@@ -19,6 +19,14 @@ model User {
   name        String
   projects    Project[]
   memberships Membership[]
+  tokens      AccessToken[]
+}
+
+model AccessToken {
+  token       String      @id @unique
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+  validUntil  DateTime?
 }
 
 model Project {

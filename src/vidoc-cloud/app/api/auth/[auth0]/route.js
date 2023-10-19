@@ -12,16 +12,12 @@ export const GET = handleAuth({
         return result;
       }
       // Check with prisma if we have user in DB
-      const user = await UserRepository.getUserByAuth0Id(session.user.sub);
-
-      if (!user) {
-        // Create user in DB
-        await UserRepository.createUser({
-          auth0Id: session.user.sub,
-          email: session.user.email || "",
-          name: session.user.name,
-        });
-      }
+      await UserRepository.getUserByAuth0Id(
+        session.user.sub,
+        {},
+        true,
+        session
+      );
 
       return result;
     } catch (error) {

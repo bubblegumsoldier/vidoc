@@ -4,13 +4,37 @@ import {
   getAccessToken,
 } from "@auth0/nextjs-auth0";
 import { NextResponse } from "next/server";
+import UserRepository from "../../../../data-access/UserRepository";
+import TokenValidation from "../../../../utils/TokenValidation";
 
 export const GET = withApiAuthRequired(async (req, res) => {
-  const { accessToken } = await getAccessToken(req, res);
+  const session = await getSession();
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Failed to log in user." }, res, 401);
+  }
 
-  return NextResponse.redirect(
-    `http://localhost:49392/auth/callback?jwt=${encodeURIComponent(
-      accessToken
-    )}`
+  const auth0Id = session.user.sub;
+  const user = await UserRepository.getUserByAuth0Id(
+    auth0Id,
+    {},
+    true,
+    session
+  );
+  const newlyGeneratedAccessToken = await TokenValidation.generateNewTokenForUser(
+    user.id
+  );
+  if (!newlyGeneratedAccessToken) {
+    return NextResponse.json(
+      { error: "Failed to generate new token for user." },
+      res,
+      400
+    );
+  }
+  return NextResponse.json(
+    {
+      token: newlyGeneratedAccessToken,
+    },
+    res,
+    201
   );
 });
