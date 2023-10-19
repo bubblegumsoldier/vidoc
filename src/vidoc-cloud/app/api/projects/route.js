@@ -8,15 +8,18 @@ import Auth0Authentication from "../../utils/Auth0Authentication";
 export const GET = async function getProjects(req) {
   const res = new NextResponse();
 
-  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(req, res);
-  if(!internalUser) {
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
       res,
       401
     );
   }
-  
+
   const memberships = await MembershipRepository.getProjectMembershipsByUserId(
     internalUser.id
   );
@@ -26,10 +29,16 @@ export const GET = async function getProjects(req) {
 
 export const POST = async function createProject(req) {
   const res = new NextResponse();
-  const { name, repositoryUrl } = req.body;
+  const { name, repositoryUrl } = JSON.parse(await req.text());
 
-  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(req, res);
-  if(!internalUser) {
+  console.log({ name, repositoryUrl });
+  console.log(req.body);
+
+  const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
+    req,
+    res
+  );
+  if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
       res,
@@ -37,11 +46,11 @@ export const POST = async function createProject(req) {
     );
   }
 
-  const newProject = await ProjectRepository.createProject({
+  const newProject = await ProjectRepository.createProject(
     name,
     repositoryUrl,
-    creatorId: internalUser.id,
-  });
+    internalUser.id
+  );
 
   if (!newProject) {
     return NextResponse.json(

@@ -52,7 +52,7 @@ export default function Projects() {
                     <div className="mt-2 flex flex-1 items-center text-sm text-gray-500">
                       <ProgressBar
                         progress={
-                          project.usedMemory / project.tier?.maxStorageBytes || 1
+                          project.usedMemory / (project.tier?.maxStorageBytes || 1)
                         }
                       />
                     </div>

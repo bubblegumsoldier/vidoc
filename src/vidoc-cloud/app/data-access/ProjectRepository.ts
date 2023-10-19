@@ -12,7 +12,7 @@ export default class ProjectRepository {
     if (!tierId) {
       tierId = (await ProjectTierRepository.getFirstProjectTier()).id;
     }
-    return await prisma.project.create({
+    const project = await prisma.project.create({
       data: {
         name,
         repositoryUrl,
@@ -21,6 +21,20 @@ export default class ProjectRepository {
         usedMemory: 0,
       },
     });
+    console.log({
+      role: "ADMIN",
+      userId: creatorId,
+      projectId: project.id,
+      name: project.name
+    });
+    await prisma.membership.create({
+      data: {
+        role: "ADMIN",
+        userId: creatorId,
+        projectId: project.id,
+      },
+    });
+    return ProjectRepository.getProjectById(project.id);
   }
 
   public static async getProjectById(id) {
