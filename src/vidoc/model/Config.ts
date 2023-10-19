@@ -47,6 +47,7 @@ export class SavingStrategyVidocCloud {
   type = "vidoc.cloud" as const;
   projectId?: string;
   url: string = "https://vidoc.cloud/api/";
+  folder: string = ".vidoc";
 }
 
 export interface SavingInformationAWSS3 {

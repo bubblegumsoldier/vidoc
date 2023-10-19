@@ -9,6 +9,7 @@ import { exec } from "child_process";
 import { LoginResultRetrieverServer } from "./vidoc-cloud/LoginResultRetrieverServer";
 
 const DEFAULT_PORT = 7989;
+const DEFAULT_URL = "http://vidoc.cloud/api/";
 
 type NewUrlResponse = {
   url: string;
@@ -43,7 +44,10 @@ export class VSCVidocCloudAccessor implements VidocCloudAccessor {
 
   private async currentTokenIsValid(): Promise<boolean> {
     try {
-      await axios.get(await this.getApiUrl("projects"));
+      await axios.get(
+        await this.getApiUrl("projects"),
+        await this.getAxiosOptionsWithAuthHeader()
+      );
       return true;
     } catch {
       return false;
@@ -75,22 +79,42 @@ export class VSCVidocCloudAccessor implements VidocCloudAccessor {
     }
   }
 
+  public async getAxiosOptionsWithAuthHeader(): Promise<any> {
+    const token = await this.getCurrentToken();
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
+
   private async getApiUrl(suffix: string): Promise<string> {
     const config = await this.configRetriever.getConfig();
-    const baseUrl = (<SavingStrategyVidocCloud>config.savingStrategy).url;
+    const baseUrl =
+      (<SavingStrategyVidocCloud>config.savingStrategy).url || DEFAULT_URL;
     return `${baseUrl}${baseUrl.endsWith("/") ? "" : "/"}${suffix}`;
   }
 
   public async requestUploadLink(vidocId: string): Promise<string> {
+    await this.ensureLoggedIn();
     const config = await this.configRetriever.getConfig();
     const projectId = (<SavingStrategyVidocCloud>config.savingStrategy)
       .projectId;
+    if(!projectId) {
+      throw Error('Could not find a project id. Please check your configuration.');
+    }
     const generateUploadLinkPath = await this.getApiUrl(
       `projects/${projectId}/vidoc-links/${vidocId}`
     );
     try {
-      const result: NewUrlResponse = (await axios.post(generateUploadLinkPath))
-        .data;
+      const options = await this.getAxiosOptionsWithAuthHeader();
+      const result: NewUrlResponse = (
+        await axios.post(
+          generateUploadLinkPath,
+          {},
+          {...options}
+        )
+      ).data;
       return result.url;
     } catch {
       throw Error(

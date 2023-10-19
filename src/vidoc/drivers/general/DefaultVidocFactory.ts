@@ -58,12 +58,18 @@ export class DefaultVidocFactory implements VidocFactory {
         relativeFilePathToVideo: this.getRelativeFilePathVideo(config, vidocId),
       };
       vidoc = localVidoc;
-    } else if (config.savingStrategy.type === "remote") {
+    } else if (
+      config.savingStrategy.type === "remote" ||
+      config.savingStrategy.type === "vidoc.cloud"
+    ) {
+      const uploadUrl = await this.fileUploadPathGuesser.guessPathForFileUpload(
+        vidoc
+      );
+      const videoUrl = uploadUrl.split("?")[0];
       const remoteVidoc: LocalMetaDataRemoteVideoVidoc = {
         ...vidoc,
-        remoteVideoUrl: await this.fileUploadPathGuesser.guessPathForFileUpload(
-          vidoc
-        ), // will be generated in postprocessor
+        remoteVideoUrl: videoUrl,
+        uploadUrl: uploadUrl,
       };
       vidoc = remoteVidoc;
     }

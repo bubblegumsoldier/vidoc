@@ -9,7 +9,7 @@ export default class Auth0Authentication {
     res
   ): Promise<User | undefined> {
     const session = await getSession(req, res);
-    if (session) {
+    if (session?.user?.sub) {
       return UserRepository.getUserByAuth0Id(session.user.sub);
     }
 

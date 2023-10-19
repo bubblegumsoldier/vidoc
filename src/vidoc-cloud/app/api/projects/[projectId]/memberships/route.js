@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import UserRepository from "../../../../data-access/UserRepository";
 import MembershipRepository from "../../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../../data-access/ProjectRepository";
+import Auth0Authentication from "../../../../utils/Auth0Authentication";
 
 export const GET = async function getMembershipsOfProject(req, { params }) {
   const res = new NextResponse();

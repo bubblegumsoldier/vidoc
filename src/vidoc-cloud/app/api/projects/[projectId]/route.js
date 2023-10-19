@@ -4,6 +4,7 @@ import UserRepository from "../../../data-access/UserRepository";
 import MembershipRepository from "../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../data-access/ProjectRepository";
 import { ProjectStorage } from "../../../data-access/ProjectStorage";
+import Auth0Authentication from "../../../utils/Auth0Authentication";
 
 export const GET = async function getProjectById(req, { params }) {
   const res = new NextResponse();

@@ -30,7 +30,7 @@ export class DefaultFileUploadPathGuesser implements FileUploadPathGuesser {
       }
     }
     if (config.savingStrategy.type === "vidoc.cloud") {
-      return await this.vidocCloudAccessor.requestUploadLink();
+      return await this.vidocCloudAccessor.requestUploadLink(vidoc.id);
     }
     return "";
   }

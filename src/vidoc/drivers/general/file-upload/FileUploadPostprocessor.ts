@@ -5,12 +5,16 @@ import { ConfigRetriever } from "../../../interfaces/ConfigRetriever";
 import { RemoteVideoUploader } from "../../../interfaces/RemoteVideoUploader";
 import { AWSRemoteVideoUploader } from "./AWSRemoteVideoUploader";
 import { VidocFactory } from "../../../interfaces/VidocFactory";
+import { VidocCloudVideoUploader } from "./VidocCloudVideoUploader";
 
 @injectable()
 export class FileUploadPostprocessor implements VideoPostprocessor {
   constructor(
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever,
-    @inject("AWSRemoteVideoUploader") private awsUploader: AWSRemoteVideoUploader,
+    @inject("AWSRemoteVideoUploader")
+    private awsUploader: AWSRemoteVideoUploader,
+    @inject("VidocCloudVideoUploader")
+    private vidocCloudVideoUploader: VidocCloudVideoUploader,
     @inject("VidocFactory") private vidocFactory: VidocFactory
   ) {}
 
@@ -18,17 +22,22 @@ export class FileUploadPostprocessor implements VideoPostprocessor {
     const parsedVidoc = vidoc as LocalMetaDataRemoteVideoVidoc;
     // File upload
     const config = await this.configRetriever.getConfig();
-    if(config.savingStrategy.type === "local") {
-      throw Error('saving strategy local in file upload postprocessor makes no sense');
+    if (config.savingStrategy.type === "local") {
+      throw Error(
+        "saving strategy local in file upload postprocessor makes no sense"
+      );
     }
-    let uploader: RemoteVideoUploader|undefined = undefined;
-    let uploadInformation: any = undefined;
-    if(config.savingStrategy.s3) {
+    let uploader: RemoteVideoUploader | undefined = undefined;
+    let uploadInformation: any = {};
+    if (config.savingStrategy.type === "remote") {
       uploader = this.awsUploader;
       uploadInformation = config.savingStrategy.s3;
     }
-    if(!uploader) {
-      throw Error('No uploader found');
+    if (config.savingStrategy.type === "vidoc.cloud") {
+      uploader = this.vidocCloudVideoUploader;
+    }
+    if (!uploader) {
+      throw Error("No uploader found");
     }
     const videoUrl = await uploader.uploadVideo(parsedVidoc, uploadInformation);
     parsedVidoc.remoteVideoUrl = videoUrl;

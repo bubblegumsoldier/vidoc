@@ -5,6 +5,8 @@ import { FileUploadPostprocessor } from "./file-upload/FileUploadPostprocessor";
 import { ConfigRetriever } from "../../interfaces/ConfigRetriever";
 import { TmpToFilePostprocessor } from "./file-upload/TmpToFilePostprocessor";
 import { SpeechToTextPostprocessor } from "./speech-to-text/SpeechToTextPostprocessor";
+import { VidocCloudUploadUrlRemover } from "./file-upload/VidocCloudUploadUrlRemover";
+import { VidocFactory } from "../../interfaces/VidocFactory";
 
 @injectable()
 export class DefaultVidocPostprocessor implements VideoPostprocessor {
@@ -15,7 +17,10 @@ export class DefaultVidocPostprocessor implements VideoPostprocessor {
     @inject("FileUploadPostprocessor")
     private fileUploadPostprocessor: FileUploadPostprocessor,
     @inject("SpeechToTextPostprocessor")
-    private speechToTextPostprocessor: SpeechToTextPostprocessor
+    private speechToTextPostprocessor: SpeechToTextPostprocessor,
+    @inject("VidocCloudUploadUrlRemover")
+    private vidocCloudUploadUrlRemover: VidocCloudUploadUrlRemover,
+    @inject("VidocFactory") private vidocFactory: VidocFactory
   ) {}
 
   private async getRelevantPostprocessors(): Promise<VideoPostprocessor[]> {
@@ -25,6 +30,9 @@ export class DefaultVidocPostprocessor implements VideoPostprocessor {
       postprocessors.push(this.tmpToFilePostprocessor);
     } else if (config.savingStrategy.type === "remote") {
       postprocessors.push(this.fileUploadPostprocessor);
+    } else if (config.savingStrategy.type === "vidoc.cloud") {
+      postprocessors.push(this.fileUploadPostprocessor);
+      postprocessors.push(this.vidocCloudUploadUrlRemover);
     }
     if (config.recordingOptions?.postProcessingOptions?.speechToText?.enabled) {
       postprocessors.push(this.speechToTextPostprocessor);
@@ -37,6 +45,7 @@ export class DefaultVidocPostprocessor implements VideoPostprocessor {
     for (const pp of relevantPostprocessors) {
       vidoc = await pp.postprocessVidoc(vidoc);
     }
+    await this.vidocFactory.updateVidocMetadataFile(vidoc);
     return vidoc;
   }
 }

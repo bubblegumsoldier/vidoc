@@ -51,7 +51,6 @@ export class S3Accessor {
       Key: `${projectId}/${vidocId}`,
       Expires: timeout,
       ContentType: "video/mp4",
-      ACL: "public-read",
     };
     return this.s3.getSignedUrl("putObject", params);
   }

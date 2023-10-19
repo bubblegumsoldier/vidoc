@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import MembershipRepository from "../../../../../data-access/MembershipRepository";
 import ProjectRepository from "../../../../../data-access/ProjectRepository";
+import Auth0Authentication from "../../../../../utils/Auth0Authentication";
 
 export const POST = async function getNewVidocLink(req, { params }) {
     const res = new NextResponse();
-    const { name, repositoryUrl } = req.body;
     const { projectId, vidocId } = params; // Get projectId from the route
   
     const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
@@ -35,7 +35,7 @@ export const POST = async function getNewVidocLink(req, { params }) {
     }
   
     return NextResponse.json({
-        url: ProjectRepository.getProjectUploadLink(projectId, vidocId)
+        url: await ProjectRepository.getProjectUploadLink(projectId, vidocId)
     }, res);
   };
   

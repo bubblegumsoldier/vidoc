@@ -55,6 +55,8 @@ import { WindowSelector } from "../vidoc/interfaces/WindowSelector";
 import { ActiveWindowSelector } from "../vidoc/drivers/general/screenRecording/ActiveWindowSelector";
 import { VidocCloudAccessor } from "../vidoc/interfaces/VidocCloudAccessor";
 import { VSCVidocCloudAccessor } from "../vidoc/drivers/vscode/VSCVidocCloudAccessor";
+import { VidocCloudVideoUploader } from "../vidoc/drivers/general/file-upload/VidocCloudVideoUploader";
+import { VidocCloudUploadUrlRemover } from "../vidoc/drivers/general/file-upload/VidocCloudUploadUrlRemover";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -96,6 +98,12 @@ container.register<DefaultVidocPostprocessor>("DefaultVidocPostprocessor", {
 });
 container.register<FileUploadPostprocessor>("FileUploadPostprocessor", {
   useClass: FileUploadPostprocessor,
+});
+container.register<VidocCloudVideoUploader>("VidocCloudVideoUploader", {
+  useClass: VidocCloudVideoUploader,
+});
+container.register<VidocCloudUploadUrlRemover>("VidocCloudUploadUrlRemover", {
+  useClass: VidocCloudUploadUrlRemover,
 });
 container.register<TmpToFilePostprocessor>("TmpToFilePostprocessor", {
   useClass: TmpToFilePostprocessor,

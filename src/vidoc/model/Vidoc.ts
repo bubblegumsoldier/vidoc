@@ -26,6 +26,7 @@ export interface LocalMetadataLocalVideoVidoc extends Vidoc {
 
 export interface LocalMetaDataRemoteVideoVidoc extends Vidoc {
     remoteVideoUrl: string;
+    uploadUrl?: string;
 }
 
 export interface PositionedVidocInstance {
