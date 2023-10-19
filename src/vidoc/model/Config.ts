@@ -1,7 +1,10 @@
 export declare type AllowedFileFormats = "mp4";
 
 export interface Config {
-  savingStrategy: SavingStrategyLocal | SavingStrategyRemote;
+  savingStrategy:
+    | SavingStrategyLocal
+    | SavingStrategyRemote
+    | SavingStrategyVidocCloud;
   recordingOptions: RecordingOptions;
 }
 
@@ -38,6 +41,12 @@ export class SavingStrategyRemote {
   s3?: SavingInformationAWSS3;
   s3Administration?: SavingInformationAWSS3;
   folder: string = ".vidoc";
+}
+
+export class SavingStrategyVidocCloud {
+  type = "vidoc.cloud" as const;
+  projectId?: string;
+  url: string = "https://vidoc.cloud/api/";
 }
 
 export interface SavingInformationAWSS3 {
