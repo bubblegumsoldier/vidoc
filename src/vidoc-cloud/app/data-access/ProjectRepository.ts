@@ -1,4 +1,5 @@
 import ProjectTierRepository from "./ProjectTierRepository";
+import { S3Accessor } from "./S3Accessor";
 import { ProjectUpgradeRequiredError } from "./errors";
 import prisma from "./prismaClient";
 export default class ProjectRepository {
@@ -49,11 +50,12 @@ export default class ProjectRepository {
     });
   }
 
-  public static async getProjectUploadLink(projectId, uuid) {
+  public static async getProjectUploadLink(projectId, vidocId) {
     if (await ProjectTierRepository.isOverLimit(projectId)) {
       throw new ProjectUpgradeRequiredError(
         "Maximum storage limit of project reached, please upgrade."
       );
     }
+    return S3Accessor.createTmpUploadLink(projectId, vidocId);
   }
 }

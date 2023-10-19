@@ -1,4 +1,4 @@
 export interface VidocCloudAccessor {
-    ensureLoggedIn(): Promise<void>;
-    requestUploadLink(): Promise<string>;
+  ensureLoggedIn(): Promise<void>;
+  requestUploadLink(vidocId: string): Promise<string>;
 }

@@ -81,12 +81,12 @@ export class VSCVidocCloudAccessor implements VidocCloudAccessor {
     return `${baseUrl}${baseUrl.endsWith("/") ? "" : "/"}${suffix}`;
   }
 
-  public async requestUploadLink(): Promise<string> {
+  public async requestUploadLink(vidocId: string): Promise<string> {
     const config = await this.configRetriever.getConfig();
     const projectId = (<SavingStrategyVidocCloud>config.savingStrategy)
       .projectId;
     const generateUploadLinkPath = await this.getApiUrl(
-      `projects/${projectId}/vidoc-links`
+      `projects/${projectId}/vidoc-links/${vidocId}`
     );
     try {
       const result: NewUrlResponse = (await axios.post(generateUploadLinkPath))
