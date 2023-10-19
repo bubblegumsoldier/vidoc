@@ -17,7 +17,6 @@ export default class UserRepository {
     autoCreateIfNotExist = false,
     session = undefined
   ): Promise<User | undefined> {
-    console.log({ where: { auth0Id }, ...options });
     const user = await prisma.user.findUnique({
       where: { auth0Id },
       ...options,

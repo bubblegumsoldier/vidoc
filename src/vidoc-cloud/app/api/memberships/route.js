@@ -9,6 +9,5 @@ export const GET = withApiAuthRequired(async function myApiRoute(req) {
   const memberships = await MembershipRepository.getProjectMembershipsByUserId(
     internalUser.id
   );
-  console.log({ memberships });
   return NextResponse.json(memberships, res);
 });

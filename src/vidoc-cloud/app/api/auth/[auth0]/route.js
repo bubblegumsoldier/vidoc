@@ -6,7 +6,6 @@ export const GET = handleAuth({
   async profile(req, res) {
     try {
       const result = await handleProfile(req, res);
-      console.log("Getting Profile");
       const session = await getSession(req, res);
       if (!session?.user?.sub) {
         return result;

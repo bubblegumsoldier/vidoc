@@ -10,9 +10,6 @@ export default class Auth0Authentication {
   ): Promise<User | undefined> {
     const session = await getSession(req, res);
     if (session) {
-      console.log("Session given")
-      console.log({sub: session.user.sub})
-      console.log({user: session.user})
       return UserRepository.getUserByAuth0Id(session.user.sub);
     }
 
@@ -21,7 +18,6 @@ export default class Auth0Authentication {
       return undefined;
     }
     const user = await TokenValidation.getUserForToken(accessToken);
-    console.log(user);
     return user;
   }
 
