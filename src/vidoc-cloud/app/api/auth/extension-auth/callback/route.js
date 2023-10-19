@@ -20,9 +20,8 @@ export const GET = withApiAuthRequired(async (req, res) => {
     true,
     session
   );
-  const newlyGeneratedAccessToken = await TokenValidation.generateNewTokenForUser(
-    user.id
-  );
+  const newlyGeneratedAccessToken =
+    await TokenValidation.generateNewTokenForUser(user.id);
   if (!newlyGeneratedAccessToken) {
     return NextResponse.json(
       { error: "Failed to generate new token for user." },
@@ -30,11 +29,10 @@ export const GET = withApiAuthRequired(async (req, res) => {
       400
     );
   }
-  return NextResponse.json(
-    {
-      token: newlyGeneratedAccessToken,
-    },
+  return NextResponse.redirect(
+    `http://localhost:7989/auth/callback?token=${encodeURIComponent(
+      newlyGeneratedAccessToken.token
+    )}`,
     res,
-    201
   );
 });
