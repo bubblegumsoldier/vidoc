@@ -3,14 +3,17 @@ import { withPageAuthRequired, getSession } from "@auth0/nextjs-auth0";
 import Auth0Authentication from "../../../utils/Auth0Authentication";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import ProjectUsedStorage from "../../../components/ProjectUsedStorage";
+import { ProjectNavigation } from "../../../components/ProjectNavigation";
 
-export default withPageAuthRequired(async function ProjectPage(req) {
+export default withPageAuthRequired(async function ProjectLayout(req) {
   const projectId = req.params.projectId;
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,
     undefined
   );
   const project = await getProjectByIdForUser(projectId, internalUser, false);
+  const children = req.children;
 
   return (
     <>
@@ -28,32 +31,20 @@ export default withPageAuthRequired(async function ProjectPage(req) {
             </h1>
           </div>
           <sub className="text-sm text-gray-500">
-            {project?.repositoryUrl || "No description provided"}
+            {project?.repositoryUrl || "No Repository URL provided"}
           </sub>
+          <div className="mt-2">
+            <ProjectUsedStorage project={project} />
+          </div>
         </div>
       </header>
       <main>
-        <div className="w-full px-4 py-1 bg-gray-100">
+        <div className="w-full px-4 py-2 bg-gray-100">
           <div className="mx-auto max-w-7xl px-4 py-1 sm:px-6 lg:px-8">
-            <nav className="space-x-8 flex" aria-label="Project Tabs">
-              <Link href={`/protected/projects/${projectId}/`}>
-                <div className="py-2 text-black font-medium text-sm border-b-2 border-solid border-gray-600">
-                  Project Info
-                </div>
-              </Link>
-              <Link href={`/protected/projects/${projectId}/contributors`}>
-                <div className="py-2 text-gray-600 font-medium border-b-2 border-transparent text-sm hover:text-gray-800 hover:border-b-2 hover:border-solid hover:border-gray-600">
-                  Contributors
-                </div>
-              </Link>
-              <Link href={`/protected/projects/${projectId}/settings`}>
-                <div className="py-2 text-gray-600 font-medium border-b-2 border-transparent text-sm hover:text-gray-800 hover:border-b-2 hover:border-solid hover:border-gray-600">
-                  Project Settings
-                </div>
-              </Link>
-            </nav>
+            <ProjectNavigation projectId={projectId} />
           </div>
         </div>
+        {children}
       </main>
     </>
   );

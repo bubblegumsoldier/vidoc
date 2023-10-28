@@ -1,5 +1,6 @@
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { redirect } from "next/navigation";
 
-export default withPageAuthRequired(async function ProjectDashboardPage(req) {
-    return <></>
-});
+export default function ProjectHome(req) {
+  const projectId = req.params.projectId;
+  return redirect(`/protected/projects/${projectId}/contributors`);
+}

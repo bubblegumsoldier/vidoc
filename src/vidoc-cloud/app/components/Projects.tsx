@@ -11,6 +11,7 @@ import ProgressBar from "./ProgressBar";
 import BytesToString from "../utils/BytesToString";
 import { GET as getProjects } from "../api/projects/route.js";
 import DeleteProjectButton from "./client/DeleteProjectButton";
+import ProjectUsedStorage from "./ProjectUsedStorage";
 
 export default async function Projects(req) {
   //api/projects/6cc813be-e24d-4625-aa7f-828daa271fd2/memberships/fe8392b2-ad51-4cee-8510-726709d6bbe1
@@ -32,24 +33,7 @@ export default async function Projects(req) {
                     <div className="text-xs text-gray-500">
                       {project.repositoryUrl}
                     </div>
-                    <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-                      <div className="mt-2 flex items-center text-sm text-gray-500">
-                        {BytesToString.convert(project.usedMemory)}
-                      </div>
-                      <div className="mt-2 flex flex-1 items-center text-sm text-gray-500">
-                        <ProgressBar
-                          progress={
-                            project.usedMemory /
-                            (project.tier?.maxStorageBytes || 1)
-                          }
-                        />
-                      </div>
-                      <div className="mt-2 flex items-center text-sm text-gray-500 mr-4">
-                        {BytesToString.convert(
-                          project.tier?.maxStorageBytes || 0
-                        )}
-                      </div>
-                    </div>
+                    <ProjectUsedStorage project={project} />
                   </div>
                 </Link>
                 <div className="mt-5 flex lg:ml-4 lg:mt-0 hover-child">
