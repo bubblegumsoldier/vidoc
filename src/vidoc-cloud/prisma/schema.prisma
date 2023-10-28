@@ -39,6 +39,8 @@ model Project {
   usedMemory    Int // Memory in bytes
   tierId        String?
   tier          ProjectTier? @relation(fields: [tierId], references: [id])
+
+  scheduledForDeletion DateTime? // Date when the project will be deleted
 }
 
 model Membership {

@@ -25,7 +25,7 @@ export default class ProjectRepository {
       role: "ADMIN",
       userId: creatorId,
       projectId: project.id,
-      name: project.name
+      name: project.name,
     });
     await prisma.membership.create({
       data: {
@@ -59,15 +59,33 @@ export default class ProjectRepository {
   }
 
   public static async deleteProject(projectId) {
-    return await prisma.project.delete({
+    const endDate = new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000);
+    await prisma.project.update({
+      data: {
+        scheduledForDeletion: endDate,
+      },
+      where: {
+        id: projectId,
+      },
+    });
+  }
+
+  public static async isProjectScheduledForDeletion(projectId) {
+    const project = await prisma.project.findUnique({
       where: { id: projectId },
     });
+    return project.scheduledForDeletion !== null;
   }
 
   public static async getProjectUploadLink(projectId, vidocId) {
     if (await ProjectTierRepository.isOverLimit(projectId)) {
       throw new ProjectUpgradeRequiredError(
         "Maximum storage limit of project reached, please upgrade."
+      );
+    }
+    if (await ProjectRepository.isProjectScheduledForDeletion(projectId)) {
+      throw new Error(
+        "Project scheduled for deletion, cannot upload new files."
       );
     }
     return S3Accessor.createTmpUploadLink(projectId, vidocId);

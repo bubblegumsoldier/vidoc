@@ -6,12 +6,30 @@ import ProjectRepository from "../../../data-access/ProjectRepository";
 import { ProjectStorage } from "../../../data-access/ProjectStorage";
 import Auth0Authentication from "../../../utils/Auth0Authentication";
 
+export async function getProjectByIdForUser(
+  projectId,
+  internalUser,
+  updateStorage = false
+) {
+  let project;
+  if (updateStorage) {
+    project = await ProjectStorage.updateUsedStorageOfProject(projectId);
+  } else {
+    project = await ProjectRepository.getProjectById(projectId);
+  }
+  if (!MembershipRepository.isUserMemberOfProject(internalUser.id, projectId)) {
+    throw Error("Only members can view the project details");
+  }
+  return project;
+}
+
 export const GET = async function getProjectById(req, { params }) {
   const res = new NextResponse();
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,
     res
   );
+  const { projectId } = params; // Get projectId from the route
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
@@ -19,23 +37,14 @@ export const GET = async function getProjectById(req, { params }) {
       401
     );
   }
-  const { projectId } = params; // Get projectId from the route
   const { searchParams } = new URL(req.url);
   const param = searchParams.get("updateStorage");
-  let project;
-  if (param) {
-    project = await ProjectStorage.updateUsedStorageOfProject(projectId);
-  } else {
-    project = await ProjectRepository.getProjectById(projectId);
+  try {
+    const project = await getProjectByIdForUser(projectId, internalUser, !!param);
+    return NextResponse.json(project, res);
+  } catch (e) {
+    return NextResponse.json({ error: e.message }, res, 403);
   }
-  if (!MembershipRepository.isUserMemberOfProject(internalUser.id, projectId)) {
-    return NextResponse.json(
-      { error: "Only members can view the project details." },
-      res,
-      403
-    );
-  }
-  return NextResponse.json(project, res);
 };
 
 export const PATCH = async function updateProject(req, { params }) {

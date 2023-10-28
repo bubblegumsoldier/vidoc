@@ -31,8 +31,13 @@ export const POST = async function createProject(req) {
   const res = new NextResponse();
   const { name, repositoryUrl } = JSON.parse(await req.text());
 
-  console.log({ name, repositoryUrl });
-  console.log(req.body);
+  if(name.length < 3) {
+    return NextResponse.json(
+      { error: "Project name must be at least 3 characters long." },
+      res,
+      400
+    );
+  }
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,
