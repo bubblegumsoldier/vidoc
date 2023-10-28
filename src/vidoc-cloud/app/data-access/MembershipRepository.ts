@@ -40,6 +40,13 @@ class MembershipRepository {
     });
   }
 
+  updateMembership(memberId, role) {
+    return prisma.membership.update({
+      where: { id: memberId },
+      data: { role },
+    });
+  }
+
   async isUserAdminOfProject(userId, projectId) {
     return (
       (await prisma.membership.count({

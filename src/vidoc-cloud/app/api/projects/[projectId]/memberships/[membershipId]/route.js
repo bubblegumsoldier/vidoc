@@ -58,7 +58,7 @@ export const GET = async function getMembership(req, { params }) {
 export const PATCH = async function updateMembership(req, { params }) {
   const res = new NextResponse();
   const { projectId, membershipId } = params; // Extracting from route params
-  const { role } = req.body; // Expecting role updates from request body
+  const { role } = JSON.parse(await req.text());; // Expecting role updates from request body
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,
@@ -103,10 +103,15 @@ export const PATCH = async function updateMembership(req, { params }) {
     );
   }
 
+  console.log({
+    membershipId,
+    role,
+  })
+
   // Update the membership
   const updatedMembership = await MembershipRepository.updateMembership(
     membershipId,
-    { role }
+    role
   );
 
   if (!updatedMembership) {

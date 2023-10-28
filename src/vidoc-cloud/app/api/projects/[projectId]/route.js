@@ -49,7 +49,7 @@ export const GET = async function getProjectById(req, { params }) {
 
 export const PATCH = async function updateProject(req, { params }) {
   const res = new NextResponse();
-  const { name, repositoryUrl } = req.body;
+  const { name, repositoryUrl } = JSON.parse(await req.text());;
   const { projectId } = params; // Get projectId from the route
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(

@@ -5,12 +5,14 @@ import UserRepository from "../../../data-access/UserRepository";
 export const GET = handleAuth({
   async profile(req, res) {
     try {
+      console.log("Check user in DB")
       const result = await handleProfile(req, res);
       const session = await getSession(req, res);
       if (!session?.user?.sub) {
         return result;
       }
       // Check with prisma if we have user in DB
+      console.log('Check if user in DB')
       await UserRepository.getUserByAuth0Id(
         session.user.sub,
         {},

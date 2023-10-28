@@ -34,7 +34,7 @@ export const GET = async function getMembershipsOfProject(req, { params }) {
 export const POST = async function createMembership(req, { params }) {
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
-  const { userId, role } = req.body; // Get userId and role from request body
+  const { userId, role } = JSON.parse(await req.text());; // Get userId and role from request body
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,

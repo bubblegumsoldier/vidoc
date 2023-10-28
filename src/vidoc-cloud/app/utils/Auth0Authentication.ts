@@ -10,7 +10,7 @@ export default class Auth0Authentication {
   ): Promise<User | undefined> {
     const session = await getSession(req, res);
     if (session?.user?.sub) {
-      return UserRepository.getUserByAuth0Id(session.user.sub);
+      return UserRepository.getUserByAuth0Id(session.user.sub, {}, true, session);
     }
 
     const accessToken = await Auth0Authentication.getTokenFromRequest(req);
