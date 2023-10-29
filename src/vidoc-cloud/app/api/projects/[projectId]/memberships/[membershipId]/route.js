@@ -87,8 +87,9 @@ export const PATCH = async function updateMembership(req, { params }) {
   ) {
     return NextResponse.json(
       { error: "Only the admin can update memberships." },
-      res,
-      403
+      {
+        status: 403,
+      }
     );
   }
 
@@ -98,15 +99,25 @@ export const PATCH = async function updateMembership(req, { params }) {
   if (!targetMembership) {
     return NextResponse.json(
       { error: "Membership not found in this project." },
-      res,
-      404
+      {
+        status: 404
+      }
     );
   }
 
-  console.log({
-    membershipId,
-    role,
-  })
+  // Check if we want to change a user to non-admin and if the user is the only admin
+  if (
+    targetMembership.role === "ADMIN" &&
+    role !== "ADMIN" &&
+    project.members.filter((m) => m.role === "ADMIN").length <= 1
+  ) {
+    return NextResponse.json(
+      { error: "Cannot change the role of the last admin." },
+      {
+        status: 400,
+      }
+    );
+  }
 
   // Update the membership
   const updatedMembership = await MembershipRepository.updateMembership(
@@ -117,8 +128,9 @@ export const PATCH = async function updateMembership(req, { params }) {
   if (!updatedMembership) {
     return NextResponse.json(
       { error: "Failed to update the membership." },
-      res,
-      500
+      {
+        status: 500
+      }
     );
   }
 

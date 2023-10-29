@@ -1,5 +1,5 @@
 // ProjectRoleSelector.js
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import ProjectRoleBadge from "./ProjectRoleBadge";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -9,10 +9,14 @@ function classNames(...classes) {
 }
 
 export default function ProjectRoleSelector({
-  defaultRole = "ADMIN",
+  defaultRole,
   onRoleSelect = (_) => {},
 }) {
-  const [selectedRole, setSelectedRole] = useState(defaultRole);
+  const [selectedRole, setSelectedRole] = useState("ADMIN");
+
+  useEffect(() => {
+    setSelectedRole(defaultRole || "ADMIN");
+  }, [defaultRole]);
 
   const handleRoleClick = (role) => {
     setSelectedRole(role);
@@ -51,7 +55,7 @@ export default function ProjectRoleSelector({
                       "block w-full px-4 py-2 text-left text-sm"
                     )}
                   >
-                    <ProjectRoleBadge role={role} />
+                    <ProjectRoleBadge role={role} key={role} />
                   </button>
                 )}
               </Menu.Item>

@@ -1,4 +1,3 @@
-import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 import { NextResponse } from "next/server";
 import UserRepository from "../../../../data-access/UserRepository";
 import MembershipRepository from "../../../../data-access/MembershipRepository";
@@ -34,7 +33,7 @@ export const GET = async function getMembershipsOfProject(req, { params }) {
 export const POST = async function createMembership(req, { params }) {
   const res = new NextResponse();
   const { projectId } = params; // Get projectId from the route
-  const { userId, role } = JSON.parse(await req.text());; // Get userId and role from request body
+  const { email, role } = JSON.parse(await req.text()); // Get userId and role from request body
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,
@@ -43,8 +42,9 @@ export const POST = async function createMembership(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401,
+      }
     );
   }
 
@@ -57,32 +57,48 @@ export const POST = async function createMembership(req, { params }) {
   ) {
     return NextResponse.json(
       { error: "Only the admin can add members to the project." },
-      res,
-      403
+      {
+        status: 403,
+      }
+    );
+  }
+
+  const userToAdd = await UserRepository.getUserByEmail(email);
+  if (!userToAdd) {
+    console.log("User was not found");
+    return NextResponse.json(
+      { error: "User not found." },
+      {
+        status: 404,
+      }
     );
   }
 
   // Check if the user is already a member of the project
-  if (await MembershipRepository.isMemberOfProject(userId, projectId)) {
+  if (
+    await MembershipRepository.isUserMemberOfProject(userToAdd.id, projectId)
+  ) {
     return NextResponse.json(
       { error: "The user is already a member of this project." },
-      res,
-      409
+      {
+        status: 400,
+      }
     );
   }
 
   // Create the new membership
-  const newMembership = await MembershipRepository.createMembership({
-    userId,
+  const newMembership = await MembershipRepository.addMemberToProject(
+    userToAdd.id,
     projectId,
     role,
-  });
+  );
 
   if (!newMembership) {
     return NextResponse.json(
       { error: "Failed to add the user as a member." },
-      res,
-      500
+      {
+        status: 500,
+      }
     );
   }
 

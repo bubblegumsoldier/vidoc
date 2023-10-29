@@ -19,7 +19,7 @@ export default function UserPreview({ user, light = false }) {
         ) : null}
         <div>
           <div
-            className={light ? `text-black text-base` : "text-white text-base"}
+            className={light ? `text-black text-base text-left` : "text-white text-base text-left"}
           >
             {user.name}
           </div>
@@ -27,8 +27,8 @@ export default function UserPreview({ user, light = false }) {
             <div
               className={
                 light
-                  ? `text-gray-600 text-xs text-left`
-                  : "text-gray-400 text-xs text-left"
+                  ? `text-gray-600 text-xs text-left text-ellipsis max-w-xs	overflow-hidden whitespace-nowrap`
+                  : "text-gray-400 text-xs text-left text-ellipsis max-w-xs	overflow-hidden whitespace-nowrap"
               }
             >
               {user.email}

@@ -10,7 +10,10 @@ export default class Auth0Authentication {
   ): Promise<User | undefined> {
     const session = await getSession(req, res);
     if (session?.user?.sub) {
-      return UserRepository.getUserByAuth0Id(session.user.sub, {}, true, session);
+      if(!session.user.email)  {
+        console.error("No email in session", session.user);
+      }
+      return UserRepository.getUserByAuth0Id(session.user.sub, session.user.email, {}, true, session);
     }
 
     const accessToken = await Auth0Authentication.getTokenFromRequest(req);

@@ -58,7 +58,7 @@ export default async function Projects(req) {
             </li>
           ))}
       </ul>
-      <Link href="/protected/projects/new">
+      <Link href="/protected/projects/new" className="block max-w-fit	">
         <button className="relative flex rounded bg-white items-center text-gray-700 hover:bg-white hover:text-gray-500 mt-4 space-x-2 flex-row bg-gray-800 p-2 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
           <PlusCircleIcon
             className="-ml-0.5 mr-1.5 h-5 w-5"

@@ -1,9 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import UserPreview from "./UserPreview";
 import ProjectRoleSelector from "./ProjectRoleSelector";
-import { PlusIcon } from "@heroicons/react/20/solid";
+import {
+  PaperAirplaneIcon,
+  PlusIcon,
+  UserCircleIcon,
+  UserPlusIcon,
+} from "@heroicons/react/20/solid";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { Tooltip } from "@material-tailwind/react";
+import { UserNotFound } from "../../data-access/errors";
+import { Spinner } from "@material-tailwind/react";
+import ProjectRoleBadge from "./ProjectRoleBadge";
+import useInternalUser from "../../hooks/useInternalUser";
+import { toast } from "react-toastify";
+import CustomToastContainer from "./CustomToastContainer";
 
 async function getMembers(projectId) {
   const response = await fetch(`/api/projects/${projectId}/memberships`, {
@@ -27,8 +40,28 @@ async function updateRole(projectId, membershipId, newRole) {
       body: JSON.stringify({ role: newRole }),
     }
   );
+  if (response.status !== 200) {
+    throw new Error((await response.json()).error);
+  }
+  return await response.json();
+}
+
+async function sendInvite(projectId, email, role) {
+  const response = await fetch(`/api/projects/${projectId}/memberships`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ role, email }),
+  });
+  if (response.status === 404) {
+    throw new UserNotFound();
+  }
   if (!response.ok) {
-    throw new Error("Failed to update role");
+    throw new Error((await response.json()).error);
+  }
+  if (response.status >= 400) {
+    throw new Error((await response.json()).error);
   }
   return await response.json();
 }
@@ -36,17 +69,29 @@ async function updateRole(projectId, membershipId, newRole) {
 export default function ProjectCollaboratorManagement({
   projectId,
   initialMembers,
+  isProjectAdmin,
 }) {
   const [members, setMembers] = useState(initialMembers);
+  const { user, error, isLoading } = useInternalUser();
+
+  const [inviteRole, setInviteRole] = useState("CONTRIBUTOR");
+  const [isInviting, setIsInviting] = useState(false);
+  const [isProjectAdminLive, setIsProjectAdmin] = useState(isProjectAdmin);
 
   useEffect(() => {
     setMembers(initialMembers);
-  }, [initialMembers]);
+    setIsProjectAdmin(isProjectAdmin);
+  }, [initialMembers, isProjectAdmin]);
 
   const refreshMembers = async () => {
     try {
       const updatedMembers = await getMembers(projectId);
-      setMembers(updatedMembers);
+      setMembers([...updatedMembers]);
+      setIsProjectAdmin(
+        updatedMembers.filter(
+          (member) => member.role === "ADMIN" && member.user.id === user?.id
+        ).length > 0
+      );
     } catch (error) {
       console.error("Failed to fetch members:", error);
     }
@@ -54,16 +99,59 @@ export default function ProjectCollaboratorManagement({
 
   const handleRoleChange = async (membershipId, newRole) => {
     try {
+      const updatedMemberships = members.map((membership) => {
+        if (membership.id === membershipId) {
+          membership.role = newRole;
+        }
+        return membership;
+      });
+      setMembers(updatedMemberships);
       await updateRole(projectId, membershipId, newRole);
-      // You might want to call refreshMembers() here or handle the state update in another way
-      refreshMembers();
+      toast("Successfully updated role", {
+        type: "success",
+      });
     } catch (error) {
       console.error("Failed to update role:", error);
+      toast(error.message, {
+        type: "error",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+
+      // You might want to call refreshMembers() here or handle the state update in another way
+    } finally {
+      await refreshMembers();
     }
   };
 
-  const handleAddMember = async () => {
-    // ...
+  const handleInviteSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const target = event.currentTarget;
+    try {
+      setIsInviting(true);
+      await sendInvite(projectId, email, inviteRole);
+      await refreshMembers();
+    } catch (error) {
+      if (error instanceof UserNotFound) {
+        toast(
+          "We did not find any user with the given email address. Are you sure the user exists?",
+          {
+            type: "error",
+            autoClose: 5000
+          }
+        );
+        return;
+      }
+      toast(error.message, { type: "error" });
+    } finally {
+      setInviteRole("CONTRIBUTOR");
+      target.reset();
+      setIsInviting(false);
+    }
   };
 
   return (
@@ -84,15 +172,32 @@ export default function ProjectCollaboratorManagement({
           {members.map((membership, index) => (
             <tr key={index}>
               <td className="py-2 px-4 border-b border-gray-200">
-                <UserPreview user={membership.user} light />
+                <div className="flex space-x-2 items-center">
+                  <UserPreview user={membership.user} light />
+                  {user && user?.id === membership.user.id ? (
+                    <Tooltip content="You are this user" placement="right">
+                      <UserCircleIcon className="w-4 h-4 text-gray-400" />
+                    </Tooltip>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </td>
               <td className="py-2 px-4 border-b border-gray-200">
-                <ProjectRoleSelector
-                  defaultRole={membership.role}
-                  onRoleSelect={(newRole) =>
-                    handleRoleChange(membership.id, newRole)
-                  }
-                />
+                {isProjectAdminLive ? (
+                  <ProjectRoleSelector
+                    key={membership.role}
+                    defaultRole={membership.role}
+                    onRoleSelect={async (newRole) =>
+                      await handleRoleChange(membership.id, newRole)
+                    }
+                  />
+                ) : (
+                  <ProjectRoleBadge
+                    key={membership.role}
+                    role={membership.role}
+                  />
+                )}
               </td>
               <td className=" border-b border-gray-200">
                 <button className="text-red-500 hover:text-red-700">
@@ -103,12 +208,42 @@ export default function ProjectCollaboratorManagement({
           ))}
         </tbody>
       </table>
-      <div className="flex items-center mt-8">
-        <input
-          type="text"
-          className="block w-96 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        />
-      </div>
+      {isProjectAdminLive ? (
+        <form className="space-y-2 mt-6" onSubmit={handleInviteSubmit}>
+          <label className="text-black font-semibold">Invite user</label>
+          <div className="flex items-center mt-8 space-x-4">
+            <input
+              type="text"
+              placeholder="e.g. peter.parker@marvel.com"
+              name="email"
+              required
+              className="block w-96 rounded-md border-0 py-1.5 px-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+            <ProjectRoleSelector
+              defaultRole={inviteRole}
+              onRoleSelect={(newRole) => setInviteRole(newRole)}
+            />
+            {isInviting ? (
+              <>
+                <Spinner />
+              </>
+            ) : (
+              <>
+                <button
+                  type="submit"
+                  className="rounded-md bg-white px-2.5 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 flex items-center space-x-2"
+                >
+                  <UserPlusIcon className="w-4 h-4" /> <span>Add Member</span>
+                </button>
+              </>
+            )}
+          </div>
+        </form>
+      ) : (
+        <></>
+      )}
+
+      <CustomToastContainer />
     </div>
   );
 }

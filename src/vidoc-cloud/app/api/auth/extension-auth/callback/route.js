@@ -16,6 +16,7 @@ export const GET = withApiAuthRequired(async (req, res) => {
   const auth0Id = session.user.sub;
   const user = await UserRepository.getUserByAuth0Id(
     auth0Id,
+    session.user.email,
     {},
     true,
     session

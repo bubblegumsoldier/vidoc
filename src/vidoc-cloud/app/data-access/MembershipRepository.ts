@@ -17,10 +17,6 @@ class MembershipRepository {
     });
   }
   async addMemberToProject(userId, projectId, role) {
-    if (this.isUserAdminOfProject(userId, projectId)) {
-      throw new Error("Only the admin can add members to the project.");
-    }
-
     return await prisma.membership.create({
       data: {
         role,

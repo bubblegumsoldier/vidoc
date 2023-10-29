@@ -2,6 +2,7 @@ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import ProjectCollaboratorManagement from "../../../../components/client/ProjectCollaboratorManagement";
 import Auth0Authentication from "../../../../utils/Auth0Authentication";
 import { getProjectByIdForUser } from "../../../../api/projects/[projectId]/route";
+import MembershipRepository from "../../../../data-access/MembershipRepository";
 
 export default withPageAuthRequired(async function ProjectContributorsPage(
   req
@@ -19,6 +20,10 @@ export default withPageAuthRequired(async function ProjectContributorsPage(
         <ProjectCollaboratorManagement
           projectId={projectId}
           initialMembers={project.members}
+          isProjectAdmin={await MembershipRepository.isUserAdminOfProject(
+            internalUser.id,
+            projectId
+          )}
         />
       </div>
     </>
