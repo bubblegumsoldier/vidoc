@@ -58,7 +58,7 @@ export const GET = async function getMembership(req, { params }) {
 export const PATCH = async function updateMembership(req, { params }) {
   const res = new NextResponse();
   const { projectId, membershipId } = params; // Extracting from route params
-  const { role } = JSON.parse(await req.text());; // Expecting role updates from request body
+  const { role } = JSON.parse(await req.text()); // Expecting role updates from request body
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
     req,
@@ -100,7 +100,7 @@ export const PATCH = async function updateMembership(req, { params }) {
     return NextResponse.json(
       { error: "Membership not found in this project." },
       {
-        status: 404
+        status: 404,
       }
     );
   }
@@ -129,7 +129,7 @@ export const PATCH = async function updateMembership(req, { params }) {
     return NextResponse.json(
       { error: "Failed to update the membership." },
       {
-        status: 500
+        status: 500,
       }
     );
   }
@@ -152,7 +152,7 @@ export const DELETE = async function deleteMembership(req, { params }) {
       401
     );
   }
-  
+
   const project = await ProjectRepository.getProjectById(projectId);
 
   if (!project) {
@@ -168,8 +168,9 @@ export const DELETE = async function deleteMembership(req, { params }) {
   ) {
     return NextResponse.json(
       { error: "Only the admin can delete memberships." },
-      res,
-      403
+      {
+        status: 403,
+      }
     );
   }
 
@@ -179,19 +180,39 @@ export const DELETE = async function deleteMembership(req, { params }) {
   if (!targetMembership) {
     return NextResponse.json(
       { error: "Membership not found in this project." },
-      res,
-      404
+      {
+        status: 404,
+      }
+    );
+  }
+
+  // Check if we want to change a user to non-admin and if the user is the only admin
+  if (
+    targetMembership.role === "ADMIN" &&
+    project.members.filter((m) => m.role === "ADMIN").length <= 1
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Cannot remove the last admin from a project. Please make some other member admin or delete the project itself.",
+      },
+      {
+        status: 400,
+      }
     );
   }
 
   // Delete the membership
-  const wasDeleted = await MembershipRepository.deleteMembership(membershipId);
+  const wasDeleted = await MembershipRepository.removeMemberFromProject(
+    membershipId
+  );
 
   if (!wasDeleted) {
     return NextResponse.json(
       { error: "Failed to delete the membership." },
-      res,
-      500
+      {
+        status: 500,
+      }
     );
   }
 

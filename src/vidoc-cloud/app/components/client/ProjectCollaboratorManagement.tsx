@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useRef, Fragment } from "react";
 import UserPreview from "./UserPreview";
 import ProjectRoleSelector from "./ProjectRoleSelector";
 import {
+  ExclamationTriangleIcon,
   PaperAirplaneIcon,
   PlusIcon,
   UserCircleIcon,
@@ -17,6 +18,7 @@ import ProjectRoleBadge from "./ProjectRoleBadge";
 import useInternalUser from "../../hooks/useInternalUser";
 import { toast } from "react-toastify";
 import CustomToastContainer from "./CustomToastContainer";
+import { Dialog, Transition } from "@headlessui/react";
 
 async function getMembers(projectId) {
   const response = await fetch(`/api/projects/${projectId}/memberships`, {
@@ -78,6 +80,13 @@ export default function ProjectCollaboratorManagement({
   const [isInviting, setIsInviting] = useState(false);
   const [isProjectAdminLive, setIsProjectAdmin] = useState(isProjectAdmin);
 
+  let [confirmIsOpen, setConfirmIsOpen] = useState(false);
+  let [currentlySelectedDeleteId, setCurrentlySelectedDeleteId] =
+    useState(null);
+
+  const cancelButtonRef = useRef(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   useEffect(() => {
     setMembers(initialMembers);
     setIsProjectAdmin(isProjectAdmin);
@@ -135,13 +144,16 @@ export default function ProjectCollaboratorManagement({
       setIsInviting(true);
       await sendInvite(projectId, email, inviteRole);
       await refreshMembers();
+      toast("Successfully added user", {
+        type: "success",
+      });
     } catch (error) {
       if (error instanceof UserNotFound) {
         toast(
           "We did not find any user with the given email address. Are you sure the user exists?",
           {
             type: "error",
-            autoClose: 5000
+            autoClose: 5000,
           }
         );
         return;
@@ -151,6 +163,31 @@ export default function ProjectCollaboratorManagement({
       setInviteRole("CONTRIBUTOR");
       target.reset();
       setIsInviting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch(
+        `/api/projects/${projectId}/memberships/${currentlySelectedDeleteId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error((await response.json()).error);
+      }
+      toast("Successfully removed user from project", {
+        type: "success",
+      });
+    } catch (e) {
+      toast(e.message, { type: "error", autoClose: 5000 });
+    } finally {
+      setCurrentlySelectedDeleteId(null);
+      setIsDeleting(false);
+      setConfirmIsOpen(false);
+      await refreshMembers();
     }
   };
 
@@ -200,7 +237,14 @@ export default function ProjectCollaboratorManagement({
                 )}
               </td>
               <td className=" border-b border-gray-200">
-                <button className="text-red-500 hover:text-red-700">
+                <button
+                  className="text-red-500 hover:text-red-700"
+                  onClick={(e) => {
+                    setCurrentlySelectedDeleteId(membership.id);
+                    e.stopPropagation();
+                    setConfirmIsOpen(true);
+                  }}
+                >
                   Remove
                 </button>
               </td>
@@ -242,7 +286,86 @@ export default function ProjectCollaboratorManagement({
       ) : (
         <></>
       )}
+      <Transition.Root show={confirmIsOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          initialFocus={cancelButtonRef}
+          onClose={setConfirmIsOpen}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
 
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              >
+                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div className="sm:flex sm:items-start">
+                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <ExclamationTriangleIcon
+                          className="h-6 w-6 text-red-600"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-base font-semibold leading-6 text-gray-900"
+                        >
+                          Remove User from Project
+                        </Dialog.Title>
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-500">
+                            Are you sure you want to remove this user from the
+                            project?
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button
+                      type="button"
+                      className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto disabled:opacity-25"
+                      onClick={() => handleDelete()}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? "Removing..." : "Remove User"}
+                    </button>
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto disabled:opacity-25"
+                      onClick={() => setConfirmIsOpen(false)}
+                      ref={cancelButtonRef}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
       <CustomToastContainer />
     </div>
   );

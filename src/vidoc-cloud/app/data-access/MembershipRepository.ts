@@ -26,11 +26,7 @@ class MembershipRepository {
     });
   }
 
-  async removeMemberFromProject(userId, memberId, projectId) {
-    if (this.isUserAdminOfProject(userId, projectId)) {
-      throw new Error("Only the admin can add members to the project.");
-    }
-
+  async removeMemberFromProject(memberId) {
     return await prisma.membership.delete({
       where: { id: memberId },
     });

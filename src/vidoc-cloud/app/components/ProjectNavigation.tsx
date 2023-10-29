@@ -26,6 +26,15 @@ export function ProjectNavigation({ projectId }) {
           Project Settings
         </div>
       </Link>
+      <Link href={`/protected/projects/${projectId}/setup`}>
+      <div
+          className={`py-1 font-medium border-b-2 border-transparent text-sm hover:text-gray-800 ${
+            pathname.endsWith("/setup") ? "text-black font-semibold border-b-2 border-solid border-gray-600" : "text-gray-600 hover:border-b-2 hover:border-solid hover:border-gray-600"
+          }`}
+        >
+          Setup
+        </div>
+      </Link>
     </nav>
   );
 }
