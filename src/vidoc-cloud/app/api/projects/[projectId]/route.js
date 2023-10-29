@@ -73,8 +73,9 @@ export const PATCH = async function updateProject(req, { params }) {
   ) {
     return NextResponse.json(
       { error: "Only the admin can update the project details." },
-      res,
-      403
+      {
+        status: 403
+      }
     );
   }
 

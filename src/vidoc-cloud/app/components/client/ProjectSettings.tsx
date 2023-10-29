@@ -26,6 +26,7 @@ export default function ProjectSettings({ projectId, initialProjectValues }) {
     if (response.status !== 200) {
       const errorData = await response.json();
       toast(errorData.error, { type: "error" });
+      setIsSaving(false);
       return;
     }
     toast("Project settings updated", { type: "success" });

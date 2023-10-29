@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import ProjectUsedStorage from "../../../components/ProjectUsedStorage";
 import { ProjectNavigation } from "../../../components/ProjectNavigation";
+import MembershipRepository from "../../../data-access/MembershipRepository";
 
 export default withPageAuthRequired(async function ProjectLayout(req) {
   const projectId = req.params.projectId;
@@ -41,7 +42,13 @@ export default withPageAuthRequired(async function ProjectLayout(req) {
       <main>
         <div className="w-full px-4 py-2 bg-gray-100">
           <div className="mx-auto max-w-7xl px-4 py-1 sm:px-6 lg:px-8">
-            <ProjectNavigation projectId={projectId} />
+            <ProjectNavigation
+              projectId={projectId}
+              isAdmin={await MembershipRepository.isUserAdminOfProject(
+                internalUser.id,
+                projectId
+              )}
+            />
           </div>
         </div>
         {children}
