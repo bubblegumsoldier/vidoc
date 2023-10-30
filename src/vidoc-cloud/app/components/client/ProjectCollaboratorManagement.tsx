@@ -5,12 +5,9 @@ import UserPreview from "./UserPreview";
 import ProjectRoleSelector from "./ProjectRoleSelector";
 import {
   ExclamationTriangleIcon,
-  PaperAirplaneIcon,
-  PlusIcon,
   UserCircleIcon,
   UserPlusIcon,
 } from "@heroicons/react/20/solid";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { Tooltip } from "@material-tailwind/react";
 import { UserNotFound } from "../../data-access/errors";
 import { Spinner } from "@material-tailwind/react";

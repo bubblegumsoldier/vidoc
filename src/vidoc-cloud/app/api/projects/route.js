@@ -15,8 +15,9 @@ export const GET = async function getProjects(req) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401
+      }
     );
   }
 

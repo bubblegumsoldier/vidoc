@@ -18,7 +18,7 @@ class ProjectTierRepository {
    * If no more tiers exist, it returns undefined.
    */
   static async getNextProjectTierById(
-    id: number
+    id: string
   ): Promise<ProjectTier | undefined> {
     // Fetch the current project tier's maxStorageBytes.
     const currentTier = await prisma.projectTier.findUnique({

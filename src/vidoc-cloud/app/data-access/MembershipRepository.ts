@@ -1,7 +1,7 @@
 import prisma from "./prismaClient";
 
-class MembershipRepository {
-  async getProjectMembershipsByUserId(userId) {
+export default class MembershipRepository {
+  public static async getProjectMembershipsByUserId(userId) {
     return await prisma.membership.findMany({
       where: { userId },
       include: {
@@ -16,7 +16,7 @@ class MembershipRepository {
       },
     });
   }
-  async addMemberToProject(userId, projectId, role) {
+  public static async addMemberToProject(userId, projectId, role) {
     return await prisma.membership.create({
       data: {
         role,
@@ -26,20 +26,20 @@ class MembershipRepository {
     });
   }
 
-  async removeMemberFromProject(memberId) {
+  public static async removeMemberFromProject(memberId) {
     return await prisma.membership.delete({
       where: { id: memberId },
     });
   }
 
-  updateMembership(memberId, role) {
-    return prisma.membership.update({
+  public static async updateMembership(memberId, role) {
+    return await prisma.membership.update({
       where: { id: memberId },
       data: { role },
     });
   }
 
-  async isUserAdminOfProject(userId, projectId) {
+  public static async isUserAdminOfProject(userId, projectId) {
     return (
       (await prisma.membership.count({
         where: { userId, role: "ADMIN", projectId },
@@ -47,7 +47,7 @@ class MembershipRepository {
     );
   }
 
-  async isUserMemberOfProject(userId, projectId) {
+  public static async isUserMemberOfProject(userId, projectId) {
     return (
       (await prisma.membership.count({
         where: { userId, projectId },
@@ -55,7 +55,3 @@ class MembershipRepository {
     );
   }
 }
-
-const membershipRepo = new MembershipRepository();
-
-module.exports = membershipRepo;

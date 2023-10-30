@@ -65,6 +65,9 @@ export class DefaultVidocFactory implements VidocFactory {
       const uploadUrl = await this.fileUploadPathGuesser.guessPathForFileUpload(
         vidoc
       );
+      if(!uploadUrl) {
+        throw Error(`Could not log in to vidoc.cloud. Please check your token in the vidoc user settings in your IDE and try again.`);
+      }
       const videoUrl = uploadUrl.split("?")[0];
       const remoteVidoc: LocalMetaDataRemoteVideoVidoc = {
         ...vidoc,

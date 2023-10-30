@@ -1,9 +1,7 @@
 import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 import Auth0Authentication from "../../../../utils/Auth0Authentication";
 import { getProjectByIdForUser } from "../../../../api/projects/[projectId]/route";
-import ProjectSettings from "../../../../components/client/ProjectSettings";
 import ProjectSetupInformation from "../../../../components/client/ProjectSetupInformation";
-import MembershipRepository from "../../../data-access/MembershipRepository";
 
 export default withPageAuthRequired(async function ProjectSettingsPage(req) {
   const projectId = req.params.projectId;

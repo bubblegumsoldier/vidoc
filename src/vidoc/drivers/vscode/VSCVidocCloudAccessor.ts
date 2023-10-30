@@ -44,7 +44,7 @@ export class VSCVidocCloudAccessor implements VidocCloudAccessor {
 
   private async currentTokenIsValid(): Promise<boolean> {
     try {
-      await axios.get(
+      const response = await axios.get(
         await this.getApiUrl("projects"),
         await this.getAxiosOptionsWithAuthHeader()
       );
@@ -59,7 +59,7 @@ export class VSCVidocCloudAccessor implements VidocCloudAccessor {
     if (!token) {
       throw Error(`Token retrieval failed.`);
     }
-    this.setCurrentToken(token);
+    await this.setCurrentToken(token);
     return token;
   }
 

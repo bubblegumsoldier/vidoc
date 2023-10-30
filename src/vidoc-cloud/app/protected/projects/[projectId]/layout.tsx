@@ -14,7 +14,7 @@ export default withPageAuthRequired(async function ProjectLayout(req) {
     undefined
   );
   const project = await getProjectByIdForUser(projectId, internalUser, false);
-  const children = req.children;
+  const { children } = req as { children: React.ReactNode };
 
   return (
     <>
@@ -35,7 +35,7 @@ export default withPageAuthRequired(async function ProjectLayout(req) {
             {project?.repositoryUrl || "No Repository URL provided"}
           </sub>
           <div className="mt-2">
-            <ProjectUsedStorage project={project} />
+            <ProjectUsedStorage project={project} autoRefresh={true} />
           </div>
         </div>
       </header>

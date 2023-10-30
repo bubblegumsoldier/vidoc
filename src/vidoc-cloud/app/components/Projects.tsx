@@ -33,7 +33,7 @@ export default async function Projects(req) {
                     <div className="text-xs text-gray-500">
                       {project.repositoryUrl}
                     </div>
-                    <ProjectUsedStorage project={project} />
+                    <ProjectUsedStorage project={project} autoRefresh={false} />
                   </div>
                 </Link>
                 <div className="mt-5 flex lg:ml-4 lg:mt-0 hover-child">
