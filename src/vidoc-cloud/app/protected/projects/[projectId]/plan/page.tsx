@@ -25,9 +25,15 @@ export default withPageAuthRequired(async function ProjectContributorsPage(
           but you will support the team behind Vidoc Cloud and help us to keep
           the service running.
         </p>
+        <p className="text-sm text-gray-700 mt-4">
+          We do not put a restriction on our service to make money, we just want
+          to make sure we don't run out of money by providing everything for
+          free. This essentially is an Open-Source project and we want to keep
+          it that way.
+        </p>
         <p className="mt-4 text-sm text-gray-700">
           To focus on the essentials we decided not to implement a payment
-          system. Instead, we ask you to send us an email to
+          system yet. Instead, we ask you to send us an email to
           <a
             href={`mailto:hm@hm-dev-consulting.de?subject=${encodeURIComponent(
               "Upgrade for " + projectId

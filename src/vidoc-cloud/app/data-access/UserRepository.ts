@@ -86,10 +86,17 @@ export default class UserRepository {
     res,
     options = {}
   ): Promise<User | undefined> {
-    const user = await Auth0Authentication.getCurrentUserFromRequest(
-      req,
-      res
-    );
+    const user = await Auth0Authentication.getCurrentUserFromRequest(req, res);
     return user;
+  }
+
+  public static async updateUser(
+    id: string,
+    updatedData: { email?: string; name?: string }
+  ): Promise<User | null> {
+    return await prisma.user.update({
+      where: { id },
+      data: updatedData,
+    });
   }
 }

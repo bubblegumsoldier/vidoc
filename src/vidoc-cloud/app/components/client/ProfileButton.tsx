@@ -5,6 +5,7 @@ import { Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 import { Fragment } from "react";
 import UserPreview from "./UserPreview";
+import Link from "next/link";
 
 export default function ProfileButton({initialUser}) {
   const { user, error, isLoading } = useUser();
@@ -34,9 +35,9 @@ export default function ProfileButton({initialUser}) {
         >
           <Menu.Items className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <Menu.Item>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:text-black hover:bg-gray-100">
+              <Link href="/protected/me" className="block px-4 py-2 text-sm text-gray-700 hover:text-black hover:bg-gray-100">
                 Your Profile
-              </a>
+              </Link>
             </Menu.Item>
             <Menu.Item>
               <a
