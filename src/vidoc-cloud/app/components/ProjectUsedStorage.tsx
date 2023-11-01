@@ -8,6 +8,7 @@ import { Spinner } from "@material-tailwind/react";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 
 async function refreshProject(projectId: string) {
+  console.log({projectId});
   const response = await fetch(
     `/api/projects/${projectId}?updateStorage=true`,
     { next: { revalidate: 0 } }
@@ -26,7 +27,7 @@ export default function ProjectUsedStorage({ project, autoRefresh }) {
   const refresh = async () => {
     setIsRefreshing(true);
     try {
-      const refreshedProject = await refreshProject(project.id);
+      await refreshProject(project.id);
       setRefreshedProject(refreshedProject);
     } catch (e) {
       toast.error(e.message, {
@@ -42,7 +43,7 @@ export default function ProjectUsedStorage({ project, autoRefresh }) {
     if (autoRefresh) {
       refresh();
     }
-  }, [project, autoRefresh]);
+  }, []);
 
   return (
     <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
