@@ -40,6 +40,18 @@ Video's are a bit like voice-messages. People love to send them but don't like t
 
 The easiest way to try out the extension is to store the files locally inside the repository. No configuration file is needed in order to achieve that behaviour. However, this is not recommended for larger projects as it can substantially increase the repository size and pushing videos as well as pulling videos can be a pain.
 
+## Using Vidoc.Cloud
+
+Vidoc.Cloud is a streamlined, open-source hosting platform under the domain `vidoc.cloud`. It simplifies video storage, text transcription, and access management for contributors. Essentially, it's Vidoc as a Service. Create projects and invite collaborators without the hassle of sharing `.vidocsecrets` files. Only approved developers can contribute. Initially free, upgrade options are available for extended use, so that we can continue running.
+
+In order to configure Vidoc to use vidoc.cloud follow these steps:
+
+1. Head to [vidoc.cloud](https://vidoc.cloud/) and create an account.
+2. Create a project for the repository you want to connect with vidoc.cloud
+3. Copy the `.vidocconf.json` as specified under the section `Setup`.
+
+When you are recording your first Vidoc you will be asked to log into your account. From then on your vscode user is synced with your `vidoc.cloud` user. If you want other contributors to be able to seamlessly record Vidocs just let them register and add them as a collaborator to your project.
+
 ## Enabling AWS Video Upload for Your VSCode Extension
 
 This guide walks you through setting up AWS S3 video upload for your VSCode extension. You can also configure it to work with other S3-compatible providers like DigitalOcean.
