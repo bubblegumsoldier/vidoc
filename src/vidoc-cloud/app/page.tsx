@@ -5,11 +5,7 @@ export default async function Home() {
   const session = await getSession();
   if (session) {
     return redirect("/protected");
+  } else {
+    return redirect("/api/auth/login");
   }
-  
-  return (
-    <main>
-      <a href="/api/auth/login">Login</a>
-    </main>
-  );
 }

@@ -35,8 +35,9 @@ export const POST = async function createProject(req) {
   if(name.length < 3) {
     return NextResponse.json(
       { error: "Project name must be at least 3 characters long." },
-      res,
-      400
+      {
+        status: 400
+      }
     );
   }
 
@@ -47,8 +48,9 @@ export const POST = async function createProject(req) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401
+      }
     );
   }
 
@@ -61,8 +63,9 @@ export const POST = async function createProject(req) {
   if (!newProject) {
     return NextResponse.json(
       { error: "Failed to create the project." },
-      res,
-      500
+      {
+        status: 500
+      }
     );
   }
 

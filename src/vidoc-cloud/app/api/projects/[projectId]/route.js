@@ -33,14 +33,19 @@ export const GET = async function getProjectById(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401,
+      }
     );
   }
   const { searchParams } = new URL(req.url);
   const param = searchParams.get("updateStorage");
   try {
-    const project = await getProjectByIdForUser(projectId, internalUser, !!param);
+    const project = await getProjectByIdForUser(
+      projectId,
+      internalUser,
+      !!param
+    );
     return NextResponse.json(project, res);
   } catch (e) {
     return NextResponse.json({ error: e.message }, res, 403);
@@ -49,7 +54,7 @@ export const GET = async function getProjectById(req, { params }) {
 
 export const PATCH = async function updateProject(req, { params }) {
   const res = new NextResponse();
-  const { name, repositoryUrl } = JSON.parse(await req.text());;
+  const { name, repositoryUrl } = JSON.parse(await req.text());
   const { projectId } = params; // Get projectId from the route
 
   const internalUser = await Auth0Authentication.getCurrentUserFromRequest(
@@ -59,8 +64,9 @@ export const PATCH = async function updateProject(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401,
+      }
     );
   }
 
@@ -74,7 +80,7 @@ export const PATCH = async function updateProject(req, { params }) {
     return NextResponse.json(
       { error: "Only the admin can update the project details." },
       {
-        status: 403
+        status: 403,
       }
     );
   }
@@ -87,8 +93,9 @@ export const PATCH = async function updateProject(req, { params }) {
   if (!updatedProject) {
     return NextResponse.json(
       { error: "Failed to update the project." },
-      res,
-      500
+      {
+        status: 500,
+      }
     );
   }
 
@@ -106,8 +113,9 @@ export const DELETE = async function deleteProject(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401,
+      }
     );
   }
 
@@ -120,8 +128,9 @@ export const DELETE = async function deleteProject(req, { params }) {
   ) {
     return NextResponse.json(
       { error: "Only the admin can delete the project." },
-      res,
-      403
+      {
+        status: 403,
+      }
     );
   }
 
@@ -130,8 +139,9 @@ export const DELETE = async function deleteProject(req, { params }) {
   if (!wasDeleted) {
     return NextResponse.json(
       { error: "Failed to delete the project." },
-      res,
-      500
+      {
+        status: 500,
+      }
     );
   }
 

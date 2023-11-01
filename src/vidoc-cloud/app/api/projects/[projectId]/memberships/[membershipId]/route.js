@@ -16,8 +16,9 @@ export const GET = async function getMembership(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401
+      }
     );
   }
 
@@ -36,8 +37,9 @@ export const GET = async function getMembership(req, { params }) {
   ) {
     return NextResponse.json(
       { error: "Only the admin can update memberships." },
-      res,
-      403
+      {
+        status: 403
+      }
     );
   }
 
@@ -47,8 +49,9 @@ export const GET = async function getMembership(req, { params }) {
   if (targetMembership.length <= 0) {
     return NextResponse.json(
       { error: "Membership not found in this project." },
-      res,
-      404
+      {
+        status: 404
+      }
     );
   }
 
@@ -67,8 +70,9 @@ export const PATCH = async function updateMembership(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401
+      }
     );
   }
 
@@ -148,8 +152,9 @@ export const DELETE = async function deleteMembership(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401
+      }
     );
   }
 

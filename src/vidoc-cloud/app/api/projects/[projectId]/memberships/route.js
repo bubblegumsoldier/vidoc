@@ -15,16 +15,18 @@ export const GET = async function getMembershipsOfProject(req, { params }) {
   if (!internalUser) {
     return NextResponse.json(
       { error: "Failed to find authenticated user." },
-      res,
-      401
+      {
+        status: 401
+      }
     );
   }
   const project = await ProjectRepository.getProjectById(projectId);
   if (!MembershipRepository.isUserMemberOfProject(internalUser.id, projectId)) {
     return NextResponse.json(
       { error: "Only members can view the project details." },
-      res,
-      403
+      {
+        status: 403
+      }
     );
   }
   return NextResponse.json(project.members, res);
