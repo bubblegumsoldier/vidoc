@@ -286,7 +286,7 @@ export default function Home() {
                   </h3>
                   <p className="text-sm text-gray-200 mt-4">
                     Go to the VSCode Extension marketplace and download the
-                    ViDoc extension.
+                    ViDoc extension. It's free so why not give it a try?
                   </p>
                   <Link
                     href="https://marketplace.visualstudio.com/items?itemName=HMDevConsulting.vidoc"
@@ -297,16 +297,16 @@ export default function Home() {
                   </Link>
                 </div>
                 <div className="flex flex-col items-center p-6 rounded-lg flex-1">
-                  <div className="text-6xl font-bold text-white">2</div>
+                  <div className="text-6xl font-bold text-gray-200">2</div>
                   {/* <div className="mt-4 mb-2">
                     <i className="your-icon-class">
                       <AdjustmentsHorizontalIcon className="h-14 w-14"></AdjustmentsHorizontalIcon>
                     </i>
                   </div> */}
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-gray-200">
                     Adjust Config
                   </h3>
-                  <p className="text-sm text-gray-200 mt-4">
+                  <p className="text-sm text-gray-300 mt-4">
                     Setup the extension to your liking. You can choose to record
                     into the Vidoc Cloud for free, or use your existing S3
                     bucket. You can also start by storing the videos in the
