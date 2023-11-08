@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        'pulse-fast': 'flash 2s linear infinite',
+      },
     },
   },
   plugins: [],

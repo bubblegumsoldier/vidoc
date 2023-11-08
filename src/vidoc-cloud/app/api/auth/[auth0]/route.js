@@ -15,6 +15,7 @@ export const GET = handleAuth({
       console.log('Check if user in DB')
       await UserRepository.getUserByAuth0Id(
         session.user.sub,
+        session.user.email,
         {},
         true,
         session
