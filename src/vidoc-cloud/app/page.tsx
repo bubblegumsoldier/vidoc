@@ -328,7 +328,7 @@ export default function Home() {
                       className="mt-4"
                     ></iframe>
                     <p>
-                      <span className="text-gray-200 text-sm">You see this? <ArrowUpIcon className="h-4 w-4 inline-block text-white" /> We are just getting started!</span>
+                      <span className="text-gray-200 text-sm">You see this? <ArrowUpIcon className="h-4 w-4 inline-block text-white" /> We gotta change this!</span>
                     </p>
                   </div>
                 </div>
