@@ -161,12 +161,14 @@ export default function Home() {
             <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
               <div className="flex items-center justify-between">
                 <a href="#" className="-m-1.5 p-1.5">
-                  <span className="sr-only">Your Company</span>
-                  <img
-                    className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
-                    alt=""
-                  />
+                  <span className="sr-only">Vidoc</span>
+                  <Image
+                  priority
+                  src="/logo-fitted.png"
+                  width={140}
+                  height={30}
+                  alt="Logo"
+                />
                 </a>
                 <button
                   type="button"
@@ -217,9 +219,9 @@ export default function Home() {
             </div> */}
             <div className="text-center">
               <h1 className="flex justify-center flex-col">
-                <span className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                  <div className="w-10 h-10 mr-2 bg-red-600 rounded-full animate-pulse-fast inline-block"></div>
-                  Record your screen
+                <span className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl flex items-center justify-center gap-x-2">
+                  <div className="w-10 h-10 bg-red-600 rounded-full animate-pulse-fast inline-block"></div>
+                  <span>Record your screen</span>
                 </span>
                 <span className="text-4xl font-bold tracking-tight text-gray-500">
                   to
@@ -244,7 +246,7 @@ export default function Home() {
                   Download Now
                 </Link>
                 <a
-                  href="https://marketplace.visualstudio.com/items?itemName=HMDevConsulting.vidoc"
+                  href="#getting-started"
                   className="text-sm font-semibold leading-6 text-gray-900"
                 >
                   Learn more <span aria-hidden="true">→</span>
@@ -273,7 +275,7 @@ export default function Home() {
                   </span>
                 </h2>
               </div>
-              <div className="flex flex-wrap justify-center gap-8 mt-12">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-8 mt-12">
                 <div className="flex flex-col items-center p-6 rounded-lg flex-1">
                   <div className="text-6xl font-bold text-white">1</div>
                   {/* <div className="mt-4 mb-2">
@@ -289,7 +291,7 @@ export default function Home() {
                   <Link
                     href="https://marketplace.visualstudio.com/items?itemName=HMDevConsulting.vidoc"
                     target="_blank"
-                    className="rounded-md mt-4 bg-white text-blue-900 px-3.5 py-2.5 text-sm font-semibold shadow-sm transition hover:scale-105 hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                    className="rounded-md text-center mt-4 bg-white text-blue-900 px-3.5 py-2.5 text-sm font-semibold shadow-sm transition hover:scale-105 hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
                   >
                     Download VSCode Extension
                   </Link>
