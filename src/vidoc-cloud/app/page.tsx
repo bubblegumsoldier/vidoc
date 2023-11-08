@@ -86,7 +86,7 @@ export default function Home() {
           <LandingPageNavigation />
         </header>
 
-        <div className="relative isolate px-6 pt-14 lg:px-8">
+        <div className="relative isolate px-6 pt-14 lg:px-8 bg-gradient-to-tl from-[#ddeeff] to-[#fffcfc]">
           <div className="mx-auto max-w-2xl pt-16 sm:pt-32 lg:pt-32">
             {/* <div className="hidden sm:mb-8 sm:flex sm:justify-center">
               <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
