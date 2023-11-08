@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowTopRightOnSquareIcon,
+  ArrowUpIcon,
   CloudArrowUpIcon,
   FolderIcon,
   ServerIcon,
 } from "@heroicons/react/20/solid";
 import LandingPageNavigation from "./components/client/LandingPageNavigation";
+import { ArrowUpLeftIcon } from "@heroicons/react/24/outline";
 
 
 const configurationTypes = [
@@ -325,6 +327,9 @@ export default function Home() {
                       title="GitHub"
                       className="mt-4"
                     ></iframe>
+                    <p>
+                      <span className="text-gray-200 text-sm">You see this? <ArrowUpIcon className="h-4 w-4 inline-block text-white" /> We are just getting started!</span>
+                    </p>
                   </div>
                 </div>
               </div>
