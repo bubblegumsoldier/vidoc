@@ -38,7 +38,7 @@ export class VSCVideoOpener implements VideoOpener {
   ) {}
 
   async openVideoById(vidocId: string): Promise<void> {
-    const vidoc = await this.vidocFactory.initVidocObject(vidocId);
+    const vidoc = await this.vidocFactory.init(vidocId);
     return await this.openVideo(vidoc);
   }
 

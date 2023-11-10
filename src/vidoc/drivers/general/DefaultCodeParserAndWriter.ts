@@ -139,7 +139,7 @@ export class DefaultCodeParserAndWriter implements CodeParserAndWriter {
     const promises = foundIds.map(async ({ id, start, end }) => {
       try {
         return {
-          vidoc: await this.vidocFactory.initVidocObject(id),
+          vidoc: await this.vidocFactory.init(id),
           range: {
             from: {
               lineIndex: lineNumber,

@@ -26,7 +26,7 @@ export class DefaultVidocFactory implements VidocFactory {
     private authorInformationRetriever: AuthorInformationRetriever
   ) {}
 
-  async createVidocObject(focusInformation?: FocusInformation): Promise<Vidoc> {
+  async create(focusInformation?: FocusInformation): Promise<Vidoc> {
     // First we will get the config. We will need it later
     const config = await this.configRetriever.getConfig();
 
@@ -50,7 +50,7 @@ export class DefaultVidocFactory implements VidocFactory {
         config,
         vidocId
       ),
-      tmpVideoFilePath: await this.fileController.generateTmpFilePath(vidocId),
+      tmpVideoFilePaths: [],
     };
     if (config.savingStrategy.type === "local") {
       const localVidoc: LocalMetadataLocalVideoVidoc = {
@@ -77,8 +77,8 @@ export class DefaultVidocFactory implements VidocFactory {
       vidoc = remoteVidoc;
     }
 
-    this.updateVidocMetadataFile(vidoc);
-    return await this.initVidocObject(vidoc.id);
+    this.save(vidoc);
+    return await this.init(vidoc.id);
   }
 
   private getRelativeFilePathMetadata(config: Config, id: string): string {
@@ -89,7 +89,7 @@ export class DefaultVidocFactory implements VidocFactory {
     return `${config.savingStrategy.folder}/${id}`;
   }
 
-  async initVidocObject(id: string): Promise<Vidoc> {
+  async init(id: string): Promise<Vidoc> {
     // First we will get the config. We will need it later
     const config = await this.configRetriever.getConfig();
 
@@ -108,7 +108,7 @@ export class DefaultVidocFactory implements VidocFactory {
     }
   }
 
-  async updateVidocMetadataFile(vidoc: Vidoc): Promise<void> {
+  async save(vidoc: Vidoc): Promise<void> {
     // write full vidoc to file
     await this.fileController.writeFileContent(
       vidoc.relativeFilePathMetadata,

@@ -41,7 +41,7 @@ export class SpeechToTextPostprocessor implements VideoPostprocessor {
     }
     const speechToText = await speechToTextConverter.convertSpeechToText(vidoc);
     vidoc.speechToText = speechToText;
-    await this.vidocFactory.updateVidocMetadataFile(vidoc);
+    await this.vidocFactory.save(vidoc);
     return vidoc;
   }
 }

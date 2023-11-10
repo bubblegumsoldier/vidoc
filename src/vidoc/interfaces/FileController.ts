@@ -11,4 +11,5 @@ export interface FileController {
     generateTmpFilePath(id: string): Promise<string>;
     getBinPath(binName: string): Promise<string>;
     getAllFilesInFolder(folderPath: string, relative: boolean): Promise<string[]>;
+    cleanupTmp(): Promise<void>;
 }

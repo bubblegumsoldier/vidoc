@@ -20,7 +20,7 @@ export class DefaultVidocRepository implements VidocRepository {
     );
     const vidocIds = vidocFilePaths.filter((path) => path.endsWith(".json"));
     return await Promise.all(
-      vidocIds.map((vidocId) => this.vidocFactory.initVidocObject(vidocId))
+      vidocIds.map((vidocId) => this.vidocFactory.init(vidocId))
     );
   }
 }

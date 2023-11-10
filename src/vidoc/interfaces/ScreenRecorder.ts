@@ -1,8 +1,8 @@
 import { Vidoc } from "../model/Vidoc";
 
 export interface ScreenRecorder {
-    startRecording(vidoc: Vidoc): Promise<void>;
-    startRecordingWithAudioDevice(vidoc: Vidoc, audioDevice: string): Promise<void>;
+    continueOrStartRecording(vidoc: Vidoc): Promise<Vidoc>;
+    continueOrStartRecordingWithAudioDevice(vidoc: Vidoc, audioDevice: string): Promise<Vidoc>;
     stopRecording(): Promise<Vidoc>;
     isRecording(): boolean;
 }

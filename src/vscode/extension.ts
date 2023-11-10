@@ -57,111 +57,119 @@ import { VidocCloudAccessor } from "../vidoc/interfaces/VidocCloudAccessor";
 import { VSCVidocCloudAccessor } from "../vidoc/drivers/vscode/VSCVidocCloudAccessor";
 import { VidocCloudVideoUploader } from "../vidoc/drivers/general/file-upload/VidocCloudVideoUploader";
 import { VidocCloudUploadUrlRemover } from "../vidoc/drivers/general/file-upload/VidocCloudUploadUrlRemover";
+import { TmpCleanup } from "../vidoc/drivers/general/TmpCleanup";
+import { VideoMerger } from "../vidoc/drivers/general/VideoMerger";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
 container.register<ConfigRetriever>("ConfigRetriever", {
-  useClass: GitConfigRetriever,
+    useClass: GitConfigRetriever,
 });
 container.register<FileController>("FileController", {
-  useClass: VSCFileController,
+    useClass: VSCFileController,
 });
 container.register<EditorController>("EditorController", {
-  useClass: VSCController,
+    useClass: VSCController,
 });
 container.register<AuthorInformationRetriever>("AuthorInformationRetriever", {
-  useClass: VSCAuthorInformationRetriever,
+    useClass: VSCAuthorInformationRetriever,
 });
 container.register<CodeParserAndWriter>("CodeParserAndWriter", {
-  useClass: DefaultCodeParserAndWriter,
+    useClass: DefaultCodeParserAndWriter,
 });
 container.register<EditorInteractor>("EditorInteractor", {
-  useClass: VSCEditorInteractor,
+    useClass: VSCEditorInteractor,
 });
 container.register<VidocFactory>("VidocFactory", {
-  useClass: DefaultVidocFactory,
+    useClass: DefaultVidocFactory,
 });
 container.register<VidocIdGenerator>("VidocIdGenerator", {
-  useClass: DefaultVidocIdGenerator,
+    useClass: DefaultVidocIdGenerator,
 });
 container.register<Prompter>("Prompter", {
-  useClass: VSCPrompter,
+    useClass: VSCPrompter,
 });
 container.register<Notificator>("Notificator", {
-  useClass: VSCNotificator,
+    useClass: VSCNotificator,
 });
 container.register<VSCHoverProvider>("VSCHoverProvider", {
-  useClass: VSCHoverProvider,
+    useClass: VSCHoverProvider,
 });
 container.register<DefaultVidocPostprocessor>("DefaultVidocPostprocessor", {
-  useClass: DefaultVidocPostprocessor,
+    useClass: DefaultVidocPostprocessor,
 });
 container.register<FileUploadPostprocessor>("FileUploadPostprocessor", {
-  useClass: FileUploadPostprocessor,
+    useClass: FileUploadPostprocessor,
 });
 container.register<VidocCloudVideoUploader>("VidocCloudVideoUploader", {
-  useClass: VidocCloudVideoUploader,
+    useClass: VidocCloudVideoUploader,
 });
 container.register<VidocCloudUploadUrlRemover>("VidocCloudUploadUrlRemover", {
-  useClass: VidocCloudUploadUrlRemover,
+    useClass: VidocCloudUploadUrlRemover,
 });
 container.register<TmpToFilePostprocessor>("TmpToFilePostprocessor", {
-  useClass: TmpToFilePostprocessor,
+    useClass: TmpToFilePostprocessor,
 });
 container.register<AWSRemoteVideoUploader>("AWSRemoteVideoUploader", {
-  useClass: AWSRemoteVideoUploader,
+    useClass: AWSRemoteVideoUploader,
 });
 container.register<FileUploadPathGuesser>("FileUploadPathGuesser", {
-  useClass: DefaultFileUploadPathGuesser,
+    useClass: DefaultFileUploadPathGuesser,
 });
 container.register<VideoOpener>("VideoOpener", {
-  useClass: VSCVideoOpener,
+    useClass: VSCVideoOpener,
 });
 container.register<VidocRepository>("VidocRepository", {
-  useClass: DefaultVidocRepository,
+    useClass: DefaultVidocRepository,
 });
 container.register<VSCVidocTreeProvider>("VSCVidocTreeProvider", {
-  useClass: VSCVidocTreeProvider,
+    useClass: VSCVidocTreeProvider,
 });
 container.register<PreferencesManager>("PreferencesManager", {
-  useClass: VSCPreferencesManager,
+    useClass: VSCPreferencesManager,
 });
 container.register<AudioDeviceSelector>("AudioDeviceSelector", {
-  useClass: VSCAudioDeviceSelector,
+    useClass: VSCAudioDeviceSelector,
 });
 container.register<FFmpegInterface>("FFmpegInterface", {
-  useClass: FFmpegImplementation,
+    useClass: FFmpegImplementation,
 });
 container.register<SpeechToTextPostprocessor>("SpeechToTextPostprocessor", {
-  useClass: SpeechToTextPostprocessor,
+    useClass: SpeechToTextPostprocessor,
 });
 container.register<AWSTranscribeSpeechToText>("AWSTranscribeSpeechToText", {
-  useClass: AWSTranscribeSpeechToText,
+    useClass: AWSTranscribeSpeechToText,
 });
 container.register<UnusedVidocRemover>("UnusedVidocRemover", {
-  useClass: DefaultUnusedVidocRemover,
+    useClass: DefaultUnusedVidocRemover,
 });
 container.register<HTMLPageGetter>("HTMLPageGetter", {
-  useClass: DefaultHTMLPageGetter,
+    useClass: DefaultHTMLPageGetter,
 });
 container.register<CommandExecutor>("CommandExecutor", {
-  useClass: DefaultCommandExecutor,
+    useClass: DefaultCommandExecutor,
 });
 container.register<WindowSelector>("WindowSelector", {
-  useClass: ActiveWindowSelector,
+    useClass: ActiveWindowSelector,
 });
 container.register<VidocCloudAccessor>("VidocCloudAccessor", {
-  useClass: VSCVidocCloudAccessor,
+    useClass: VSCVidocCloudAccessor,
+});
+container.register<TmpCleanup>("TmpCleanup", {
+    useClass: TmpCleanup,
+});
+container.register<VideoMerger>("VideoMerger", {
+    useClass: VideoMerger,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  vscController.activate(context);
+    vscController.activate(context);
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-  vscController.deactivate();
+    vscController.deactivate();
 }

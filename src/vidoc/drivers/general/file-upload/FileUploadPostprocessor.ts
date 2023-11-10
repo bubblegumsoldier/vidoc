@@ -41,7 +41,7 @@ export class FileUploadPostprocessor implements VideoPostprocessor {
     }
     const videoUrl = await uploader.uploadVideo(parsedVidoc, uploadInformation);
     parsedVidoc.remoteVideoUrl = videoUrl;
-    await this.vidocFactory.updateVidocMetadataFile(parsedVidoc);
+    await this.vidocFactory.save(parsedVidoc);
     return vidoc;
   }
 }

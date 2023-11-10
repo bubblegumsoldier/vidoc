@@ -1,7 +1,6 @@
 import { FocusInformation } from "../model/FocusInformation";
 
 export interface EditorController {
-    startIndicationOfRecording(): void;
-    stopIndicationOfRecording(): void;
+    updateIndicationBasedOnState(): Promise<void>;
     getCurrentFocusInformation(): Promise<FocusInformation>;
 }

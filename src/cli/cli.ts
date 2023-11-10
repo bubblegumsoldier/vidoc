@@ -187,7 +187,7 @@ registerCommand(
   "prepareVidoc",
   "Prepare a Vidoc before you will then record the MP4 for it. This will create the metadata file.",
   async (focusInformationJson: string) =>
-    await vidocFactory.createVidocObject(JSON.parse(focusInformationJson)),
+    await vidocFactory.create(JSON.parse(focusInformationJson)),
   [
     {
       key: "focusInformation",
@@ -204,7 +204,7 @@ registerCommand(
   "Get String to append to line in vidoc based on its metadata.",
   async (vidocId: string) =>
     await codeParser.getStringToAppend(
-      await vidocFactory.initVidocObject(vidocId)
+      await vidocFactory.init(vidocId)
     ),
   [
     {
@@ -225,7 +225,7 @@ registerCommand(
 registerCommand(
   "getVidocObject",
   "Get Vidoc object for id (<uuid>.mp4)",
-  async (id: string) => await vidocFactory.initVidocObject(id),
+  async (id: string) => await vidocFactory.init(id),
   [
     {
       key: "id",
@@ -241,7 +241,7 @@ registerCommand(
   "Run the post processing chain for a freshly recorded Vidoc",
   async (vidocId: string) =>
     await defaultPostProcessor.postprocessVidoc(
-      await vidocFactory.initVidocObject(vidocId)
+      await vidocFactory.init(vidocId)
     ),
   [
     {
@@ -258,7 +258,7 @@ registerCommand(
   "Run the post processing chain for a freshly recorded Vidoc",
   async (id: string) =>
     await defaultPostProcessor.postprocessVidoc(
-      await vidocFactory.initVidocObject(id)
+      await vidocFactory.init(id)
     ),
   [
     {
@@ -275,7 +275,7 @@ registerCommand(
   "Run the post processing chain for a freshly recorded Vidoc",
   async (id: string) =>
     await defaultPostProcessor.postprocessVidoc(
-      await vidocFactory.initVidocObject(id)
+      await vidocFactory.init(id)
     ),
   [
     {
@@ -313,7 +313,7 @@ registerCommand(
   "Write out a vidoc HTML page to be viewed in the browser",
   async (vidocId: string) =>
     await cliPageWriter.writeHTMLPage(
-      await vidocFactory.initVidocObject(vidocId)
+      await vidocFactory.init(vidocId)
     ),
   [
     {

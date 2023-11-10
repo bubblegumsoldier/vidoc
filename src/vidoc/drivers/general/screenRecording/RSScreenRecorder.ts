@@ -25,39 +25,32 @@ export class RSScreenRecorder implements ScreenRecorder {
     @inject("WindowSelector") private windowSelector: WindowSelector
   ) {}
 
-  public async startRecording(vidoc: Vidoc): Promise<void> {
+  public async continueOrStartRecording(vidoc: Vidoc): Promise<Vidoc> {
     const audioDevice = await this.audioDeviceSelector.getAudioDevice();
     if (!audioDevice) {
       throw Error("Audio device needs to be selected first!");
     }
-    return await this.startRecordingWithAudioDevice(vidoc, audioDevice);
+    return await this.continueOrStartRecordingWithAudioDevice(vidoc, audioDevice);
   }
 
-  public async startRecordingWithAudioDevice(
+  public async continueOrStartRecordingWithAudioDevice(
     vidoc: Vidoc,
     audioDevice: string
-  ): Promise<void> {
-    const outputFile = this.fileController.getAbsolutePath(
-      vidoc.tmpVideoFilePath
+  ): Promise<Vidoc> {
+    const outputFile = await this.fileController.generateTmpFilePath(
+      vidoc.id
     );
-    await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
+    vidoc.tmpVideoFilePaths.push(outputFile);
+    // What is this? Delete if not needed at the end
+    // await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
-      console.log({ audioDevice });
+      const recordingAreaInformation = vidoc.recordingAreaInformation || await this.windowSelector.selectWindow();
       const { finish, kill } = await this.ffmpeg.record(
-        await this.windowSelector.selectWindow(),
+        recordingAreaInformation,
         audioDevice,
         outputFile,
         (await this.config.getConfig()).recordingOptions.fps || 10
       );
-      // const { finish, stop } = await Recorder.recordActiveWindow({
-      //   file: outputFile,
-      //   fps: 10,
-      //   audio: true,
-      //   audioDevice: audioDevice,
-      //   ffmpeg: {
-      //     binary: await this.ffmpeg.getPathToFFmpegBinary(),
-      //   },
-      // });
       this.finishMethod = finish;
       this.stopMethod = kill;
       this.currentRecordingVidoc = vidoc;
@@ -65,6 +58,7 @@ export class RSScreenRecorder implements ScreenRecorder {
       console.error(e);
       throw e;
     }
+    return vidoc;
   }
 
   public async stopRecording(): Promise<Vidoc> {

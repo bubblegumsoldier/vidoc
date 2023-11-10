@@ -1,3 +1,5 @@
+import { RecordingAreaInformation } from "../model/Vidoc";
+
 export interface WindowSelector {
-    selectWindow(): Promise<any>;
+    selectWindow(): Promise<RecordingAreaInformation>;
 }
