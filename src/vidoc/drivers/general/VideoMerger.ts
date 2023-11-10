@@ -4,6 +4,7 @@ import { FileController } from "../../interfaces/FileController";
 import { CommandExecutor } from "../../interfaces/CommandExecutor";
 import { FFmpegInterface } from "../../interfaces/FFmpegInterface";
 import { VideoPostprocessor } from "../../interfaces/VideoPostprocessor";
+import * as fs from "fs";
 
 @injectable()
 export class VideoMerger implements VideoPostprocessor {
@@ -31,9 +32,15 @@ export class VideoMerger implements VideoPostprocessor {
 
         // Create a file list for concatenation
         const fileContent = allVideos
-            .map((file) => `file '${this.fileController.getAbsolutePath(file)}'`)
+            .map(
+                (file) => `file '${this.fileController.getAbsolutePath(file)}'`
+            )
             .join("\n");
-        require("fs").writeFileSync(concatFilePath, fileContent);
+
+        await fs.promises.writeFile(
+            this.fileController.getAbsolutePath(concatFilePath),
+            fileContent
+        );
 
         const ffmpegCommand = [
             "-y",
@@ -42,10 +49,10 @@ export class VideoMerger implements VideoPostprocessor {
             "-safe",
             "0",
             "-i",
-            concatFilePath,
+            this.fileController.getAbsolutePath(concatFilePath),
             "-c",
             "copy",
-            outputPath,
+            this.fileController.getAbsolutePath(outputPath),
         ];
 
         // Execute FFmpeg command

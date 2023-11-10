@@ -89,6 +89,8 @@ export class VSCFileController implements FileController {
         const workspaceRoot = this.getWorkspaceRoot();
         const absoluteTmpFolder = path.join(workspaceRoot, ".vidoc", "tmp");
         const relativeTmpFolder = ".vidoc/tmp";
+        
+        const [name, suffix] = firstTryFilename.split(".");
 
         // Create the directory if it doesn't exist
         await this.createDirIfNotExists(absoluteTmpFolder);
@@ -98,10 +100,10 @@ export class VSCFileController implements FileController {
         let relativeFilePath = path.join(relativeTmpFolder, firstTryFilename);
 
         // Check if the file exists and append a counter if it does
-        while (await this.exists(filePath)) {
+        while (await this.exists(relativeFilePath)) {
             counter++;
-            filePath = path.join(absoluteTmpFolder, `${firstTryFilename}-${counter}`);
-            relativeFilePath = path.join(relativeTmpFolder, `${firstTryFilename}-${counter}`);
+            filePath = path.join(absoluteTmpFolder, `${name}-${counter}.${suffix}`);
+            relativeFilePath = path.join(relativeTmpFolder, `${name}-${counter}.${suffix}`);
         }
 
         return relativeFilePath;

@@ -10,10 +10,7 @@ import {
 import { CodeParserAndWriter } from "../../interfaces/CodeParserAndWriter";
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { EditorInteractor } from "../../interfaces/EditorInteractor";
-import {
-    PositionedVidocInstance,
-    Vidoc,
-} from "../../model/Vidoc";
+import { PositionedVidocInstance, Vidoc } from "../../model/Vidoc";
 import { FileController } from "../../interfaces/FileController";
 import { VSCHoverProvider } from "./VSCHoverProvider";
 import { DefaultVidocPostprocessor } from "../general/DefaultVidocPostprocessor";
@@ -157,6 +154,18 @@ export class VSCController implements EditorController {
             this.statusBarItems.stopRecording.show();
             this.statusBarItems.pauseRecording.hide();
             this.statusBarItems.resumeRecording.show();
+        } else if (this.state.currentVideoState === "pausing") {
+            // Show only stop recording button
+            this.statusBarItems.startRecording.hide();
+            this.statusBarItems.stopRecording.show();
+            this.statusBarItems.pauseRecording.hide();
+            this.statusBarItems.resumeRecording.hide();
+        } else if (this.state.currentVideoState === "resuming") {
+            // Show only stop recording button
+            this.statusBarItems.startRecording.hide();
+            this.statusBarItems.stopRecording.show();
+            this.statusBarItems.pauseRecording.hide();
+            this.statusBarItems.resumeRecording.hide();
         }
 
         // Update status info text based on state
@@ -167,7 +176,7 @@ export class VSCController implements EditorController {
             postprocessing: "Post Processing",
             paused: "Paused",
             pausing: "Pausing...",
-            resuming: "Please wait..."
+            resuming: "Please wait...",
         };
         this.statusBarItems.statusInfo.text =
             stateToText[this.state.currentVideoState];
@@ -179,7 +188,7 @@ export class VSCController implements EditorController {
             postprocessing: GREEN,
             paused: YELLOW,
             pausing: YELLOW,
-            resuming: YELLOW
+            resuming: YELLOW,
         };
         this.statusBarItems.statusInfo.color =
             stateToColor[this.state.currentVideoState];
@@ -250,33 +259,38 @@ export class VSCController implements EditorController {
         let startRecording = vscode.commands.registerCommand(
             "vidoc.startRecording",
             async () => {
-                this.setState("waitingForStart");
-                const focusInformation =
-                    await this.getCurrentFocusInformation();
-                if (!focusInformation) {
-                    throw Error(
-                        "Recording only works if file is open in which we can input the resulting link"
+                try {
+                    this.setState("waitingForStart");
+                    const focusInformation =
+                        await this.getCurrentFocusInformation();
+                    if (!focusInformation) {
+                        throw Error(
+                            "Recording only works if file is open in which we can input the resulting link"
+                        );
+                    }
+                    const vidocObject = await this.vidocFactory.create(
+                        focusInformation
                     );
+                    const textToAppend =
+                        await this.codeParserAndWriter.getStringToAppend(
+                            vidocObject
+                        );
+                    this.editorInteractor.insertStringAtEndOfLine(
+                        textToAppend,
+                        focusInformation.cursorPosition
+                    );
+                    const newVidoc =
+                        await this.screenRecorder.continueOrStartRecording(
+                            vidocObject
+                        );
+                    this.setState("recording");
+                    this.notificator.info("Started recording!");
+                    await this.vidocFactory.save(newVidoc);
+                    this.state.currentVideo = newVidoc;
+                } catch (e) {
+                    this.setState("idle");
+                    throw e;
                 }
-                const vidocObject = await this.vidocFactory.create(
-                    focusInformation
-                );
-                const textToAppend =
-                    await this.codeParserAndWriter.getStringToAppend(
-                        vidocObject
-                    );
-                this.editorInteractor.insertStringAtEndOfLine(
-                    textToAppend,
-                    focusInformation.cursorPosition
-                );
-                const newVidoc =
-                    await this.screenRecorder.continueOrStartRecording(
-                        vidocObject
-                    );
-                this.setState("recording");
-                this.notificator.info("Started recording!");
-                await this.vidocFactory.save(newVidoc);
-                this.state.currentVideo = newVidoc;
             }
         );
 
@@ -286,18 +300,23 @@ export class VSCController implements EditorController {
         let resumeRecording = vscode.commands.registerCommand(
             "vidoc.resumeRecording",
             async () => {
-                this.setState("waitingForStart");
-                if (!this.state.currentVideo) {
-                    throw Error("No current video to resume recording for");
+                try {
+                    this.setState("waitingForStart");
+                    if (!this.state.currentVideo) {
+                        throw Error("No current video to resume recording for");
+                    }
+                    const newVidoc =
+                        await this.screenRecorder.continueOrStartRecording(
+                            this.state.currentVideo
+                        );
+                    this.setState("recording");
+                    this.notificator.info("Resumed recording!");
+                    await this.vidocFactory.save(newVidoc);
+                    this.state.currentVideo = newVidoc;
+                } catch (e) {
+                    this.setState("idle");
+                    throw e;
                 }
-                const newVidoc =
-                    await this.screenRecorder.continueOrStartRecording(
-                        this.state.currentVideo
-                    );
-                this.setState("recording");
-                this.notificator.info("Resumed recording!");
-                await this.vidocFactory.save(newVidoc);
-                this.state.currentVideo = newVidoc;
             }
         );
 
@@ -330,17 +349,28 @@ export class VSCController implements EditorController {
             async () => {
                 this.notificator.info("Postprocessing recording");
                 this.setState("postprocessing");
-                this.state.currentVideo = undefined;
                 try {
-                    const output = await this.screenRecorder.stopRecording();
+                    let output;
+                    if (this.state.currentVideoState === "recording") {
+                        output = await this.screenRecorder.stopRecording();
+                    } else {
+                        output = this.state.currentVideo;
+                    }
+                    if (!output) {
+                        return;
+                    }
                     await this.vidocFactory.save(output);
+
+                    this.state.currentVideo = undefined;
                     console.log({ output });
-                    await this.vidocPostprocessor.postprocessVidoc(output);
+                    output = await this.vidocPostprocessor.postprocessVidoc(
+                        output
+                    );
                     console.log("Postprocessed recording");
                     const anyOutput = <any>output;
                     this.notificator.info(
                         `Recording saved at ${
-                            anyOutput.relativeFilePath ||
+                            anyOutput.relativeFilePathToVideo ||
                             anyOutput.remoteVideoUrl
                         }`
                     );
@@ -409,7 +439,9 @@ export class VSCController implements EditorController {
         this.updateDecorations();
     }
 
-    private registerRecalculationOfHighlightings(context: vscode.ExtensionContext) {
+    private registerRecalculationOfHighlightings(
+        context: vscode.ExtensionContext
+    ) {
         context.subscriptions.push(
             vscode.languages.registerHoverProvider("*", {
                 provideHover: (document, position, token) => {
@@ -462,7 +494,8 @@ export class VSCController implements EditorController {
         this.statusBarItems.stopRecording.command = "vidoc.stopRecording";
         this.statusBarItems.stopRecording.color = RED;
 
-        this.statusBarItems.pauseRecording.text = "$(debug-pause) Pause recording";
+        this.statusBarItems.pauseRecording.text =
+            "$(debug-pause) Pause recording";
         this.statusBarItems.pauseRecording.command = "vidoc.pauseRecording";
         this.statusBarItems.pauseRecording.color = YELLOW;
 
