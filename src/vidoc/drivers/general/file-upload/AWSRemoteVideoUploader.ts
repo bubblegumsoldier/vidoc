@@ -36,13 +36,17 @@ export class AWSRemoteVideoUploader implements RemoteVideoUploader {
       s3Options.s3ForcePathStyle = uploadInformationAWSS3.s3ForcePathStyle;
     }
 
+    if(!vidoc.mergedTmpVideoFilePath) {
+      throw new Error("Didn't find output video file");
+    }
+
     const client = new S3(s3Options);
 
     const suffix = (await this.configRetriever.getConfig()).recordingOptions
       .fileFormat;
     const fileContent = Buffer.from(
       await this.fileController.readFileContentBinary(
-        vidoc.tmpVideoFilePath,
+        vidoc.mergedTmpVideoFilePath,
         true
       )
     );
@@ -59,7 +63,7 @@ export class AWSRemoteVideoUploader implements RemoteVideoUploader {
 
       return this.fileUploadPathGuesser.guessPathForFileUpload(vidoc);
     } finally {
-      await this.fileController.deleteFile(vidoc.tmpVideoFilePath, true);
+      await this.fileController.deleteFile(vidoc.mergedTmpVideoFilePath, true);
     }
   }
 }

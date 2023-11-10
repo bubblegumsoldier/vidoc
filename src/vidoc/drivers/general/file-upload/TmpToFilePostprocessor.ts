@@ -16,7 +16,11 @@ export class TmpToFilePostprocessor implements VideoPostprocessor {
         throw Error('absoluteFilePath is not set');
     }
 
-    await this.fileController.moveFile(vidoc.tmpVideoFilePath, correctVidoc.relativeFilePathToVideo, true);
+    if(!vidoc.mergedTmpVideoFilePath) {
+        throw Error('mergedTmpVideoFilePath is not set');
+    }
+
+    await this.fileController.moveFile(vidoc.mergedTmpVideoFilePath, correctVidoc.relativeFilePathToVideo, true);
 
     return vidoc;
   }

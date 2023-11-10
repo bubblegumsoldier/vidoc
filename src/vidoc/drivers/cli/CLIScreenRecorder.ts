@@ -15,7 +15,7 @@ export class CLIScreenRecorder {
     return new Promise(async (resolve, reject) => {
       try {
         const vidoc = await this.vidocFactory.init(vidocId);
-        await this.screenRecorder.startRecordingWithAudioDevice(vidoc, audioDevice);
+        await this.screenRecorder.continueOrStartRecordingWithAudioDevice(vidoc, audioDevice);
 
         process.stdin.setEncoding('utf8');
 

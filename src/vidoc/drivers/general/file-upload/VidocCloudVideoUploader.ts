@@ -17,10 +17,13 @@ export class VidocCloudVideoUploader implements RemoteVideoUploader {
       throw new Error("RemoteVideoUrl is not set in the vidoc.");
     }
 
-    const videoFile = parsedVidoc.tmpVideoFilePath; // Assuming the local video file path is here
+    const videoFile = parsedVidoc.mergedTmpVideoFilePath; // Assuming the local video file path is here
+    if(!videoFile) {
+      throw new Error("Didn't find output video file");
+    }
     const fileContent = Buffer.from(
       await this.fileController.readFileContentBinary(
-        vidoc.tmpVideoFilePath,
+        <string>videoFile,
         true
       )
     );

@@ -48,7 +48,7 @@ export class RSScreenRecorder implements ScreenRecorder {
       const { finish, kill } = await this.ffmpeg.record(
         recordingAreaInformation,
         audioDevice,
-        outputFile,
+        this.fileController.getAbsolutePath(outputFile),
         (await this.config.getConfig()).recordingOptions.fps || 10
       );
       this.finishMethod = finish;

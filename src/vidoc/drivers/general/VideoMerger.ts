@@ -31,7 +31,7 @@ export class VideoMerger implements VideoPostprocessor {
 
         // Create a file list for concatenation
         const fileContent = allVideos
-            .map((file) => `file '${file}'`)
+            .map((file) => `file '${this.fileController.getAbsolutePath(file)}'`)
             .join("\n");
         require("fs").writeFileSync(concatFilePath, fileContent);
 

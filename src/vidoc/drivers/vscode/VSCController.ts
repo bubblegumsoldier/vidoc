@@ -47,6 +47,10 @@ type VSCStatusBarItems = {
     statusInfo: vscode.StatusBarItem;
 };
 
+const GREEN = "#00ff99";
+const RED = "#ff5555";
+const YELLOW = "#ddcc00";
+
 /** See Vidoc documentation for more context */
 /* :vidoc 957baf1b-117e-4d5e-b706-4d4d8cf416aa.mp4 */
 @singleton()
@@ -170,12 +174,12 @@ export class VSCController implements EditorController {
         // Set color to make sense
         const stateToColor = {
             idle: "white",
-            waitingForStart: "yellow",
-            recording: "red",
-            postprocessing: "green",
-            paused: "yellow",
-            pausing: "yellow",
-            resuming: "yellow"
+            waitingForStart: YELLOW,
+            recording: RED,
+            postprocessing: GREEN,
+            paused: YELLOW,
+            pausing: YELLOW,
+            resuming: YELLOW
         };
         this.statusBarItems.statusInfo.color =
             stateToColor[this.state.currentVideoState];
@@ -185,7 +189,7 @@ export class VSCController implements EditorController {
     private updateDecorationsByPositionedVidocs(editor: any) {
         // Clear existing decorations (if any)
         const decorationType = vscode.window.createTextEditorDecorationType({
-            backgroundColor: "yellow",
+            backgroundColor: YELLOW,
             outlineColor: "white",
             outlineStyle: "dashed",
             outlineWidth: "1px",
@@ -450,20 +454,22 @@ export class VSCController implements EditorController {
             ),
         };
 
-        this.statusBarItems.startRecording.text = "Start recording";
+        this.statusBarItems.startRecording.text = "$(record) Start recording";
         this.statusBarItems.startRecording.command = "vidoc.startRecording";
-        this.statusBarItems.startRecording.color = "green";
+        this.statusBarItems.startRecording.color = GREEN;
 
-        this.statusBarItems.stopRecording.text = "Stop recording";
+        this.statusBarItems.stopRecording.text = "$(debug-stop) Stop recording";
         this.statusBarItems.stopRecording.command = "vidoc.stopRecording";
-        this.statusBarItems.stopRecording.color = "red";
+        this.statusBarItems.stopRecording.color = RED;
 
-        this.statusBarItems.pauseRecording.text = "Pause recording";
+        this.statusBarItems.pauseRecording.text = "$(debug-pause) Pause recording";
         this.statusBarItems.pauseRecording.command = "vidoc.pauseRecording";
-        this.statusBarItems.pauseRecording.color = "yellow";
+        this.statusBarItems.pauseRecording.color = YELLOW;
 
-        this.statusBarItems.resumeRecording.text = "Resume recording";
+        this.statusBarItems.resumeRecording.text = "$(record) Resume recording";
         this.statusBarItems.resumeRecording.command = "vidoc.resumeRecording";
-        this.statusBarItems.resumeRecording.color = "green";
+        this.statusBarItems.resumeRecording.color = GREEN;
+
+        this.updateIndicationBasedOnState();
     }
 }
