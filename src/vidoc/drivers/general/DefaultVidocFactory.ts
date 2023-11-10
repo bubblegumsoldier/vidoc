@@ -58,12 +58,21 @@ export class DefaultVidocFactory implements VidocFactory {
         relativeFilePathToVideo: this.getRelativeFilePathVideo(config, vidocId),
       };
       vidoc = localVidoc;
-    } else if (config.savingStrategy.type === "remote") {
+    } else if (
+      config.savingStrategy.type === "remote" ||
+      config.savingStrategy.type === "vidoc.cloud"
+    ) {
+      const uploadUrl = await this.fileUploadPathGuesser.guessPathForFileUpload(
+        vidoc
+      );
+      if(!uploadUrl) {
+        throw Error(`Could not log in to vidoc.cloud. Please check your token in the vidoc user settings in your IDE and try again.`);
+      }
+      const videoUrl = uploadUrl.split("?")[0];
       const remoteVidoc: LocalMetaDataRemoteVideoVidoc = {
         ...vidoc,
-        remoteVideoUrl: await this.fileUploadPathGuesser.guessPathForFileUpload(
-          vidoc
-        ), // will be generated in postprocessor
+        remoteVideoUrl: videoUrl,
+        uploadUrl: uploadUrl,
       };
       vidoc = remoteVidoc;
     }

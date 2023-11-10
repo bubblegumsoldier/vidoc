@@ -7,14 +7,6 @@
 ![3](https://github.com/bubblegumsoldier/vidoc/assets/3788628/7793dd69-d2d4-49aa-b683-67793033b30b)
 
 
-## Disclaimer
-
-**UNTIL NOW RECORDING VIDOCS WILL ONLY WORK ON WINDOWS!**
-**WATCHING VIDOCS OF OTHER DEVELOPERS IS POSSIBLE ON ALL DEVICES!**
-**MAC SUPPORT WILL FOLLOW SHORTLY!**
-
-**FEEL FREE TO OPEN A MERGE REQUEST IF YOU WANT TO ADD MAC OR LINUX SUPPORT**
-
 ## Simple introduction video
 
 [CLICK HERE for Vidoc Example Usage in Loom](https://www.loom.com/share/ecb3abd8e7dc4b77b224b96b1e8e56e8?sid=ea4755ac-b948-4562-9876-0170f77c4427)
@@ -47,6 +39,18 @@ Video's are a bit like voice-messages. People love to send them but don't like t
 ## Storing video recordings within the repository
 
 The easiest way to try out the extension is to store the files locally inside the repository. No configuration file is needed in order to achieve that behaviour. However, this is not recommended for larger projects as it can substantially increase the repository size and pushing videos as well as pulling videos can be a pain.
+
+## Using Vidoc.Cloud
+
+Vidoc.Cloud is a streamlined, open-source hosting platform under the domain `vidoc.cloud`. It simplifies video storage, text transcription, and access management for contributors. Essentially, it's Vidoc as a Service. Create projects and invite collaborators without the hassle of sharing `.vidocsecrets` files. Only approved developers can contribute. Initially free, upgrade options are available for extended use, so that we can continue running.
+
+In order to configure Vidoc to use vidoc.cloud follow these steps:
+
+1. Head to [vidoc.cloud](https://vidoc.cloud/) and create an account.
+2. Create a project for the repository you want to connect with vidoc.cloud
+3. Copy the `.vidocconf.json` as specified under the section `Setup`.
+
+When you are recording your first Vidoc you will be asked to log into your account. From then on your vscode user is synced with your `vidoc.cloud` user. If you want other contributors to be able to seamlessly record Vidocs just let them register and add them as a collaborator to your project.
 
 ## Enabling AWS Video Upload for Your VSCode Extension
 

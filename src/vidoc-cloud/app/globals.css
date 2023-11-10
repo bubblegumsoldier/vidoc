@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+.hover-parent .hover-child {
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.hover-parent:hover .hover-child {
+  opacity: 1;
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+html {
+  scroll-behavior: smooth;
+}

@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+enum UserRole {
+  ADMIN
+  CONTRIBUTOR
+}
+
+model User {
+  id          String       @id @unique @default(uuid())
+  email       String       @unique
+  name        String
+  projects    Project[]
+  memberships Membership[]
+  tokens      AccessToken[]
+  auth0Ids    UserAuth0Id[]
+}
+
+model UserAuth0Id {
+  id      String @id @unique @default(uuid())
+  auth0Id String @unique
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@unique([auth0Id, userId])
+}
+
+
+model AccessToken {
+  token       String      @id @unique
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+  validUntil  DateTime?
+}
+
+model Project {
+  id            String       @id @unique @default(uuid())
+  name          String
+  repositoryUrl String? // Optional repository URL
+  creatorId     String // Foreign key to relate project to user
+  creator       User         @relation(fields: [creatorId], references: [id])
+  members       Membership[]
+  usedMemory    Int // Memory in bytes
+  tierId        String?
+  tier          ProjectTier? @relation(fields: [tierId], references: [id])
+
+  scheduledForDeletion DateTime? // Date when the project will be deleted
+}
+
+model Membership {
+  id        String   @id @unique @default(uuid())
+  role      UserRole // Role of the user in the project
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+model ProjectTier {
+  id               String @id @unique @default(uuid())
+  maxStorageBytes  Int // Memory in bytes
+  referenceId      String @unique
+  projects         Project[]
+  name             String? @unique
+}
