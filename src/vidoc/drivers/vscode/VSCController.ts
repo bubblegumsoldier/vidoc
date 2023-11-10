@@ -348,7 +348,6 @@ export class VSCController implements EditorController {
             "vidoc.stopRecording",
             async () => {
                 this.notificator.info("Postprocessing recording");
-                this.setState("postprocessing");
                 try {
                     let output;
                     if (this.state.currentVideoState === "recording") {
@@ -356,6 +355,7 @@ export class VSCController implements EditorController {
                     } else {
                         output = this.state.currentVideo;
                     }
+                    this.setState("postprocessing");
                     if (!output) {
                         return;
                     }

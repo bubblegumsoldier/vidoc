@@ -8,13 +8,14 @@ import { AudioDeviceSelector } from "../../../interfaces/AudioDeviceSelector";
 import { WindowSelector } from "../../../interfaces/WindowSelector";
 import { ConfigRetriever } from "../../../interfaces/ConfigRetriever";
 
-const STOP_DELAY = 1000; // ms
+const STOP_DELAY = 200; // ms
 
 @singleton()
 export class RSScreenRecorder implements ScreenRecorder {
   private currentRecordingVidoc?: Vidoc;
   private finishMethod: any;
   private stopMethod: any;
+  private lastOutputFile?: string;
 
   constructor(
     @inject("FileController") private fileController: FileController,
@@ -37,10 +38,10 @@ export class RSScreenRecorder implements ScreenRecorder {
     vidoc: Vidoc,
     audioDevice: string
   ): Promise<Vidoc> {
-    const outputFile = await this.fileController.generateTmpFilePath(
+    this.lastOutputFile = await this.fileController.generateTmpFilePath(
       vidoc.id
     );
-    vidoc.tmpVideoFilePaths.push(outputFile);
+    vidoc.tmpVideoFilePaths.push(this.lastOutputFile);
     // What is this? Delete if not needed at the end
     // await this.fileController.createDirIfNotExists(path.join(outputFile, ".."));
     try {
@@ -48,7 +49,7 @@ export class RSScreenRecorder implements ScreenRecorder {
       const { finish, kill } = await this.ffmpeg.record(
         recordingAreaInformation,
         audioDevice,
-        this.fileController.getAbsolutePath(outputFile),
+        this.fileController.getAbsolutePath(this.lastOutputFile),
         (await this.config.getConfig()).recordingOptions.fps || 10
       );
       this.finishMethod = finish;

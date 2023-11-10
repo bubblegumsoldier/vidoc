@@ -64,6 +64,9 @@ export class VideoMerger implements VideoPostprocessor {
         // Update the vidoc object with the new output path
         vidoc.mergedTmpVideoFilePath = outputPath;
 
+        // Wait 1s to make sure the file is written to disk
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         return vidoc;
     }
 }
