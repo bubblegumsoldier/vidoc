@@ -51,6 +51,7 @@ export class DefaultHTMLPageGetter implements HTMLPageGetter {
             video {
                 border-radius: 15px;
                 border: 3px solid white;
+                width: 100%;
                 max-width: 1200px;
             }
           </style>

@@ -51,5 +51,5 @@ export default withPageAuthRequired(
       </>
     );
   },
-  { returnTo: "/profile" }
+  { returnTo: "/protected" }
 );

@@ -54,7 +54,7 @@ import { CommandExecutor } from "../vidoc/interfaces/CommandExecutor";
 import { WindowSelector } from "../vidoc/interfaces/WindowSelector";
 import { ActiveWindowSelector } from "../vidoc/drivers/general/screenRecording/ActiveWindowSelector";
 import { VidocCloudAccessor } from "../vidoc/interfaces/VidocCloudAccessor";
-import { VSCVidocCloudAccessor } from "../vidoc/drivers/vscode/VSCVidocCloudAccessor";
+import { DefaultVidocCloudAccessor } from "../vidoc/drivers/general/DefaultVidocCloudAccessor";
 import { VidocCloudVideoUploader } from "../vidoc/drivers/general/file-upload/VidocCloudVideoUploader";
 import { VidocCloudUploadUrlRemover } from "../vidoc/drivers/general/file-upload/VidocCloudUploadUrlRemover";
 import { TmpCleanup } from "../vidoc/drivers/general/TmpCleanup";
@@ -153,7 +153,7 @@ container.register<WindowSelector>("WindowSelector", {
     useClass: ActiveWindowSelector,
 });
 container.register<VidocCloudAccessor>("VidocCloudAccessor", {
-    useClass: VSCVidocCloudAccessor,
+    useClass: DefaultVidocCloudAccessor,
 });
 container.register<TmpCleanup>("TmpCleanup", {
     useClass: TmpCleanup,

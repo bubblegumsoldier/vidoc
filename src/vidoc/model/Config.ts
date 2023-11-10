@@ -46,7 +46,7 @@ export class SavingStrategyRemote {
 export class SavingStrategyVidocCloud {
   type = "vidoc.cloud" as const;
   projectId?: string;
-  url: string = "https://vidoc.cloud/api/";
+  url: string = "https://vidoc.cloud/";
   folder: string = ".vidoc";
 }
 
