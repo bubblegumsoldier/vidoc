@@ -34,7 +34,7 @@ export class RSScreenRecorder implements ScreenRecorder {
     return await this.continueOrStartRecordingWithAudioDevice(vidoc, audioDevice);
   }
 
-  public async continueOrStartRecordingWithAudioDevice(
+  private async continueOrStartRecordingWithAudioDevice(
     vidoc: Vidoc,
     audioDevice: string
   ): Promise<Vidoc> {
