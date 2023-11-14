@@ -26,13 +26,14 @@ export class SpeechToTextPostprocessor implements VideoPostprocessor {
         const config = await this.configRetriever.getConfig();
         if (
             !config.recordingOptions?.postProcessingOptions?.speechToText
-                ?.enabled
+                ?.enabled &&
+            config.savingStrategy.type !== "vidoc.cloud"
         ) {
             throw Error("Speech to text is not enabled in the config");
         }
         let speechToTextConverter;
         if (
-            config.recordingOptions.postProcessingOptions.speechToText.type ===
+            config?.recordingOptions?.postProcessingOptions?.speechToText?.type ===
             "aws-transcribe"
         ) {
             speechToTextConverter = this.awsTranscribe;

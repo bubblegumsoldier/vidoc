@@ -1,7 +1,6 @@
 import { inject, injectable } from "tsyringe";
 import { SpeechToText } from "../../../interfaces/SpeechToText";
 import { SpeechToTextInformation, Vidoc } from "../../../model/Vidoc";
-import { ConfigRetriever } from "../../../interfaces/ConfigRetriever";
 import { VidocCloudAccessor } from "../../../interfaces/VidocCloudAccessor";
 
 @injectable()

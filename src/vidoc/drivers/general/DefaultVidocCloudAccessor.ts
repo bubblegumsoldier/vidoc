@@ -49,7 +49,7 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
     private async currentTokenIsValid(): Promise<boolean> {
         try {
             const response = await axios.get(
-                await this.getApiUrl("projects"),
+                await this.getApiUrl("/api/projects"),
                 await this.getAxiosOptionsWithAuthHeader()
             );
             return true;
@@ -111,7 +111,7 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
             );
         }
         const generateUploadLinkPath = await this.getApiUrl(
-            `/api/projects/${projectId}/vidoc-links/${vidocId}`
+            `/api/projects/${projectId}/vidocs/${vidocId}`
         );
         try {
             const options = await this.getAxiosOptionsWithAuthHeader();
@@ -141,12 +141,13 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
         );
         try {
             const options = await this.getAxiosOptionsWithAuthHeader();
-            const result: SpeechToTextInformation = (
-                await axios.post(transcriptPath, {}, { ...options })
+            const result: {transcript: SpeechToTextInformation} = (
+                await axios.get(transcriptPath, { ...options })
             ).data;
             // Return the JSON result
-            return result;
-        } catch {
+            return result.transcript;
+        } catch(e) {
+            console.log(e)
             throw Error(
                 "Cannot generate transcript for Vidoc. Do you have the correct access rights for the project?"
             );
