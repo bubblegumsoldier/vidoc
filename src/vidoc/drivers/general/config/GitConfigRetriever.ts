@@ -38,7 +38,7 @@ export class GitConfigRetriever implements ConfigRetriever {
         existingConfigs[0]
       );
     }
-    const config = _.merge(DEFAULT_CONFIG, existingConfig);
+    const config = _.merge(_.cloneDeep(DEFAULT_CONFIG), existingConfig);
     const postprocessedConfig = await this.postProcessConfigForEnv(config);
     return postprocessedConfig;
   }

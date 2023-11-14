@@ -11,7 +11,7 @@ import { Prompter } from "../../interfaces/Prompter";
 import { SpeechToTextInformation } from "../../model/Vidoc";
 
 const DEFAULT_PORT = 7989;
-const DEFAULT_URL = "http://vidoc.cloud/api/";
+const DEFAULT_URL = "http://vidoc-cloud.vercel.app/";
 
 type NewUrlResponse = {
     url: string;
@@ -48,7 +48,7 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
 
     private async currentTokenIsValid(): Promise<boolean> {
         try {
-            const response = await axios.get(
+            await axios.get(
                 await this.getApiUrl("/api/projects"),
                 await this.getAxiosOptionsWithAuthHeader()
             );
@@ -119,7 +119,8 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
                 await axios.post(generateUploadLinkPath, {}, { ...options })
             ).data;
             return result.url;
-        } catch {
+        } catch(e) {
+            console.log(e)
             throw Error(
                 "Cannot generate link for project. Do you have the correct access rights for the project?"
             );
