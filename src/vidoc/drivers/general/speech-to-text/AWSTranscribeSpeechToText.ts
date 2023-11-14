@@ -16,8 +16,6 @@ import fetch from "node-fetch"; // or another HTTP client to download the file
 @injectable()
 export class AWSTranscribeSpeechToText implements SpeechToText {
   constructor(
-    @inject("FileController") private fileController: FileController,
-    @inject("FFmpegInterface") private ffmpegInterface: FFmpegInterface,
     @inject("ConfigRetriever") private configRetriever: ConfigRetriever
   ) {}
 
