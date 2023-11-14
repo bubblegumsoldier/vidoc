@@ -3,6 +3,7 @@ import MembershipRepository from "../../../../../../data-access/MembershipReposi
 import Auth0Authentication from "../../../../../../utils/Auth0Authentication";
 import { VoiceTranscribe } from "../../../../../../data-access/VoiceTranscribe";
 
+export const maxDuration = 600; // This function can run for a maximum of 600 seconds
 
 export const GET = async function getNewVidocLink(req, { params }) {
     const res = new NextResponse();
