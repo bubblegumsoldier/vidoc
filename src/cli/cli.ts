@@ -52,6 +52,7 @@ import { VidocCloudAccessor } from "../vidoc/interfaces/VidocCloudAccessor";
 import { DefaultVidocCloudAccessor } from "../vidoc/drivers/general/DefaultVidocCloudAccessor";
 import { TmpCleanup } from "../vidoc/drivers/general/TmpCleanup";
 import { VideoMerger } from "../vidoc/drivers/general/VideoMerger";
+import { VidocCloudTranscribeSpeechToText } from "../vidoc/drivers/general/speech-to-text/VidocCloudTranscribeSpeechToText";
 
 container.register<ConfigRetriever>("ConfigRetriever", {
     useClass: GitConfigRetriever,
@@ -138,6 +139,9 @@ container.register<TmpCleanup>("TmpCleanup", {
 });
 container.register<VideoMerger>("VideoMerger", {
     useClass: VideoMerger,
+});
+container.register<VidocCloudTranscribeSpeechToText>("VidocCloudTranscribeSpeechToText", {
+    useClass: VidocCloudTranscribeSpeechToText,
 });
 
 const configRetriever = container.resolve<ConfigRetriever>("ConfigRetriever");

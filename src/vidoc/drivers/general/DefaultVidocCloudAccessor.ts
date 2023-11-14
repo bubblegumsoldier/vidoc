@@ -8,6 +8,7 @@ import { exec } from "child_process";
 import { LoginResultRetrieverServer } from "../vscode/vidoc-cloud/LoginResultRetrieverServer";
 import { PreferencesManager } from "../../interfaces/PreferencesManager";
 import { Prompter } from "../../interfaces/Prompter";
+import { SpeechToTextInformation } from "../../model/Vidoc";
 
 const DEFAULT_PORT = 7989;
 const DEFAULT_URL = "http://vidoc.cloud/api/";
@@ -121,6 +122,33 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
         } catch {
             throw Error(
                 "Cannot generate link for project. Do you have the correct access rights for the project?"
+            );
+        }
+    }
+
+    public async getVidocTranscript(vidocId: string): Promise<SpeechToTextInformation> {
+        await this.ensureLoggedIn();
+        const config = await this.configRetriever.getConfig();
+        const projectId = (<SavingStrategyVidocCloud>config.savingStrategy)
+            .projectId;
+        if (!projectId) {
+            throw Error(
+                "Could not find a project id. Please check your configuration."
+            );
+        }
+        const transcriptPath = await this.getApiUrl(
+            `/api/projects/${projectId}/vidocs/${vidocId}/transcript`
+        );
+        try {
+            const options = await this.getAxiosOptionsWithAuthHeader();
+            const result: SpeechToTextInformation = (
+                await axios.post(transcriptPath, {}, { ...options })
+            ).data;
+            // Return the JSON result
+            return result;
+        } catch {
+            throw Error(
+                "Cannot generate transcript for Vidoc. Do you have the correct access rights for the project?"
             );
         }
     }

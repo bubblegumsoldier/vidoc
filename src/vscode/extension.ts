@@ -59,6 +59,7 @@ import { VidocCloudVideoUploader } from "../vidoc/drivers/general/file-upload/Vi
 import { VidocCloudUploadUrlRemover } from "../vidoc/drivers/general/file-upload/VidocCloudUploadUrlRemover";
 import { TmpCleanup } from "../vidoc/drivers/general/TmpCleanup";
 import { VideoMerger } from "../vidoc/drivers/general/VideoMerger";
+import { VidocCloudTranscribeSpeechToText } from "../vidoc/drivers/general/speech-to-text/VidocCloudTranscribeSpeechToText";
 
 container.registerSingleton("VSCController", VSCController);
 container.registerSingleton("ScreenRecorder", RSScreenRecorder);
@@ -160,6 +161,9 @@ container.register<TmpCleanup>("TmpCleanup", {
 });
 container.register<VideoMerger>("VideoMerger", {
     useClass: VideoMerger,
+});
+container.register<VidocCloudTranscribeSpeechToText>("VidocCloudTranscribeSpeechToText", {
+    useClass: VidocCloudTranscribeSpeechToText,
 });
 
 const vscController = container.resolve<VSCController>("VSCController");

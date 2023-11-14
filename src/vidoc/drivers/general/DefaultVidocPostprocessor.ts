@@ -9,6 +9,7 @@ import { VidocCloudUploadUrlRemover } from "./file-upload/VidocCloudUploadUrlRem
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { VideoMerger } from "./VideoMerger";
 import { TmpCleanup } from "./TmpCleanup";
+import { SavingStrategyVidocCloud } from "../../model/Config";
 
 @injectable()
 export class DefaultVidocPostprocessor implements VideoPostprocessor {
@@ -38,15 +39,29 @@ export class DefaultVidocPostprocessor implements VideoPostprocessor {
             postprocessors.push(this.fileUploadPostprocessor);
             postprocessors.push(this.vidocCloudUploadUrlRemover);
         }
-        if (
-            config.recordingOptions?.postProcessingOptions?.speechToText
-                ?.enabled
-        ) {
+        if (await this.transcriptionIsEnabled()) {
             postprocessors.push(this.speechToTextPostprocessor);
         }
         postprocessors.push(this.tmpCleanup);
 
         return postprocessors;
+    }
+
+    private async transcriptionIsEnabled(): Promise<boolean> {
+        /**
+         * Transcription is enabled if:
+         * - The user has enabled it in config.recordingOptions.postProcessingOptions.speechToText.enabled
+         * or
+         * - The user is using vidoc.cloud and has not disabled it in config.savingStrategy.disableTranscription
+         */
+        const config = await this.configRetriever.getConfig();
+        return (
+            config.recordingOptions?.postProcessingOptions?.speechToText
+                ?.enabled ||
+            (config.savingStrategy.type === "vidoc.cloud" &&
+                (<SavingStrategyVidocCloud>config.savingStrategy)
+                    .disableTranscription !== true)
+        );
     }
 
     async postprocessVidoc(vidoc: Vidoc): Promise<Vidoc> {

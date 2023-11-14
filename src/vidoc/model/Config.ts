@@ -48,6 +48,7 @@ export class SavingStrategyVidocCloud {
   projectId?: string;
   url: string = "https://vidoc-cloud.vercel.app/";
   folder: string = ".vidoc";
+  disableTranscription?: boolean;
 }
 
 export interface SavingInformationAWSS3 {
