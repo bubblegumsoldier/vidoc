@@ -17,6 +17,11 @@ type NewUrlResponse = {
     url: string;
 };
 
+type SpeechToTextResponse = {
+    url: string;
+    available: boolean;
+};
+
 @injectable()
 export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
     constructor(
@@ -40,9 +45,13 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
     }
 
     private async waitForConfirmation(): Promise<void> {
-        const answer = await this.prompter.getAnswer("You have been logged in. Do you want to continue recording?", ["Yes", "No"], "Yes")
-        if(answer === "No") {
-            throw Error("User aborted login.")
+        const answer = await this.prompter.getAnswer(
+            "You have been logged in. Do you want to continue recording?",
+            ["Yes", "No"],
+            "Yes"
+        );
+        if (answer === "No") {
+            throw Error("User aborted login.");
         }
     }
 
@@ -119,15 +128,17 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
                 await axios.post(generateUploadLinkPath, {}, { ...options })
             ).data;
             return result.url;
-        } catch(e) {
-            console.log(e)
+        } catch (e) {
+            console.log(e);
             throw Error(
                 "Cannot generate link for project. Do you have the correct access rights for the project?"
             );
         }
     }
 
-    public async getVidocTranscript(vidocId: string): Promise<SpeechToTextInformation> {
+    public async getVidocTranscript(
+        vidocId: string
+    ): Promise<SpeechToTextInformation> {
         await this.ensureLoggedIn();
         const config = await this.configRetriever.getConfig();
         const projectId = (<SavingStrategyVidocCloud>config.savingStrategy)
@@ -142,16 +153,64 @@ export class DefaultVidocCloudAccessor implements VidocCloudAccessor {
         );
         try {
             const options = await this.getAxiosOptionsWithAuthHeader();
-            const result: {transcript: SpeechToTextInformation} = (
+            const result: SpeechToTextResponse = (
                 await axios.get(transcriptPath, { ...options })
             ).data;
-            // Return the JSON result
-            return result.transcript;
-        } catch(e) {
-            console.log(e)
+            if (result.available) {
+                return {
+                    text: (await axios.get(result.url)).data,
+                    payload: {},
+                };
+            }
+            // Poll for result
+            // Fetch every second until result is available
+            type FileContent = {
+                results: {
+                    transcripts: { transcript: string }[];
+                    items: any[];
+                };
+            };
+
+            const result2 = await this.waitForResult<FileContent>(
+                result.url,
+                1000,
+                300000 // 5 minutes timeout
+            );
+            return {
+                text: result2.results.transcripts[0].transcript,
+                payload: result2.results.items,
+            }
+        } catch (e) {
+            console.log(e);
             throw Error(
                 "Cannot generate transcript for Vidoc. Do you have the correct access rights for the project?"
             );
         }
+    }
+
+    private async waitForResult<T>(
+        url: string,
+        interval: number,
+        timeout: number
+    ): Promise<T> {
+        const startTime = Date.now();
+
+        while (Date.now() - startTime < timeout) {
+            try {
+                const response = await axios.get(url);
+                console.log("Transcript ready");
+                if (response.status === 200) {
+                    return <T>response.data; // Success, exit the function
+                }
+            } catch (error) {
+                console.log("Transcript not ready, retry");
+                // Handle or log error as needed
+            }
+
+            // Wait for the specified interval before the next request
+            await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+
+        throw new Error("Timeout reached without getting status 200");
     }
 }

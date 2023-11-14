@@ -5,8 +5,7 @@ import { VoiceTranscribe } from "../../../../../../data-access/VoiceTranscribe";
 
 // This function can run for a maximum of 10 seconds due to hobby plan by Vercel.
 // This is basically useless but okay for now.
-export const maxDuration = 10; 
-
+export const maxDuration = 10;
 
 export const GET = async function getNewVidocLink(req, { params }) {
     const res = new NextResponse();
@@ -46,12 +45,11 @@ export const GET = async function getNewVidocLink(req, { params }) {
         const result = await VoiceTranscribe.getTranscript(projectId, vidocId);
         return NextResponse.json(
             {
-                transcript: result,
+                ...result,
             },
             res
         );
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         return NextResponse.json(
             { error: "Failed to get transcript." },
@@ -60,5 +58,4 @@ export const GET = async function getNewVidocLink(req, { params }) {
             }
         );
     }
-
 };

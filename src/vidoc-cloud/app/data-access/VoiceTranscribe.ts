@@ -18,7 +18,7 @@ export class VoiceTranscribe {
     public static async getTranscript(
         projectId: string,
         vidocId: string
-    ): Promise<SpeechToTextInformation> {
+    ): Promise<{ url: string; available: boolean }> {
         const remoteVideoUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${projectId}/${vidocId}`;
         const remoteTranscriptUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${
             process.env.S3_REGION
@@ -33,12 +33,12 @@ export class VoiceTranscribe {
 
         // If it already exists, return it
         try {
-            const result = await VoiceTranscribe.getTranscribedTextFromUri(
+            await VoiceTranscribe.getTranscribedTextFromUri(
                 remoteTranscriptUrl
             );
-            return result;
+            return { url: remoteTranscriptUrl, available: true };
         } catch (error) {
-            console.log("No transcript exists yet - will create");
+            console.log("No transcript exists yet - will start transcript job");
         }
 
         // otherwise use AWS Transcribe to generate it
@@ -72,16 +72,10 @@ export class VoiceTranscribe {
         console.log("Job started:", startJob);
 
         try {
-            const completedJob = await VoiceTranscribe.pollForJobCompletion(
-                transcribe,
-                jobName
-            );
-            const transcriptFileUri =
-                completedJob.Transcript!.TranscriptFileUri;
-
-            return await VoiceTranscribe.getTranscribedTextFromUri(
-                transcriptFileUri!
-            );
+            return {
+                url: remoteTranscriptUrl,
+                available: false,
+            };
         } catch (error) {
             console.log("An error occurred:", error);
             throw error;
