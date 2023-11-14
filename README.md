@@ -46,7 +46,7 @@ Vidoc.Cloud is a streamlined, open-source hosting platform under the domain `vid
 
 In order to configure Vidoc to use vidoc.cloud follow these steps:
 
-1. Head to [vidoc.cloud](https://vidoc.cloud/) and create an account.
+1. Head to [vidoc.cloud](https://vidoc-cloud.vercel.app/) and create an account.
 2. Create a project for the repository you want to connect with vidoc.cloud
 3. Copy the `.vidocconf.json` as specified under the section `Setup`.
 

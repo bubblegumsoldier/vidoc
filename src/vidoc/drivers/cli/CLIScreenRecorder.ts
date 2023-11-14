@@ -3,19 +3,23 @@ import { RSScreenRecorder } from "../general/screenRecording/RSScreenRecorder";
 import { VidocFactory } from "../../interfaces/VidocFactory";
 import { Vidoc } from "../../model/Vidoc";
 import { FocusInformation } from "../../model/FocusInformation";
+import { PreferencesManager } from "../../interfaces/PreferencesManager";
 
 @singleton()
 export class CLIScreenRecorder {
   constructor(
     @inject("RSScreenRecorder") private screenRecorder: RSScreenRecorder,
-    @inject("VidocFactory") private vidocFactory: VidocFactory
+    @inject("VidocFactory") private vidocFactory: VidocFactory,
+    @inject("PreferencesManager") private preferencesManager: PreferencesManager,
   ) {}
 
   public run(vidocId: string, audioDevice: string): Promise<Vidoc> {
     return new Promise(async (resolve, reject) => {
       try {
+        this.preferencesManager.setPreferredAudioInterface(audioDevice);
+        
         const vidoc = await this.vidocFactory.init(vidocId);
-        await this.screenRecorder.continueOrStartRecordingWithAudioDevice(vidoc, audioDevice);
+        await this.screenRecorder.continueOrStartRecording(vidoc);
 
         process.stdin.setEncoding('utf8');
 
