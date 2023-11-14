@@ -3,7 +3,10 @@ import MembershipRepository from "../../../../../../data-access/MembershipReposi
 import Auth0Authentication from "../../../../../../utils/Auth0Authentication";
 import { VoiceTranscribe } from "../../../../../../data-access/VoiceTranscribe";
 
-export const maxDuration = 600; // This function can run for a maximum of 600 seconds
+// This function can run for a maximum of 10 seconds due to hobby plan by Vercel.
+// This is basically useless but okay for now.
+export const maxDuration = 10; 
+
 
 export const GET = async function getNewVidocLink(req, { params }) {
     const res = new NextResponse();
