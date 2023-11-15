@@ -7,9 +7,9 @@ import Link from "next/link";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navigation = [
-    { name: "Vidoc", href: "#" },
-    { name: "Getting Started", href: "#getting-started" },
-    { name: "Contribute", href: "#contribute" },
+    { name: "Vidoc", href: "/" },
+    { name: "Getting Started", href: "/#getting-started" },
+    { name: "Contribute", href: "/#contribute" },
 ];
 
 export default function LandingPageNavigation() {
@@ -22,7 +22,7 @@ export default function LandingPageNavigation() {
                 aria-label="Global"
             >
                 <div className="flex lg:flex-1">
-                    <a href="#" className="-m-1.5 p-1.5">
+                    <Link href="/" className="-m-1.5 p-1.5">
                         <span className="sr-only">Vidoc</span>
                         <Image
                             priority
@@ -31,7 +31,7 @@ export default function LandingPageNavigation() {
                             height={30}
                             alt="Logo"
                         />
-                    </a>
+                    </Link>
                 </div>
                 <div className="flex lg:hidden">
                     <button
@@ -102,13 +102,14 @@ export default function LandingPageNavigation() {
                         <div className="-my-6 divide-y divide-gray-500/10">
                             <div className="space-y-2 py-6">
                                 {navigation.map((item) => (
-                                    <a
+                                    <Link
                                         key={item.name}
                                         href={item.href}
                                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                        onClick={() => setMobileMenuOpen(false)}
                                     >
                                         {item.name}
-                                    </a>
+                                    </Link>
                                 ))}
                             </div>
                             <div className="py-6">

@@ -9,97 +9,21 @@ import {
 } from "@heroicons/react/20/solid";
 import LandingPageNavigation from "./components/client/LandingPageNavigation";
 import { ArrowUpLeftIcon } from "@heroicons/react/24/outline";
+import HowToConfigureVidoc from "./components/client/HowToConfigureVidoc";
 
-const configurationTypes = [
-    {
-        name: "Store in Repo.",
-        description:
-            "By default vidoc works also without a config file. In that case, the videos will be stored in the repository itself. This is the easiest way to get started.",
-        icon: FolderIcon,
-    },
-    {
-        name: "Store in S3.",
-        description:
-            "If you want to store the videos in an S3 bucket, you can configure the extension to do so. Credentials can be shared using a gitignored .vidocsecrets file.",
-        icon: ServerIcon,
-    },
-    {
-        name: "Store on Vidoc.Cloud.",
-        description:
-            "Vidocs can be stored inside the Vidoc.Cloud platform. This is the easiest way to get started if you don't want to deal with S3 buckets or you are working in a team.",
-        icon: CloudArrowUpIcon,
-    },
-];
 
 export default function Home() {
-    const codeLocal = `
-  <div style="color: #dcdcaa;">{</div>
-  <div style="margin-left: 20px;">
-      <span style="color: #ce9178;">"savingStrategy"</span><span style="color: #bbbbbb;">: {</span>
-      <div style="margin-left: 20px;">
-          <span style="color: #ce9178;">"type"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"local"</span><span style="color: #bbbbbb;">,</span><br>
-      </div>
-      <span style="color: #bbbbbb;">}</span>
-  </div>
-  <div style="color: #dcdcaa;">}</div>
-  <div style="color: #dcdcaa;"></div>
-`;
-    const codeS3 = `
-  <div style="color: #dcdcaa;">{</div>
-  <div style="margin-left: 20px;">
-      <span style="color: #ce9178;">"type"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"remote"</span><span style="color: #bbbbbb;">,</span><br>
-      <span style="color: #ce9178;">"savingStrategy"</span><span style="color: #bbbbbb;">: {</span>
-      <div style="margin-left: 20px;">
-          <span style="color: #ce9178;">"s3"</span><span style="color: #c1b5c1;">: {</span><br>
-          <div style="margin-left: 20px;">
-            <span style="color: #ce9178;">"bucketName"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"vidoc"</span><span style="color: #bbbbbb;">,</span><br>
-            <span style="color: #ce9178;">"region"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"eu-central-1"</span><span style="color: #bbbbbb;">,</span><br>
-            <span style="color: #ce9178;">"accessKeyId"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"\${ACCESS_KEY_AWS}"</span><span style="color: #bbbbbb;">,</span><br>
-            <span style="color: #ce9178;">"secretAccessKey"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"\${SECRET_KEY_AWS}"</span><br>
-            </div>
-          <span style="color: #c1b5c1;">}</span>
-      </div>
-      <span style="color: #bbbbbb;">}</span>
-  </div>
-  <div style="color: #dcdcaa;">}</div>
-  <div style="color: #dcdcaa;"></div>
-`;
-    const codeVidocCloud = `
-    <div style="color: #dcdcaa;">{</div>
-    <div style="margin-left: 20px;">
-        <span style="color: #ce9178;">"savingStrategy"</span><span style="color: #bbbbbb;">: {</span>
-        <div style="margin-left: 20px;">
-            <span style="color: #ce9178;">"type"</span><span style="color: #bbbbbb;">: </span><span style="color: #9cdcfe;">"vidoc.cloud"</span><span style="color: #bbbbbb;">,</span><br>
-            <span style="color: #ce9178;">"projectId"</span><span style="color: #bbbbbb;">: </span><span style="color: #a0faef;">"<i>123</i>"</span>
-        </div>
-        <span style="color: #bbbbbb;">}</span>
-    </div>
-    <div style="color: #dcdcaa;">}</div>
-    <div style="color: #dcdcaa;"></div>
-  `;
+    
 
     return (
         <>
             <div className="bg-white">
-                <header className="inset-x-0 top-0 z-50 fixed bg-white bg-opacity-80 border-b border-gray-100">
-                    <LandingPageNavigation />
-                </header>
-
                 <div className="relative isolate px-6 pt-14 lg:px-8 bg-gradient-to-tl from-[#ddeeff] to-[#fffcfc]">
                     <div className="mx-auto max-w-2xl pt-16 sm:pt-32 lg:pt-32">
-                        {/* <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-              <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
-                Announcing our next round of funding.{" "}
-                <a href="#" className="font-semibold text-blue-600">
-                  <span className="absolute inset-0" aria-hidden="true" />
-                  Read more <span aria-hidden="true">&rarr;</span>
-                </a>
-              </div>
-            </div> */}
                         <div className="text-center">
                             <h1 className="flex justify-center flex-col">
-                                <span className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl flex items-center justify-center gap-x-2">
-                                    <div className="w-10 h-10 bg-red-600 rounded-full animate-pulse-fast inline-block"></div>
+                                <span className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+                                    <div className="w-6 h-6 sm:w-10 sm:h-10 mr-2 sm:mr-4 bg-red-600 rounded-full animate-pulse-fast inline-block"></div>
                                     <span>Record your screen</span>
                                 </span>
                                 <span className="text-4xl font-bold tracking-tight text-gray-500">
@@ -109,14 +33,14 @@ export default function Home() {
                                     Document your code
                                 </span>
                             </h1>
-                            <p className="mt-6 text-lg leading-8 text-gray-600">
-                                ViDoc is an IDE extension designed to elevate
-                                your documentation workflow. It lets you
-                                effortlessly record your screen and voice,
-                                offering rich context and insightful commentary
-                                on your code. This video commentary is then
-                                directly embedded into the code itself for
-                                others to see.
+                            <p className="mt-6 text-sm sm:text-lg leading-8 text-gray-600">
+                                ViDoc is an IDE extension designed to improve your
+                                your documentation workflow. It allows you to
+                                effortlessly record your screen and voice into your editor,
+                                providing context and insightful commentary
+                                to your code. This video commentary is then
+                                embedded directly into the code itself for
+                                for others to see.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
                                 <Link
@@ -171,7 +95,7 @@ export default function Home() {
                                         Install Extension
                                     </h3>
                                     <p className="text-sm text-gray-200 mt-4">
-                                        Go to the VSCode Extension marketplace
+                                        Go to the VSCode Extension Marketplace
                                         and download the ViDoc extension. It's
                                         free so why not give it a try?
                                     </p>
@@ -216,10 +140,9 @@ export default function Home() {
                                         Record
                                     </h3>
                                     <p className="text-sm text-gray-200 mt-4">
-                                        Explain your code like you would to a
-                                        coworker. Your file will be
-                                        automatically annotated with your
-                                        recording.
+                                        Explain your code as you would to a
+                                        colleague. Your file will automatically
+                                        be annotated with your recording.{" "}
                                     </p>
                                 </div>
                             </div>
@@ -227,106 +150,7 @@ export default function Home() {
                     </div>
                     <div className="overflow-hidden py-24 bg-white mt-16 sm:py-32">
                         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                            <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-                                <div className="lg:pr-8 lg:pt-4">
-                                    <div className="lg:max-w-lg">
-                                        <h2 className="text-base font-semibold leading-7 text-blue-600">
-                                            How to configure Vidoc
-                                        </h2>
-                                        <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                                            Data Storage Autonomy
-                                        </p>
-                                        <p className="mt-6 text-lg leading-8 text-gray-600">
-                                            You can configure by adding a{" "}
-                                            <code>.vidocconf.json</code> file at
-                                            the root of your repository. The
-                                            following configurations are
-                                            supported:
-                                        </p>
-                                        <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
-                                            {configurationTypes.map(
-                                                (feature) => (
-                                                    <div
-                                                        key={feature.name}
-                                                        className="relative pl-9"
-                                                    >
-                                                        <dt className="inline font-semibold text-gray-900">
-                                                            <feature.icon
-                                                                className="absolute left-1 top-1 h-5 w-5 text-blue-600"
-                                                                aria-hidden="true"
-                                                            />
-                                                            {feature.name}
-                                                        </dt>{" "}
-                                                        <dd className="inline">
-                                                            {
-                                                                feature.description
-                                                            }
-                                                        </dd>
-                                                    </div>
-                                                )
-                                            )}
-                                        </dl>
-                                    </div>
-                                </div>
-                                <div className="pt-8">
-                                    <div className="mt-4 bg-gray-800 shadow-2xl rounded-lg overflow-hidden">
-                                        <div
-                                            id="header-buttons"
-                                            className="pt-3 px-4 flex"
-                                        >
-                                            <div className="text-sm font-mono text-gray-400">
-                                                Store in Repo
-                                            </div>
-                                        </div>
-                                        <div
-                                            id="code-area"
-                                            className="pb-2 px-4 text-white text-sm font-mono"
-                                        >
-                                            <div
-                                                dangerouslySetInnerHTML={{
-                                                    __html: codeLocal,
-                                                }}
-                                            ></div>
-                                        </div>
-                                        <div
-                                            id="header-buttons"
-                                            className="pt-3 px-4 flex"
-                                        >
-                                            <div className="text-sm font-mono text-gray-400">
-                                                Store on S3
-                                            </div>
-                                        </div>
-                                        <div
-                                            id="code-area"
-                                            className="pb-2 px-4 text-white text-sm font-mono"
-                                        >
-                                            <div
-                                                dangerouslySetInnerHTML={{
-                                                    __html: codeS3,
-                                                }}
-                                            ></div>
-                                        </div>
-                                        <div
-                                            id="header-buttons"
-                                            className="pt-3 px-4 flex"
-                                        >
-                                            <div className="text-sm font-mono text-gray-400">
-                                                Store in Vidoc.Cloud
-                                            </div>
-                                        </div>
-                                        <div
-                                            id="code-area"
-                                            className="pb-2 px-4 text-white text-sm font-mono"
-                                        >
-                                            <div
-                                                dangerouslySetInnerHTML={{
-                                                    __html: codeVidocCloud,
-                                                }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <HowToConfigureVidoc />
                         </div>
                     </div>
                 </div>
@@ -357,15 +181,13 @@ export default function Home() {
                                             Open Source First!
                                         </p>
                                         <p className="mt-6 text-lg leading-8 text-gray-100">
-                                            Vidoc is open source to its core,
-                                            promising every user unrestricted
-                                            access to its comprehensive feature
-                                            set. While cloud services are
-                                            available, they're merely
-                                            optional—Vidoc stands firm in
-                                            providing an exceptional,
-                                            community-fueled user experience
-                                            right out of the box.
+                                            Vidoc is open source at its core,
+                                            promising unrestricted access to
+                                            every user. While cloud services are
+                                            available, they're optional - Vidoc
+                                            is committed to providing an
+                                            exceptional, community-driven user
+                                            experience right out of the box.
                                         </p>
                                         <iframe
                                             src="https://ghbtns.com/github-btn.html?user=bubblegumsoldier&repo=vidoc&type=star&count=true&size=large"
@@ -407,7 +229,7 @@ export default function Home() {
                                             href="/impressum"
                                             className="hover:underline"
                                         >
-                                            Impressum
+                                            Legal Notice
                                         </Link>
                                     </li>
                                     <li className="mb-2">
@@ -415,15 +237,7 @@ export default function Home() {
                                             href="/gdpr"
                                             className="hover:underline"
                                         >
-                                            GDPR Information
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            href="/terms-and-conditions"
-                                            className="hover:underline"
-                                        >
-                                            Terms & Conditions
+                                            Website Privacy
                                         </Link>
                                     </li>
                                 </ul>
