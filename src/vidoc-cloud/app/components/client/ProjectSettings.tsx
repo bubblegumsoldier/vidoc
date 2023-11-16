@@ -21,6 +21,7 @@ export default function ProjectSettings({ projectId, initialProjectValues }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+      next: { revalidate: 0 },
     });
 
     if (response.status !== 200) {

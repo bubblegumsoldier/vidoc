@@ -85,7 +85,9 @@ export class VoiceTranscribe {
     private static async getTranscribedTextFromUri(
         uri: string
     ): Promise<SpeechToTextInformation> {
-        const response = await fetch(uri);
+        const response = await fetch(uri, {
+            next: { revalidate: 0 },
+        });
 
         // Check if the response is OK (status code 200-299)
         if (!response.ok) {

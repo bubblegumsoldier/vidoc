@@ -22,6 +22,7 @@ export default function DeleteProjectButton({
     try {
       await fetch(`/api/projects/${projectId}`, {
         method: "DELETE",
+        next: { revalidate: 0 } 
       });
       router.refresh();
     } catch (e) {
