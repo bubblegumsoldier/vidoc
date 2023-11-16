@@ -11,13 +11,13 @@ import LandingPageNavigation from "./components/client/LandingPageNavigation";
 import { ArrowUpLeftIcon } from "@heroicons/react/24/outline";
 import HowToConfigureVidoc from "./components/client/HowToConfigureVidoc";
 
-
 export default function Home() {
-    
-
     return (
         <>
             <div className="bg-white">
+                <header className="inset-x-0 top-0 z-50 fixed bg-white bg-opacity-80 border-b border-gray-100">
+                    <LandingPageNavigation />
+                </header>
                 <div className="relative isolate px-6 pt-14 lg:px-8 bg-gradient-to-tl from-[#ddeeff] to-[#fffcfc]">
                     <div className="mx-auto max-w-2xl pt-16 sm:pt-32 lg:pt-32">
                         <div className="text-center">
@@ -34,13 +34,13 @@ export default function Home() {
                                 </span>
                             </h1>
                             <p className="mt-6 text-sm sm:text-lg leading-8 text-gray-600">
-                                ViDoc is an IDE extension designed to improve your
-                                your documentation workflow. It allows you to
-                                effortlessly record your screen and voice into your editor,
-                                providing context and insightful commentary
-                                to your code. This video commentary is then
-                                embedded directly into the code itself for
-                                for others to see.
+                                ViDoc is an IDE extension designed to improve
+                                your your documentation workflow. It allows you
+                                to effortlessly record your screen and voice
+                                into your editor, providing context and
+                                insightful commentary to your code. This video
+                                commentary is then embedded directly into the
+                                code itself for for others to see.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
                                 <Link

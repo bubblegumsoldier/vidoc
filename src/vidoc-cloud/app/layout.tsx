@@ -17,9 +17,6 @@ export default function RootLayout({ children }) {
             <html lang="en">
                 <UserProvider>
                     <body className={inter.className}>
-                        <header className="inset-x-0 top-0 z-50 fixed bg-white bg-opacity-80 border-b border-gray-100">
-                            <LandingPageNavigation />
-                        </header>
                         {children}
                     </body>
                 </UserProvider>
