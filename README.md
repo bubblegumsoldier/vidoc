@@ -7,12 +7,6 @@
 ![3](https://github.com/bubblegumsoldier/vidoc/assets/3788628/7793dd69-d2d4-49aa-b683-67793033b30b)
 
 
-## Simple introduction video
-
-[CLICK HERE for Vidoc Example Usage in Loom](https://www.loom.com/share/ecb3abd8e7dc4b77b224b96b1e8e56e8?sid=ea4755ac-b948-4562-9876-0170f77c4427)
-
-[CLICK HERE for Vidoc Advanced Configuration in Loom](https://www.loom.com/share/ee831812754c487bbac3d072dd8c14fe?sid=73af1439-9825-4be0-bc0b-5349bc5972c5)
-
 ## Vision Statement
 
 In modern software development, clear and comprehensive documentation is key. ViDoc is a VS Code extension that aims to revolutionize how documentation is done by incorporating audio-visual elements directly into your code. The extension enables users to record their screen, providing real-time context and commentary on their actions. The result? Documentation that feels like a pair-programming session.
@@ -36,11 +30,17 @@ Video's are a bit like voice-messages. People love to send them but don't like t
 - Don't use Vidocs for simple documentation where a text suffices
 - Don't record Vidocs longer than 10 Minutes - you're not shooting a movie here
 
-## Storing video recordings within the repository
+## Simple introduction video
+
+### Storing video recordings within the repository
+
+https://github.com/bubblegumsoldier/vidoc/assets/3788628/7dc62d0a-b92e-4404-905e-ea946da3a70f
 
 The easiest way to try out the extension is to store the files locally inside the repository. No configuration file is needed in order to achieve that behaviour. However, this is not recommended for larger projects as it can substantially increase the repository size and pushing videos as well as pulling videos can be a pain.
 
-## Using Vidoc.Cloud
+### Setting up Vidoc.Cloud
+
+https://github.com/bubblegumsoldier/vidoc/assets/3788628/bc755396-4757-40b7-a7e1-a49bebcd8a29
 
 Vidoc.Cloud is a streamlined, open-source hosting platform under the domain `vidoc.cloud`. It simplifies video storage, text transcription, and access management for contributors. Essentially, it's Vidoc as a Service. Create projects and invite collaborators without the hassle of sharing `.vidocsecrets` files. Only approved developers can contribute. Initially free, upgrade options are available for extended use, so that we can continue running.
 
@@ -52,7 +52,9 @@ In order to configure Vidoc to use vidoc.cloud follow these steps:
 
 When you are recording your first Vidoc you will be asked to log into your account. From then on your vscode user is synced with your `vidoc.cloud` user. If you want other contributors to be able to seamlessly record Vidocs just let them register and add them as a collaborator to your project.
 
-## Enabling AWS Video Upload for Your VSCode Extension
+### Setting up Vidoc with AWS (advanced configurations)
+
+https://github.com/bubblegumsoldier/vidoc/assets/3788628/19a3ce1b-db8f-461f-a7cd-76a68bf50147
 
 This guide walks you through setting up AWS S3 video upload for your VSCode extension. You can also configure it to work with other S3-compatible providers like DigitalOcean.
 
@@ -78,7 +80,6 @@ Example `.vidocconf.json`:
 
 ```json
 {
-    "$schema": "https://raw.githubusercontent.com/bubblegumsoldier/vidoc/main/config-schema.json",
     "savingStrategy": {
         "type": "remote",
         "s3": {
