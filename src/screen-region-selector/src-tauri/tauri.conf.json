@@ -11,6 +11,11 @@
     "version": "0.0.0"
   },
   "tauri": {
+    "cli": {
+      "description": "A CLI for letting users select a screen area to capture",
+      "args": [],
+      "subcommands": {}
+    },
     "allowlist": {
       "all": false,
       "shell": {
@@ -34,7 +39,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "hmdevconsulting.screenregionselector",
       "targets": "all"
     },
     "security": {
