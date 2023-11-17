@@ -14,9 +14,22 @@
 		}
 	  },
 	  {
+		"label": "compileScreenRegionSelector",
+		"type": "npm",
+		"script": "build-screen-section-selector",
+		"problemMatcher": "$tsc",
+		"presentation": {
+		  "reveal": "always"
+		},
+		"group": {
+		  "kind": "build",
+		  "isDefault": true
+		}
+	  },
+	  {
 		"label": "copyBinaries",
 		"type": "shell",
-		"command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./bin/* ./dist/bin",
+		"command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./src/screen-region-selector/src-tauri/target/release ./dist/bin/screen-region-selector && cp -r -f ./bin/* ./dist/bin",
 		"windows": {
 		  "options": {
 			"shell": {
@@ -26,9 +39,10 @@
 		  }
 		},
 		"osx": {
-		  "command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./bin/* ./dist/bin"
+		  "command": "mkdir -p ./dist && cp -r -f ./node_modules/@arcsine/win-info/bin ./dist && cp -r -f ./src/screen-region-selector/src-tauri/target/release ./dist/bin/screen-region-selector && cp -r -f ./bin/* ./dist/bin"
 		},
-		"problemMatcher": []
+		"problemMatcher": [],
+		"dependsOn": ["compileScreenRegionSelector"]
 	  },
 	  {
 		"type": "npm",
