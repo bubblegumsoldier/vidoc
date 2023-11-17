@@ -112,7 +112,8 @@
     "assets": "dist/bin/**/*"
   },
   "workspaces": [
-    "src/vidoc-cloud"
+    "src/vidoc-cloud",
+    "src/screen-region-selector"
   ],
   "devDependencies": {
     "@types/glob": "^8.1.0",
