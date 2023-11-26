@@ -141,8 +141,35 @@ The command will find in the bucket all files for which there is no vidoc metada
 
 **Caution 2!** Remember that Vidoc can only see what Vidocs are on your branch. If a colleague has added a Vidoc in another branch you might just be removing it for him.
 
-## Contribution Guidelines
+## Tipps and Tricks
 
+### Pause Videos often
+
+Oftentimes you might find yourself stumbling over words or trying to formulate the same idea in many different words. Sometimes it makes sense to **pause** the video, think about the best formulation and **resume** once you know how to find the shortest way to bring your point accross.
+
+### Usage of Whiteboards
+
+You can simply install an extension such as [tldraw](https://marketplace.visualstudio.com/items?itemName=tldraw-org.tldraw-vscode) or [Excalidraw](https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor) to share a whiteboard while recording. There are three ways to incorporate whiteboards and diagrams into your videos:
+
+1. Pre-Draw diagrams and whiteboards before recording
+2. Pause the video when you get the idea to draw a diagram, then draw the diagram, then resume the recording and explain it.
+3. Draw live while recording.
+
+All three will greatly improve the quality of your videos.
+
+### Overlay your browser or other windows
+
+When you start a Vidoc recording the area of your VSCode window will be calculated. This area on your screen is recorded. Different to sharing a specific window in Google Hangouts, Zoom or Teams, **any overlay over the window will also be captured**. You can use this feature to
+
+1. Drag your UI or browser into the viewport of the window and explain frontend code while showcasing the output.
+2. Explain processes, resources, CI/CD pipelines etc by dragging your browser into the viewport.
+3. Start "Loom" without recording, drag your webcam preview circle on top of your IDE and record your camera and IDE at the same time without needing to pay for Loom Premium Plans.
+
+### Build Onboarding Guides using markdown
+
+Vidoc was specifically optimized to work in Markdown files. This allows you to build great Onboarding guides for new developers by incorporating a mix of text + videos while keeping the footprint of these files as minimal as possible.
+
+## Contribution Guidelines
 
 We welcome contributions from the open-source community. To contribute:
 
@@ -167,3 +194,4 @@ Thank you for your interest in improving ViDoc!
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
