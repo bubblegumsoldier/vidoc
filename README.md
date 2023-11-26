@@ -159,9 +159,9 @@ All three will greatly improve the quality of your videos.
 
 ### Overlay your browser or other windows
 
-When you start a Vidoc recording the area of your VSCode window will be calculated. This area on your screen is recorded. Different to sharing a specific window in Google Hangouts, Zoom or Teams, **any overlay over the window will also be captured**. You can use this feature to
+When you start recording a Vidoc, the area of your VSCode window on the screen will be fetched. **The area** on your screen is recorded. Different to sharing a specific window in Google Hangouts, Zoom or Teams, **any overlay over the window will also be captured**. You can use this feature to
 
-1. Drag your UI or browser into the viewport of the window and explain frontend code while showcasing the output.
+1. Drag your UI or browser into the viewport and explain frontend code while showcasing the output live.
 2. Explain processes, resources, CI/CD pipelines etc by dragging your browser into the viewport.
 3. Start "Loom" without recording, drag your webcam preview circle on top of your IDE and record your camera and IDE at the same time without needing to pay for Loom Premium Plans.
 
