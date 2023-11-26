@@ -11,7 +11,6 @@
     + [Storing video recordings within the repository](#storing-video-recordings-within-the-repository)
     + [Setting up Vidoc.Cloud](#setting-up-vidoccloud)
     + [Setting up Vidoc with AWS (advanced configurations)](#setting-up-vidoc-with-aws-advanced-configurations)
-    + [Prerequisites](#prerequisites)
     + [Configuration Files](#configuration-files)
         - [.vidocconf.json](#vidocconfjson)
         - [.vidocsecrets](#vidocsecrets)
@@ -85,10 +84,9 @@ https://github.com/bubblegumsoldier/vidoc/assets/3788628/19a3ce1b-db8f-461f-a7cd
 
 This guide walks you through setting up AWS S3 video upload for your VSCode extension. You can also configure it to work with other S3-compatible providers like DigitalOcean.
 
-<!-- TOC --><a name="prerequisites"></a>
-### Prerequisites
+**Prerequisites for using S3 Storage**
 
-- AWS Account with access to S3 services.
+- AWS Account with access to S3 bucket.
 - VSCode extension installed.
 
 <!-- TOC --><a name="configuration-files"></a>
