@@ -1,33 +1,32 @@
-<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
-- [ViDoc: An Interactive Documentation Extension for Visual Studio Code](#vidoc-an-interactive-documentation-extension-for-visual-studio-code)
-   * [Vision Statement](#vision-statement)
-   * [When to use Vidoc](#when-to-use-vidoc)
-   * [Simple introduction video](#simple-introduction-video)
-      + [Storing video recordings within the repository](#storing-video-recordings-within-the-repository)
-      + [Setting up Vidoc.Cloud](#setting-up-vidoccloud)
-      + [Setting up Vidoc with AWS (advanced configurations)](#setting-up-vidoc-with-aws-advanced-configurations)
-      + [Prerequisites](#prerequisites)
-      + [Configuration Files](#configuration-files)
-         - [.vidocconf.json](#vidocconfjson)
-         - [.vidocsecrets](#vidocsecrets)
-         - [Configuration Options](#configuration-options)
-         - [Removing unused videos](#removing-unused-videos)
-   * [Tipps and Tricks](#tipps-and-tricks)
-      + [Pause Videos often](#pause-videos-often)
-      + [Usage of Whiteboards](#usage-of-whiteboards)
-      + [Overlay your browser or other windows](#overlay-your-browser-or-other-windows)
-      + [Build Onboarding Guides using markdown](#build-onboarding-guides-using-markdown)
-   * [Contribution Guidelines](#contribution-guidelines)
-   * [Introduction Vidoc Code](#introduction-vidoc-code)
-   * [License](#license)
-
-<!-- TOC end -->
-
-<!-- TOC --><a name="vidoc-an-interactive-documentation-extension-for-visual-studio-code"></a>
 # ViDoc: An Interactive Documentation Extension for Visual Studio Code
 
 ![2](https://github.com/bubblegumsoldier/vidoc/assets/3788628/5dc2060b-fc22-4fd3-88d9-f7037faff674)
+
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+* [Vision Statement](#vision-statement)
+* [When to use Vidoc](#when-to-use-vidoc)
+* [Simple introduction video](#simple-introduction-video)
+    + [Storing video recordings within the repository](#storing-video-recordings-within-the-repository)
+    + [Setting up Vidoc.Cloud](#setting-up-vidoccloud)
+    + [Setting up Vidoc with AWS (advanced configurations)](#setting-up-vidoc-with-aws-advanced-configurations)
+    + [Prerequisites](#prerequisites)
+    + [Configuration Files](#configuration-files)
+        - [.vidocconf.json](#vidocconfjson)
+        - [.vidocsecrets](#vidocsecrets)
+        - [Configuration Options](#configuration-options)
+        - [Removing unused videos](#removing-unused-videos)
+* [Tipps and Tricks](#tipps-and-tricks)
+    + [Pause Videos often](#pause-videos-often)
+    + [Usage of Whiteboards](#usage-of-whiteboards)
+    + [Overlay your browser or other windows](#overlay-your-browser-or-other-windows)
+    + [Build Onboarding Guides using markdown](#build-onboarding-guides-using-markdown)
+* [Contribution Guidelines](#contribution-guidelines)
+* [Introduction Vidoc Code](#introduction-vidoc-code)
+* [License](#license)
+
+<!-- TOC end -->
 
 <!-- TOC --><a name="vision-statement"></a>
 ## Vision Statement
