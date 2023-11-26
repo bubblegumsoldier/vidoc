@@ -145,7 +145,7 @@ The command will find in the bucket all files for which there is no vidoc metada
 
 ### Pause Videos often
 
-Oftentimes you might find yourself stumbling over words or trying to formulate the same idea in many different words. Sometimes it makes sense to **pause** the video, think about the best formulation and **resume** once you know how to find the shortest way to bring your point accross.
+Oftentimes you might find yourself stumbling over words or trying to formulate the same idea in different ways. Sometimes it makes sense to **pause** the video, think about the best formulation and **resume** once you know how to find the easiest formulation to bring your point accross.
 
 ### Usage of Whiteboards
 
